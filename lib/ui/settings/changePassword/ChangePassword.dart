@@ -417,7 +417,7 @@ class ChangePasswordState extends State<ChangePassword> {
                 try {
                   Map userResponseMap = jsonDecode(response.body);
                   if (userResponseMap['status'] == 200) {
-                    db.deleteUser(userDataModel.id);
+//                    db.deleteUser(userDataModel.id);
                     userResponseMap.putIfAbsent("cookie", () => map['cookie']);
                     var data = LoginResponseModel.fromJson(userResponseMap);
                     writeBoolDataLocally(key: session, value: true);
@@ -427,7 +427,7 @@ class ChangePasswordState extends State<ChangePassword> {
                     writeStringDataLocally(
                         key: password, value: userPassword.toString().trim());
                     data.user.password = userPassword.toString().trim();
-                    db.saveUser(data.user);
+//                    db.saveUser(data.user);
                     writeStringDataLocally(
                         key: userData, value: json.encode(data.user));
                     ApiConfiguration.createNullConfiguration(

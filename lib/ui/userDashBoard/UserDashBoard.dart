@@ -325,7 +325,7 @@ class _UserDashBoardState extends State<UserDashBoard>
                     cookies = map['cookie'];
                     mapD.putIfAbsent("cookie", () => map['cookie']);
                     bloc.apiCall(mapD, context);
-                    db.deleteUser(userDataModel.id);
+//                    db.deleteUser(userDataModel.id);
                     userResponseMap.putIfAbsent("cookie", () => map['cookie']);
                     var data = LoginResponseModel.fromJson(userResponseMap);
                     writeBoolDataLocally(key: session, value: true);
@@ -335,7 +335,7 @@ class _UserDashBoardState extends State<UserDashBoard>
                     writeStringDataLocally(
                         key: password, value: userPassword.toString().trim());
                     data.user.password = userPassword.toString().trim();
-                    db.saveUser(data.user);
+//                    db.saveUser(data.user);
                     writeStringDataLocally(
                         key: userData, value: json.encode(data.user));
                     ApiConfiguration.createNullConfiguration(

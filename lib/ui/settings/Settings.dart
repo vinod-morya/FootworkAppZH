@@ -192,7 +192,7 @@ class _SettingsViewState extends State<SettingsView> {
                       title: '',
                       content: AppLocalizations.of(context)
                           .translate("sure_to_logout"), okBtnFunction: () {
-                    db.deleteUser(int.parse(userIdValue));
+//                    db.deleteUser(int.parse(userIdValue));
                     clearDataLocally();
                     Navigator.pushNamedAndRemoveUntil(
                         context, '/login', ModalRoute.withName('/'));

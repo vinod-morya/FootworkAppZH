@@ -681,13 +681,18 @@ class _ProfileScreenState extends State<ProfileScreen> {
         if (data.status == 200) {
           setState(() {
             stateList.clear();
-            stateList.addAll(data.state);
-            for (int i = 0; i < stateList.length; i++) {
-              if (stateId == stateList[i].code) {
-                stateName = stateList[i].name;
-                _userStateController.text = stateName;
-                break;
+            if (data.state.length > 0) {
+              stateList.addAll(data.state);
+              for (int i = 0; i < stateList.length; i++) {
+                if (stateId == stateList[i].code) {
+                  stateName = stateList[i].name;
+                  _userStateController.text = stateName;
+                  break;
+                }
               }
+            } else {
+              stateName = userDataModel.state;
+              _userStateController.text = stateName;
             }
           });
         }
@@ -744,7 +749,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
       var imgFile = await _compressFileCaptured(_imageFile, targetPath, ext);
 
       this.userImageFile = imgFile;
-      this.imagePath = imgFile.path;
+      this.imagePath = _imageFile.path;
       setState(() {});
     }
   }

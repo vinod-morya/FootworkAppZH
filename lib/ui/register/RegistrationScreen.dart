@@ -538,7 +538,7 @@ class _RegistrationScreenState extends State<RegistrationScreen> {
               value: _userConfirmPasswordController.text.toString().trim());
           data.user.password =
               _userConfirmPasswordController.text.toString().trim();
-          db.saveUser(data.user);
+//          db.saveUser(data.user);
           writeStringDataLocally(key: userData, value: json.encode(data.user));
           ApiConfiguration.createNullConfiguration(ConfigConfig("", true));
           Future.delayed(const Duration(microseconds: 200), () {
@@ -657,7 +657,7 @@ class _RegistrationScreenState extends State<RegistrationScreen> {
       var imgFile = await _compressFileCaptured(_imageFile, targetPath, ext);
 
       this.userImageFile = imgFile;
-      this.imagePath = imgFile.path;
+      this.imagePath = _imageFile.path;
       setState(() {});
     }
   }

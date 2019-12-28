@@ -1,5 +1,5 @@
-//const String baseUrl = 'https://footwork.app/staging/api/';
-const String baseUrl = 'https://footworkmat.com/api/';
+const String baseUrl = 'https://footwork.app/staging/api/';
+//const String baseUrl = 'https://footworkmat.com/api/';
 // ****************** login Api **************** //
 const String loginUrl = 'user/generate_auth_cookie';
 

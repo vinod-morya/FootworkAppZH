@@ -415,7 +415,7 @@ class _LoginScreenState extends State<LoginScreen> {
           writeStringDataLocally(
               key: password, value: _passwordController.text.toString().trim());
           data.user.password = _passwordController.text.toString().trim();
-          db.saveUser(data.user);
+//          db.saveUser(data.user);
           writeStringDataLocally(key: userData, value: json.encode(data.user));
           ApiConfiguration.createNullConfiguration(ConfigConfig("", true));
           Future.delayed(const Duration(microseconds: 200), () {
