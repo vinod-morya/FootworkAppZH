@@ -289,7 +289,10 @@ class _VideoListingState extends State<VideoListing> {
       context,
       MaterialPageRoute(
           builder: (context) => VideoPlayWebview(
-                video_url: videoListData[position].videoUrl,
+//                video_url: videoListData[position].videoUrl,
+                video_url: position > 1
+                    ? 'https://iframe.dacast.com/b/144516/f/778269'
+                    : videoListData[position].videoUrl,
                 id: videoListData[position].id,
                 month: videoListData[position].month,
                 video_play_status: videoStatus,
