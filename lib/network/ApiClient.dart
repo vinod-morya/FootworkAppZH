@@ -42,22 +42,22 @@ class _ServiceImpl implements ApiService {
   @override
   Future apiPostRequest(BuildContext context, String url,
       [Map<String, dynamic> data]) async {
-    try {
-      if (data != null && data.length > 0) {
-            print('POST : $url request -> $data');
-          }
-    } catch (e) {
-      print(e);
-    }
+//    try {
+//      if (data != null && data.length > 0) {
+//            print('POST : $url request -> $data');
+//          }
+//    } catch (e) {
+//      print(e);
+//    }
     final response = await client.post("$url", body: json.encode(data));
-    print('POST : $url response -> ${response.body}');
+//    print('POST : $url response -> ${response.body}');
     return response;
   }
 
   @override
   Future apiGetRequest(BuildContext context, String url) async {
     final response = await client.get(url);
-    print('GET : $url response -> ${response.body}');
+//    print('GET : $url response -> ${response.body}');
     return response;
   }
 
@@ -67,37 +67,37 @@ class _ServiceImpl implements ApiService {
   @override
   Future apiPutRequest(
       BuildContext context, String url, Map<String, dynamic> request) async {
-    try {
-      if (request != null && request.length > 0) {
-            print('PUT : $url request -> $request');
-          }
-    } catch (e) {
-      print(e);
-    }
+//    try {
+//      if (request != null && request.length > 0) {
+//            print('PUT : $url request -> $request');
+//          }
+//    } catch (e) {
+//      print(e);
+//    }
     final response = await client.put("$url", body: json.encode(request));
-    print('PUT : $url response -> ${response.body}');
+//    print('PUT : $url response -> ${response.body}');
     return response;
   }
 
   @override
   Future apiDeleteCustom(String url) async {
     final response = await client.delete("$url");
-    print('DELETE : $url response -> ${response.body}');
+//    print('DELETE : $url response -> ${response.body}');
     return response;
   }
 
   @override
   Future apiMultipartRequest(BuildContext context, String url,
       Map<String, dynamic> data, String apiType) async {
-    try {
-      if (data!=null &&data.length > 0) {
-            print('MULTIPART : $url request -> $data');
-          }
-    } catch (e) {
-      print(e);
-    }
+//    try {
+//      if (data!=null &&data.length > 0) {
+//            print('MULTIPART : $url request -> $data');
+//          }
+//    } catch (e) {
+//      print(e);
+//    }
     final response = await client.mutipartPost(url, data, apiType);
-    print('MULTIPART : $url response -> ${response.body}');
+//    print('MULTIPART : $url response -> ${response.body}');
     return response;
   }
 }

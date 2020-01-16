@@ -98,7 +98,10 @@ class _FavouriteListItemState extends State<FavouriteListItem> {
                             Text(
                               widget.data.playStatus.videoPlayStatus == "0"
                                   ? '${AppLocalizations.of(context).translate("mark_complete_label")}'
-                                  : '${AppLocalizations.of(context).translate("completed")}!',
+                                  : widget.data.playStatus.videoPlayStatus ==
+                                          "2"
+                                      ? '${AppLocalizations.of(context).translate('need_more_work')}'
+                                      : '${AppLocalizations.of(context).translate("completed")}!',
                               style: TextStyle(
                                 color: widget.data.playStatus.videoPlayStatus ==
                                         "0"

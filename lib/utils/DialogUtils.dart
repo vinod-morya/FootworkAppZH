@@ -92,7 +92,8 @@ class DialogUtils {
                                         ? Container()
                                         : Container(
                                             margin: EdgeInsets.symmetric(
-                                                vertical: fit.t(8.0),horizontal:fit.t(1.0) ),
+                                                vertical: fit.t(8.0),
+                                                horizontal: fit.t(1.0)),
                                             child: Center(
                                               child: Text(
                                                 title,

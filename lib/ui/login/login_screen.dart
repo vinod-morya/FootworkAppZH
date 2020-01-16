@@ -75,7 +75,7 @@ class _LoginScreenState extends State<LoginScreen> {
         bottomOpacity: 0.0,
         centerTitle: true,
         title: _widgetLoginText(),
-        leading: _widgetBackButton(),
+//        leading: _widgetBackButton(),
         elevation: 0,
       ),
       body: GestureDetector(
@@ -371,7 +371,6 @@ class _LoginScreenState extends State<LoginScreen> {
 
   @override
   void dispose() {
-    db.close();
     apiResponseController.close();
     validation.dispose();
     super.dispose();

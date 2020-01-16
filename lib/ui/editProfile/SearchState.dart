@@ -115,7 +115,7 @@ class SearchStateState extends State<SearchState> {
                     focusColor: colorWhite,
                     fillColor: colorWhite,
                     hintText:
-                        AppLocalizations.of(context).translate("search_state"),
+                    AppLocalizations.of(context).translate("search_state"),
                     hintStyle: TextStyle(
                       color: Colors.white54,
                       fontFamily: regularFont,

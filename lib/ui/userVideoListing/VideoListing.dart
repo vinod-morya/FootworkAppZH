@@ -289,10 +289,7 @@ class _VideoListingState extends State<VideoListing> {
       context,
       MaterialPageRoute(
           builder: (context) => VideoPlayWebview(
-//                video_url: videoListData[position].videoUrl,
-                video_url: position > 1
-                    ? 'https://iframe.dacast.com/b/144516/f/778269'
-                    : videoListData[position].videoUrl,
+                video_url: videoListData[position].videoUrl,
                 id: videoListData[position].id,
                 month: videoListData[position].month,
                 video_play_status: videoStatus,
@@ -378,40 +375,39 @@ class _VideoListingState extends State<VideoListing> {
     String videoStatus = videoListData[position].playStatus.length > 0
         ? videoListData[position].playStatus[0].videoPlayStatus
         : "0";
-    if (videoStatus == "0") {
-      showDialogMarkAsComplete(context,
-          title: '${videoListData[position].label}',
-          okBtnText: AppLocalizations.of(context).translate("btn_needs_work"),
-          cancelBtnText:
-              AppLocalizations.of(context).translate("btn_mark_complete"),
-          rating: videoListData[position].playStatus.length > 0
-              ? videoListData[position].playStatus[0].rating
-              : "0.0", okBtnFunction: (value) {
-        Navigator.of(context).pop();
-        bloc.showProgressLoader(true);
-        apiCall = true;
-        Map<String, dynamic> map = Map();
-        map.putIfAbsent('cookie', () => cookies);
-        map.putIfAbsent('rating', () => value.toInt().toString());
-        map.putIfAbsent(
-            'video_id', () => videoListData[position].id.toString());
-        map.putIfAbsent('month', () => videoListData[position].month);
-        map.putIfAbsent('video_play_status', () => "2");
-        _bloc.apiCall(map, context, true);
-      }, cancelBtnFunction: (value) {
-        Navigator.of(context).pop();
-        bloc.showProgressLoader(true);
-        apiCall = true;
-        Map<String, dynamic> map = Map();
-        map.putIfAbsent('cookie', () => cookies);
-        map.putIfAbsent('rating', () => value.toInt().toString());
-        map.putIfAbsent(
-            'video_id', () => videoListData[position].id.toString());
-        map.putIfAbsent('month', () => videoListData[position].month);
-        map.putIfAbsent('video_play_status', () => "1");
-        _bloc.apiCall(map, context, true);
-      });
-    }
+
+    showDialogMarkAsComplete(context,
+        title: '${videoListData[position].label}',
+        okBtnText: AppLocalizations.of(context).translate("btn_needs_work"),
+        cancelBtnText: (videoStatus == "0" || videoStatus == "2")
+            ? AppLocalizations.of(context).translate("btn_mark_complete")
+            : AppLocalizations.of(context).translate("mark_incomplete"),
+        rating: videoListData[position].playStatus.length > 0
+            ? videoListData[position].playStatus[0].rating
+            : "0.0", okBtnFunction: (value) {
+      Navigator.of(context).pop();
+      bloc.showProgressLoader(true);
+      apiCall = true;
+      Map<String, dynamic> map = Map();
+      map.putIfAbsent('cookie', () => cookies);
+      map.putIfAbsent('rating', () => value.toInt().toString());
+      map.putIfAbsent('video_id', () => videoListData[position].id.toString());
+      map.putIfAbsent('month', () => videoListData[position].month);
+      map.putIfAbsent('video_play_status', () => "2");
+      _bloc.apiCall(map, context, true);
+    }, cancelBtnFunction: (value) {
+      Navigator.of(context).pop();
+      bloc.showProgressLoader(true);
+      apiCall = true;
+      Map<String, dynamic> map = Map();
+      map.putIfAbsent('cookie', () => cookies);
+      map.putIfAbsent('rating', () => value.toInt().toString());
+      map.putIfAbsent('video_id', () => videoListData[position].id.toString());
+      map.putIfAbsent('month', () => videoListData[position].month);
+      map.putIfAbsent('video_play_status',
+          () => (videoStatus == "0" || videoStatus == "2") ? "1" : "0");
+      _bloc.apiCall(map, context, true);
+    });
   }
 
   _onChatIconClicked(int pos) {

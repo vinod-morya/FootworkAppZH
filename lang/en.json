@@ -107,5 +107,7 @@
   "comment_label": "Comment filed cannot be empty.",
   "old_pass_label": "Old Password*",
   "new_pass_label": "New Password*",
-  "confirm_pass_label": "Confirm Password*"
+  "confirm_pass_label": "Confirm Password*",
+  "need_more_work": "NEEDS MORE WORK",
+  "mark_incomplete": "MARK AS INCOMPLETE"
 }

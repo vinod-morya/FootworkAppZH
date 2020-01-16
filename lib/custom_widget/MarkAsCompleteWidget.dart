@@ -223,7 +223,7 @@ class _MarkAsCompleteContentState extends State<MarkAsCompleteContent> {
                                 AppLocalizations.of(context)
                                     .translate("need_work_text"),
                                 style: TextStyle(
-                                    fontSize: fit.t(20.0),
+                                    fontSize: fit.t(16.0),
                                     fontFamily: regularFont,
                                     color: colorGrey,
                                     fontWeight: FontWeight.w400),

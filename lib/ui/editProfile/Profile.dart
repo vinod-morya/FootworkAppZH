@@ -160,15 +160,15 @@ class _ProfileScreenState extends State<ProfileScreen> {
   _buttonPress() {
     FocusScope.of(context).requestFocus(_blankFocusNode);
     if (validation.userNameValidation(
-            _userFirstNameController.text.toString().trim(),
-            context,
-            "first_name") ==
+        _userFirstNameController.text.toString().trim(),
+        context,
+        "first_name") ==
         null) {
       if (validation.userNameValidation(
-              _userLastNameController.text.trim(), context, "last_name") ==
+          _userLastNameController.text.trim(), context, "last_name") ==
           null) {
         if (validation.emailValidation(
-                _userEmailController.text.trim(), context) ==
+            _userEmailController.text.trim(), context) ==
             null) {
           Map map = Map<String, dynamic>();
           map.putIfAbsent("cookie", () => cookies);
@@ -176,25 +176,25 @@ class _ProfileScreenState extends State<ProfileScreen> {
             map.putIfAbsent("profile_image", () => userImageFile);
           }
           map.putIfAbsent("first_name",
-              () => _userFirstNameController.text.toString().trim());
+                  () => _userFirstNameController.text.toString().trim());
           map.putIfAbsent("last_name",
-              () => _userLastNameController.text.toString().trim());
+                  () => _userLastNameController.text.toString().trim());
           map.putIfAbsent(
               "email", () => _userEmailController.text.toString().trim());
 
           map.putIfAbsent("billing_phone",
-              () => _userPhoneController.text.toString().trim());
+                  () => _userPhoneController.text.toString().trim());
           map.putIfAbsent("billing_country", () => countryId);
           map.putIfAbsent(
               "billing_state",
-              () => stateId == null
+                  () => stateId == null
                   ? _userStateController.text.toString().trim()
                   : stateId);
           map.putIfAbsent("billing_city", () => "");
           map.putIfAbsent("billing_address_1",
-              () => _userAddressController.text.toString().trim());
+                  () => _userAddressController.text.toString().trim());
           map.putIfAbsent("billing_postcode",
-              () => _userPincodeController.text.toString().trim());
+                  () => _userPincodeController.text.toString().trim());
           validation.updateData(map, _scaffoldKey.currentState.context);
         } else {
           TopAlert.showAlert(
@@ -413,63 +413,63 @@ class _ProfileScreenState extends State<ProfileScreen> {
   Widget _userStateField() {
     return stateList.length > 0
         ? GestureDetector(
-            onTap: () => editable ? _openStateList() : null,
-            child: Container(
-              margin: EdgeInsets.only(top: fit.t(10.0)),
-              child: Stack(
+      onTap: () => editable ? _openStateList() : null,
+      child: Container(
+        margin: EdgeInsets.only(top: fit.t(10.0)),
+        child: Stack(
+          children: <Widget>[
+            Positioned(
+              left: fit.t(60.0),
+              top: fit.t(15.0),
+              child: Container(
+                child: Text(
+                  stateName == null
+                      ? AppLocalizations.of(context).translate("state")
+                      : stateName,
+                  softWrap: true,
+                  style: TextStyle(
+                      color: stateName == null
+                          ? Color(0x80464649)
+                          : appColor,
+                      fontFamily: robotoMediumFont,
+                      fontSize: fit.t(16.0)),
+                ),
+              ),
+            ),
+            Container(
+              margin: EdgeInsets.symmetric(horizontal: fit.t(15.0)),
+              child: Row(
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                mainAxisSize: MainAxisSize.max,
+                crossAxisAlignment: CrossAxisAlignment.center,
                 children: <Widget>[
-                  Positioned(
-                    left: fit.t(60.0),
-                    top: fit.t(15.0),
-                    child: Container(
-                      child: Text(
-                        stateName == null
-                            ? AppLocalizations.of(context).translate("state")
-                            : stateName,
-                        softWrap: true,
-                        style: TextStyle(
-                            color: stateName == null
-                                ? Color(0x80464649)
-                                : appColor,
-                            fontFamily: robotoMediumFont,
-                            fontSize: fit.t(16.0)),
-                      ),
-                    ),
+                  Image.asset(
+                    ic_city,
+                    height: fit.t(40.0),
+                    width: fit.t(30.0),
                   ),
-                  Container(
-                    margin: EdgeInsets.symmetric(horizontal: fit.t(15.0)),
-                    child: Row(
-                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                      mainAxisSize: MainAxisSize.max,
-                      crossAxisAlignment: CrossAxisAlignment.center,
-                      children: <Widget>[
-                        Image.asset(
-                          ic_city,
-                          height: fit.t(40.0),
-                          width: fit.t(30.0),
+                  Row(
+                    children: <Widget>[
+                      IconButton(
+                        icon: Icon(
+                          Icons.keyboard_arrow_down,
+                          color: Color(0x80464649),
                         ),
-                        Row(
-                          children: <Widget>[
-                            IconButton(
-                              icon: Icon(
-                                Icons.keyboard_arrow_down,
-                                color: Color(0x80464649),
-                              ),
-                              onPressed: () {
-                                if (editable) {
-                                  _openStateList();
-                                }
-                              },
-                            ),
-                          ],
-                        )
-                      ],
-                    ),
-                  ),
+                        onPressed: () {
+                          if (editable) {
+                            _openStateList();
+                          }
+                        },
+                      ),
+                    ],
+                  )
                 ],
               ),
             ),
-          )
+          ],
+        ),
+      ),
+    )
         : _userStateFreeField();
   }
 
@@ -581,8 +581,8 @@ class _ProfileScreenState extends State<ProfileScreen> {
                     backgroundImage: imagePath == null
                         ? AssetImage(ic_user_place_holder)
                         : imagePath.contains('https://')
-                            ? NetworkImage(imagePath)
-                            : AssetImage(imagePath),
+                        ? NetworkImage(imagePath)
+                        : AssetImage(imagePath),
                   ),
                 ),
                 Positioned(
@@ -590,18 +590,18 @@ class _ProfileScreenState extends State<ProfileScreen> {
                   right: fit.t(10.0),
                   child: editable
                       ? GestureDetector(
-                          onTap: () => _optionsDialogBox(context),
-                          child: Container(
-                              height: fit.t(30.0),
-                              width: fit.t(30.0),
-                              decoration: BoxDecoration(
-                                  shape: BoxShape.circle, color: Colors.red),
-                              child: Image.asset(
-                                ic_edit,
-                                scale: fit.scale == 1 ? 4.0 : 3.0,
-                                color: colorWhite,
-                              )),
-                        )
+                    onTap: () => _optionsDialogBox(context),
+                    child: Container(
+                        height: fit.t(30.0),
+                        width: fit.t(30.0),
+                        decoration: BoxDecoration(
+                            shape: BoxShape.circle, color: Colors.red),
+                        child: Image.asset(
+                          ic_edit,
+                          scale: fit.scale == 1 ? 4.0 : 3.0,
+                          color: colorWhite,
+                        )),
+                  )
                       : Container(),
                 )
               ],
@@ -726,12 +726,12 @@ class _ProfileScreenState extends State<ProfileScreen> {
         title: '',
         content: AppLocalizations.of(context).translate("choose_pic"),
         okBtnFunction: () {
-      _captureImage(ImageSource.camera, context);
-      Navigator.of(context).pop();
-    }, cancelBtnFunction: () {
-      _captureImage(ImageSource.gallery, context);
-      Navigator.of(context).pop();
-    });
+          _captureImage(ImageSource.camera, context);
+          Navigator.of(context).pop();
+        }, cancelBtnFunction: () {
+          _captureImage(ImageSource.gallery, context);
+          Navigator.of(context).pop();
+        });
   }
 
   _captureImage(ImageSource source, context) async {

@@ -41,15 +41,20 @@ class HistoryListItem extends StatelessWidget {
               SizedBox(
                 width: data.icon == null ? 0.0 : fit.t(5.0),
               ),
-              Container(
-                padding: EdgeInsets.only(top: fit.t(5.0)),
-                child: Text(
-                  data.title,
-                  style: TextStyle(
-                    color: Color(0xFFD50A30),
-                    fontFamily: robotoBoldFont,
-                    fontSize: fit.t(28.0),
-                    fontWeight: FontWeight.w800,
+              Flexible(
+                child: Container(
+                  padding: EdgeInsets.only(top: fit.t(5.0)),
+                  child: Text(
+                    data.title,
+                    overflow:TextOverflow.ellipsis,
+                    softWrap: true,
+                    maxLines: 2,
+                    style: TextStyle(
+                      color: Color(0xFFD50A30),
+                      fontFamily: robotoBoldFont,
+                      fontSize: fit.t(25.0),
+                      fontWeight: FontWeight.w800,
+                    ),
                   ),
                 ),
               )

@@ -31,14 +31,14 @@ class EditProfileValidationBloc with ApiCallback {
     var validationMessage = text == "first_name"
         ? validations.validateName(userName.toString().trim(), context)
         : text == "last_name"
-            ? validations.validateName(userName.toString().trim(), context)
-            : validations.validateUserName(userName.toString().trim(), context);
+        ? validations.validateName(userName.toString().trim(), context)
+        : validations.validateUserName(userName.toString().trim(), context);
     return validationMessage;
   }
 
   String emailValidation(email, context) {
     var validationMessage =
-        validations.validateEmail(email.toString().trim(), context);
+    validations.validateEmail(email.toString().trim(), context);
     return validationMessage;
   }
 

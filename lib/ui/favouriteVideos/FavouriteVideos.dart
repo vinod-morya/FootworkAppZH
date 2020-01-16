@@ -255,8 +255,6 @@ class _FavouriteVideosListState extends State<FavouriteVideosList> {
       context,
       MaterialPageRoute(
           builder: (context) => VideoPlayWebview(
-//                video_url: 'https://www.filepicker.io/api/file/2PcRsEdrT56FHE1rpOoE',
-//                video_url: 'https://iframe.dacast.com/b/144516/f/778269',
                 video_url: videoListData[position].videoUrl,
                 id: videoListData[position].id,
                 month: videoListData[position].month,
@@ -344,34 +342,32 @@ class _FavouriteVideosListState extends State<FavouriteVideosList> {
     dynamic ratingValue = videoListData[position].playStatus != null
         ? videoListData[position].playStatus.rating
         : "0.0";
-    if (videoStatus == "0" || widget.videoType == "2") {
-      showDialogMarkAsComplete(context,
-          title: '',
-          okBtnText: AppLocalizations.of(context).translate("btn_needs_work"),
-          cancelBtnText:
-              AppLocalizations.of(context).translate("btn_mark_complete"),
-          rating: ratingValue, okBtnFunction: (value) {
-        Navigator.of(context).pop();
-        bloc.showProgressLoader(true);
-        Map<String, dynamic> map = Map();
-        map.putIfAbsent('cookie', () => cookies);
-        map.putIfAbsent(
-            'video_id', () => videoListData[position].id.toString());
-        map.putIfAbsent('month', () => videoListData[position].month);
-        map.putIfAbsent('video_play_status', () => "2");
-        _bloc.apiCall(map, context, true);
-      }, cancelBtnFunction: (value) {
-        Navigator.of(context).pop();
-        bloc.showProgressLoader(true);
-        Map<String, dynamic> map = Map();
-        map.putIfAbsent('cookie', () => cookies);
-        map.putIfAbsent(
-            'video_id', () => videoListData[position].id.toString());
-        map.putIfAbsent('month', () => videoListData[position].month);
-        map.putIfAbsent('video_play_status', () => "1");
-        _bloc.apiCall(map, context, true);
-      });
-    }
+    showDialogMarkAsComplete(context,
+        title: '${videoListData[position].label}',
+        okBtnText: AppLocalizations.of(context).translate("btn_needs_work"),
+        cancelBtnText: (videoStatus == "0" || videoStatus == "2")
+            ? AppLocalizations.of(context).translate("btn_mark_complete")
+            : AppLocalizations.of(context).translate("mark_incomplete"),
+        rating: ratingValue, okBtnFunction: (value) {
+      Navigator.of(context).pop();
+      bloc.showProgressLoader(true);
+      Map<String, dynamic> map = Map();
+      map.putIfAbsent('cookie', () => cookies);
+      map.putIfAbsent('video_id', () => videoListData[position].id.toString());
+      map.putIfAbsent('month', () => videoListData[position].month);
+      map.putIfAbsent('video_play_status', () => "2");
+      _bloc.apiCall(map, context, true);
+    }, cancelBtnFunction: (value) {
+      Navigator.of(context).pop();
+      bloc.showProgressLoader(true);
+      Map<String, dynamic> map = Map();
+      map.putIfAbsent('cookie', () => cookies);
+      map.putIfAbsent('video_id', () => videoListData[position].id.toString());
+      map.putIfAbsent('month', () => videoListData[position].month);
+      map.putIfAbsent('video_play_status',
+          () => (videoStatus == "0" || videoStatus == "2") ? "1" : "0");
+      _bloc.apiCall(map, context, true);
+    });
   }
 
   _onChatIconClicked(int pos) {

@@ -102,10 +102,12 @@
   "search_country": "搜索国家",
   "search_state": "搜索省份",
   "btn_needs_work": "是的，需要继续完成",
-  "btn_mark_complete": "不，记录为已完成",
+  "btn_mark_complete": "完全完成",
   "view_all_favourites": "观看所有在历史中最喜爱的视频-最喜爱的",
   "comment_label": "评论区域不能空白",
   "old_pass_label": "旧密码*",
   "new_pass_label": "新密码*",
-  "confirm_pass_label": "确认密码*"
+  "confirm_pass_label": "确认密码*",
+  "need_more_work": "需要更多工作",
+  "mark_incomplete": "标记为不完整"
 }

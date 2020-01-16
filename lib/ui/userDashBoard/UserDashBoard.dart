@@ -22,6 +22,7 @@ import 'package:footwork_chinese/ui/userDashBoard/UserDashboardListItem.dart';
 import 'package:footwork_chinese/ui/userVideoListing/VideoListing.dart';
 import 'package:footwork_chinese/utils/Utility.dart';
 import 'package:footwork_chinese/utils/app_localizations.dart';
+import 'package:url_launcher/url_launcher.dart';
 
 class UserDashBoard extends StatefulWidget {
   @override
@@ -131,6 +132,7 @@ class _UserDashBoardState extends State<UserDashBoard>
                       monthListing.addAll(dataInReverse);
                       monthListing.add(snapshot.data
                           .singleWhere((DataListBean a) => a.tapStatus == 0));
+                      monthListing.insert(0, DataListBean());
                       monthListing.add(DataListBean());
                     }
                     return ListView.builder(
@@ -172,10 +174,7 @@ class _UserDashBoardState extends State<UserDashBoard>
                     );
                   }
                 })
-            : NoDataWidget(
-                fit: fit,
-                txt: errorText,
-              ),
+            : getListWidget(monthListing, errorText, controller),
       ),
     );
   }
@@ -325,7 +324,6 @@ class _UserDashBoardState extends State<UserDashBoard>
                     cookies = map['cookie'];
                     mapD.putIfAbsent("cookie", () => map['cookie']);
                     bloc.apiCall(mapD, context);
-//                    db.deleteUser(userDataModel.id);
                     userResponseMap.putIfAbsent("cookie", () => map['cookie']);
                     var data = LoginResponseModel.fromJson(userResponseMap);
                     writeBoolDataLocally(key: session, value: true);
@@ -335,7 +333,6 @@ class _UserDashBoardState extends State<UserDashBoard>
                     writeStringDataLocally(
                         key: password, value: userPassword.toString().trim());
                     data.user.password = userPassword.toString().trim();
-//                    db.saveUser(data.user);
                     writeStringDataLocally(
                         key: userData, value: json.encode(data.user));
                     ApiConfiguration.createNullConfiguration(
@@ -357,6 +354,56 @@ class _UserDashBoardState extends State<UserDashBoard>
       });
     } catch (error) {
       Navigator.pushReplacementNamed(context, '/login');
+    }
+  }
+
+  Widget getListWidget(List<DataListBean> monthListing, String errorText,
+      AnimationController controller) {
+    String username = userDataModel.username;
+    String pass = userDataModel.password;
+    String hash = '?log=$username&pwd=$pass';
+    monthListing.clear();
+    monthListing.add(DataListBean());
+    monthListing.add(DataListBean());
+    monthListing.add(DataListBean());
+    return ListView.builder(
+      physics: BouncingScrollPhysics(),
+      itemBuilder: (BuildContext context, int index) {
+        return index == (monthListing.length - 1)
+            ? GestureDetector(
+                onTap: () => _launchUrl('https://footworkmat.com$hash'),
+                child: NoDataWidget(
+                  fit: fit,
+                  txt: '$errorText.',
+                  url: 'www.footworkmat.com',
+                ),
+              )
+            : UserDashboardListItem(
+                fit: fit,
+                progressController: controller,
+                animation: Tween<double>(
+                        begin: 0,
+                        end: monthListing[index].tapStatus == 1
+                            ? _calculateEndAnimation(monthListing[index]) == 0.0
+                                ? 0.0
+                                : _calculateEndAnimation(monthListing[index])
+                            : 100)
+                    .animate(controller)
+                      ..addListener(() {}),
+                data: monthListing[index],
+                pos: index,
+                onTap: onClickedMonth,
+              );
+      },
+      itemCount: monthListing.length,
+    );
+  }
+
+  _launchUrl(String url) async {
+    if (await canLaunch(url)) {
+      await launch(url);
+    } else {
+      throw 'Could not launch $url';
     }
   }
 }

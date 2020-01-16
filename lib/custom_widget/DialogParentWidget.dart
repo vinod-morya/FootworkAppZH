@@ -286,12 +286,12 @@ class AlertMyDialog extends StatelessWidget {
     if (title == null) {
       switch (theme.platform) {
         case TargetPlatform.iOS:
+        case TargetPlatform.macOS:
           label = semanticLabel;
           break;
         case TargetPlatform.android:
         case TargetPlatform.fuchsia:
-          label = semanticLabel ??
-              MaterialLocalizations.of(context)?.alertDialogLabel;
+          label = semanticLabel ?? MaterialLocalizations.of(context)?.alertDialogLabel;
       }
     }
 
@@ -300,7 +300,7 @@ class AlertMyDialog extends StatelessWidget {
         mainAxisSize: MainAxisSize.min,
         crossAxisAlignment: CrossAxisAlignment.stretch,
         children: <Widget>[
-          if (title != null)
+          (title != null)?
             Padding(
               padding: titlePadding ??
                   EdgeInsets.fromLTRB(
@@ -315,23 +315,25 @@ class AlertMyDialog extends StatelessWidget {
                   container: true,
                 ),
               ),
-            ),
-          if (content != null)
-            Flexible(
-              child: Padding(
-                padding: contentPadding,
-                child: DefaultTextStyle(
-                  style: contentTextStyle ??
-                      MyDialogTheme.contentTextStyle ??
-                      theme.textTheme.subhead,
-                  child: content,
-                ),
-              ),
-            ),
-          if (actions != null)
-            ButtonBar(
-              children: actions,
-            ),
+            ):Container(),
+          (content != null)
+              ? Flexible(
+                  child: Padding(
+                    padding: contentPadding,
+                    child: DefaultTextStyle(
+                      style: contentTextStyle ??
+                          MyDialogTheme.contentTextStyle ??
+                          theme.textTheme.subhead,
+                      child: content,
+                    ),
+                  ),
+                )
+              : Container(),
+          (actions != null)
+              ? ButtonBar(
+                  children: actions,
+                )
+              : Container(),
         ],
       ),
     );
@@ -571,12 +573,13 @@ class SimpleMyDialog extends StatelessWidget {
     if (title == null) {
       switch (theme.platform) {
         case TargetPlatform.iOS:
+        case TargetPlatform.macOS:
           label = semanticLabel;
           break;
         case TargetPlatform.android:
         case TargetPlatform.fuchsia:
-          label =
-              semanticLabel ?? MaterialLocalizations.of(context)?.dialogLabel;
+          label = semanticLabel ??
+              MaterialLocalizations.of(context)?.alertDialogLabel;
       }
     }
 
@@ -588,21 +591,23 @@ class SimpleMyDialog extends StatelessWidget {
           mainAxisSize: MainAxisSize.min,
           crossAxisAlignment: CrossAxisAlignment.stretch,
           children: <Widget>[
-            if (title != null)
-              Padding(
-                padding: titlePadding,
-                child: DefaultTextStyle(
-                  style: theme.textTheme.title,
-                  child: Semantics(namesRoute: true, child: title),
-                ),
-              ),
-            if (children != null)
-              Flexible(
-                child: SingleChildScrollView(
-                  padding: contentPadding,
-                  child: ListBody(children: children),
-                ),
-              ),
+            (title != null)
+                ? Padding(
+                    padding: titlePadding,
+                    child: DefaultTextStyle(
+                      style: theme.textTheme.title,
+                      child: Semantics(namesRoute: true, child: title),
+                    ),
+                  )
+                : Container(),
+            (children != null)
+                ? Flexible(
+                    child: SingleChildScrollView(
+                      padding: contentPadding,
+                      child: ListBody(children: children),
+                    ),
+                  )
+                : Container(),
           ],
         ),
       ),
