@@ -351,6 +351,7 @@ class _FavouriteVideosListState extends State<FavouriteVideosList> {
         rating: ratingValue, okBtnFunction: (value) {
       Navigator.of(context).pop();
       bloc.showProgressLoader(true);
+      writeBoolDataLocally(key: dashboardCallApi,value: true);
       Map<String, dynamic> map = Map();
       map.putIfAbsent('cookie', () => cookies);
       map.putIfAbsent('video_id', () => videoListData[position].id.toString());
@@ -360,6 +361,7 @@ class _FavouriteVideosListState extends State<FavouriteVideosList> {
     }, cancelBtnFunction: (value) {
       Navigator.of(context).pop();
       bloc.showProgressLoader(true);
+      writeBoolDataLocally(key: dashboardCallApi,value: true);
       Map<String, dynamic> map = Map();
       map.putIfAbsent('cookie', () => cookies);
       map.putIfAbsent('video_id', () => videoListData[position].id.toString());

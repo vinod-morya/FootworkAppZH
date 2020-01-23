@@ -45,6 +45,12 @@ final String password = 'user_password';
 final String language = 'app_language';
 final String countries = 'countries_list';
 final String userName = 'userName';
+final String dashBoardData = 'checklisr_dashboard_list';
+final String historyCall = 'checklisr_history_call_time';
+final String dashboardCall = 'checklisr_dash_call_time';
+final String hitApiHistory = 'checklisr_history_api_call';
+final String dashboardCallApi = 'checklisr_dashboardCallApi';
+final String historyList = 'checklisr_history_list';
 
 //api flags
 const int NO_INTERNET_FLAG = 1000;

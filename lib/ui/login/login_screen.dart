@@ -311,7 +311,7 @@ class _LoginScreenState extends State<LoginScreen> {
       ),
       child: ButtonWidget(
         AppLocalizations.of(context).translate("login_label"),
-        fit.t(30),
+        fit.t(20),
         () => _onLoginClick(_scaffoldKey.currentState.context),
         fontSize: fit.t(20),
         padding: EdgeInsets.only(

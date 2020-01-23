@@ -41,6 +41,9 @@ class _UserDashBoardState extends State<UserDashBoard>
   String cookies;
   String errorText;
   FmFit fit = FmFit(width: 750);
+  int callSavedTime;
+  bool isApiCall = true;
+  var refreshKey = GlobalKey<RefreshIndicatorState>();
 
   @override
   void initState() {
@@ -49,6 +52,9 @@ class _UserDashBoardState extends State<UserDashBoard>
     getStringDataLocally(key: userData).then((onUserModel) {
       userDataModel = UserBean.fromJson(jsonDecode(onUserModel));
     });
+    callSavedTime = DateTime.now().millisecondsSinceEpoch;
+    apiCallTime();
+    apiCallCheck();
     apiResponseController = StreamController<dynamic>.broadcast();
     apiSuccessResponseController =
         StreamController<List<DataListBean>>.broadcast();
@@ -135,36 +141,42 @@ class _UserDashBoardState extends State<UserDashBoard>
                       monthListing.insert(0, DataListBean());
                       monthListing.add(DataListBean());
                     }
-                    return ListView.builder(
-                      physics: BouncingScrollPhysics(),
-                      itemBuilder: (BuildContext context, int index) {
-                        return index == (monthListing.length - 1)
-                            ? NoDataWidget(
-                                fit: fit,
-                                txt: AppLocalizations.of(context)
-                                    .translate("reach_end_text"),
-                              )
-                            : UserDashboardListItem(
-                                fit: fit,
-                                progressController: controller,
-                                animation: Tween<double>(
-                                        begin: 0,
-                                        end: monthListing[index].tapStatus == 1
-                                            ? _calculateEndAnimation(
-                                                        monthListing[index]) ==
-                                                    0.0
-                                                ? 0.0
-                                                : _calculateEndAnimation(
-                                                    monthListing[index])
-                                            : 100)
-                                    .animate(controller)
-                                      ..addListener(() {}),
-                                data: monthListing[index],
-                                pos: index,
-                                onTap: onClickedMonth,
-                              );
-                      },
-                      itemCount: monthListing.length,
+                    return RefreshIndicator(
+                      key: refreshKey,
+                      onRefresh: refreshList,
+                      child: ListView.builder(
+                        physics: BouncingScrollPhysics(),
+                        itemBuilder: (BuildContext context, int index) {
+                          return index == (monthListing.length - 1)
+                              ? NoDataWidget(
+                                  fit: fit,
+                                  txt: AppLocalizations.of(context)
+                                      .translate("reach_end_text"),
+                                )
+                              : UserDashboardListItem(
+                                  fit: fit,
+                                  progressController: controller,
+                                  animation: Tween<double>(
+                                          begin: 0,
+                                          end: monthListing[index].tapStatus ==
+                                                  1
+                                              ? _calculateEndAnimation(
+                                                          monthListing[
+                                                              index]) ==
+                                                      0.0
+                                                  ? 0.0
+                                                  : _calculateEndAnimation(
+                                                      monthListing[index])
+                                              : 100)
+                                      .animate(controller)
+                                        ..addListener(() {}),
+                                  data: monthListing[index],
+                                  pos: index,
+                                  onTap: onClickedMonth,
+                                );
+                        },
+                        itemCount: monthListing.length,
+                      ),
                     );
                   } else if (snapshot != null && snapshot.hasError) {
                     return Text(snapshot.error.toString());
@@ -195,6 +207,15 @@ class _UserDashBoardState extends State<UserDashBoard>
     }
   }
 
+  Future<Null> refreshList() async {
+    refreshKey.currentState?.show(atTop: false);
+    await Future.delayed(Duration(seconds: 1));
+    Map<String, String> map = Map<String, String>();
+    map.putIfAbsent("cookie", () => cookies);
+    bloc.apiCall(map, context);
+    return null;
+  }
+
   void getAuth(BuildContext context, String onCookie) {
     try {
       var url = '';
@@ -203,9 +224,21 @@ class _UserDashBoardState extends State<UserDashBoard>
       } else {
         url = '$baseUrl$validateAuth?cookie=$onCookie';
       }
-      Map<String, String> map = Map<String, String>();
-      map.putIfAbsent("cookie", () => onCookie);
-      bloc.apiCall(map, context);
+      getStringDataLocally(key: dashBoardData).then((onFetchdashBoardData) {
+        if (onFetchdashBoardData == null ||
+            !(onFetchdashBoardData.length > 0) ||
+            isApiCall) {
+          Map<String, String> map = Map<String, String>();
+          map.putIfAbsent("cookie", () => onCookie);
+          bloc.apiCall(map, context);
+          writeStringDataLocally(
+              key: dashboardCall, value: (callSavedTime + 43200000).toString());
+        } else {
+          var response =
+              UserDashBoardResponse.fromJson(jsonDecode(onFetchdashBoardData));
+          apiSuccessResponseController.add(response.data);
+        }
+      });
       ApiConfiguration.getInstance()
           .apiClient
           .liveService
@@ -242,6 +275,7 @@ class _UserDashBoardState extends State<UserDashBoard>
     StreamSubscription subscription;
     subscription = apiResponseController.stream.listen((data) {
       if (data is UserDashBoardResponse) {
+        writeStringDataLocally(key: dashBoardData, value: json.encode(data));
       } else if (data is CountryListResponse) {
         writeStringDataLocally(key: countries, value: json.encode(data));
       } else if (data is ErrorResponse) {
@@ -366,36 +400,41 @@ class _UserDashBoardState extends State<UserDashBoard>
     monthListing.add(DataListBean());
     monthListing.add(DataListBean());
     monthListing.add(DataListBean());
-    return ListView.builder(
-      physics: BouncingScrollPhysics(),
-      itemBuilder: (BuildContext context, int index) {
-        return index == (monthListing.length - 1)
-            ? GestureDetector(
-                onTap: () => _launchUrl('https://footworkmat.com$hash'),
-                child: NoDataWidget(
+    return RefreshIndicator(
+      key: refreshKey,
+      onRefresh: refreshList,
+      child: ListView.builder(
+        physics: BouncingScrollPhysics(),
+        itemBuilder: (BuildContext context, int index) {
+          return index == (monthListing.length - 1)
+              ? GestureDetector(
+                  onTap: () => _launchUrl('https://footworkmat.com$hash'),
+                  child: NoDataWidget(
+                    fit: fit,
+                    txt: '$errorText.',
+                    url: 'www.footworkmat.com',
+                  ),
+                )
+              : UserDashboardListItem(
                   fit: fit,
-                  txt: '$errorText.',
-                  url: 'www.footworkmat.com',
-                ),
-              )
-            : UserDashboardListItem(
-                fit: fit,
-                progressController: controller,
-                animation: Tween<double>(
-                        begin: 0,
-                        end: monthListing[index].tapStatus == 1
-                            ? _calculateEndAnimation(monthListing[index]) == 0.0
-                                ? 0.0
-                                : _calculateEndAnimation(monthListing[index])
-                            : 100)
-                    .animate(controller)
-                      ..addListener(() {}),
-                data: monthListing[index],
-                pos: index,
-                onTap: onClickedMonth,
-              );
-      },
-      itemCount: monthListing.length,
+                  progressController: controller,
+                  animation: Tween<double>(
+                          begin: 0,
+                          end: monthListing[index].tapStatus == 1
+                              ? _calculateEndAnimation(monthListing[index]) ==
+                                      0.0
+                                  ? 0.0
+                                  : _calculateEndAnimation(monthListing[index])
+                              : 100)
+                      .animate(controller)
+                        ..addListener(() {}),
+                  data: monthListing[index],
+                  pos: index,
+                  onTap: onClickedMonth,
+                );
+        },
+        itemCount: monthListing.length,
+      ),
     );
   }
 
@@ -405,5 +444,29 @@ class _UserDashBoardState extends State<UserDashBoard>
     } else {
       throw 'Could not launch $url';
     }
+  }
+
+  void apiCallCheck() {
+    getBoolDataLocally(key: dashboardCallApi).then((onValueHistory) {
+      if (onValueHistory) {
+        isApiCall = true;
+        writeBoolDataLocally(key: dashboardCallApi, value: false);
+      }
+    });
+  }
+
+  void apiCallTime() {
+    getStringDataLocally(key: dashboardCall).then((onValue) {
+      if (onValue != null && onValue.isNotEmpty) {
+        int callTime = int.parse(onValue);
+        if (callTime < callSavedTime) {
+          isApiCall = true;
+        } else {
+          isApiCall = false;
+        }
+      } else {
+        isApiCall = true;
+      }
+    });
   }
 }

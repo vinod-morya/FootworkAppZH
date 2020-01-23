@@ -38,6 +38,7 @@ class ButtonWidget extends StatelessWidget {
           padding: padding,
           child: Text(
             btnText,
+            textAlign: TextAlign.center,
             style: TextStyle(
               fontWeight: FontWeight.w600,
               fontSize: fontSize,

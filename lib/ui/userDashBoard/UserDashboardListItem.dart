@@ -406,7 +406,7 @@ position: relative;
                                                 textAlign: TextAlign.center,
                                                 style: TextStyle(
                                                     fontSize:
-                                                        widget.fit.t(12.0),
+                                                        widget.fit.t(10.0),
                                                     color:
                                                         widget.data.tapStatus ==
                                                                 1

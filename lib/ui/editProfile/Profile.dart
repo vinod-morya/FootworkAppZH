@@ -569,8 +569,8 @@ class _ProfileScreenState extends State<ProfileScreen> {
             height: fit.t(100.0),
             width: fit.t(100.0),
             margin: EdgeInsets.only(
-              left: fit.t(130.0),
-              right: fit.t(130.0),
+              left: fit.t(110.0),
+              right: fit.t(110.0),
             ),
             child: Stack(
               children: <Widget>[
