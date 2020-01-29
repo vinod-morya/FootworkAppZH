@@ -74,7 +74,6 @@ class MyApp extends StatelessWidget {
           },
         ),
       ),
-
       // Application's top-level routing table.
       routes: <String, WidgetBuilder>{
         '/login': (BuildContext context) => LoginScreen(),
