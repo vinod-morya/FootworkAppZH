@@ -351,7 +351,7 @@ class _FavouriteVideosListState extends State<FavouriteVideosList> {
         rating: ratingValue, okBtnFunction: (value) {
       Navigator.of(context).pop();
       bloc.showProgressLoader(true);
-      writeBoolDataLocally(key: dashboardCallApi,value: true);
+      writeBoolDataLocally(key: dashboardCallApi, value: true);
       Map<String, dynamic> map = Map();
       map.putIfAbsent('cookie', () => cookies);
       map.putIfAbsent('video_id', () => videoListData[position].id.toString());
@@ -361,7 +361,7 @@ class _FavouriteVideosListState extends State<FavouriteVideosList> {
     }, cancelBtnFunction: (value) {
       Navigator.of(context).pop();
       bloc.showProgressLoader(true);
-      writeBoolDataLocally(key: dashboardCallApi,value: true);
+      writeBoolDataLocally(key: dashboardCallApi, value: true);
       Map<String, dynamic> map = Map();
       map.putIfAbsent('cookie', () => cookies);
       map.putIfAbsent('video_id', () => videoListData[position].id.toString());
@@ -378,43 +378,49 @@ class _FavouriteVideosListState extends State<FavouriteVideosList> {
     showDialogAddEditComment(context,
         okBtnText: AppLocalizations.of(context).translate('save_comment'),
         okBtnFunction: (comment) {
-      var lang = '';
-      checkLanguage(context).then((onValue) {
-        lang = onValue;
-      });
-      Navigator.of(context).pop();
-      Map<String, dynamic> map = Map();
-      map.putIfAbsent('cookie', () => cookies);
-      map.putIfAbsent('lang', () => lang);
-      map.putIfAbsent('month', () => videoListData[pos].month);
-      map.putIfAbsent('comment', () => comment);
-      map.putIfAbsent(
-          'video_id', () => videoListData[pos].playStatus.videoId.toString());
-      if (!baseUrl.contains('https://')) {
-        map.putIfAbsent("insecure", () => "cool");
-      }
-      try {
-        bloc.showProgressLoader(true);
-        ApiConfiguration.getInstance()
-            .apiClient
-            .liveService
-            .apiMultipartRequest(context, '$baseUrl$addCommentApi', map, "POST")
-            .then((response) {
-          try {
-            Map map = jsonDecode(response.body);
-            if (map['status'] == 200) {
-              Map<String, dynamic> mapName = Map();
-              mapName.putIfAbsent('cookie', () => cookies);
-              mapName.putIfAbsent('month', () => videoListData[pos].month);
-              mapName.putIfAbsent('video_type', () => '${widget.videoType}');
-              bloc.apiCall(mapName, context, true);
-            }
-          } catch (error) {
-            TopAlert.showAlert(context, error, true);
-          }
+      if (comment != null && comment.toString().trim().isNotEmpty) {
+        var lang = '';
+        checkLanguage(context).then((onValue) {
+          lang = onValue;
         });
-      } catch (error) {
-        TopAlert.showAlert(context, error, true);
+        Navigator.of(context).pop();
+        Map<String, dynamic> map = Map();
+        map.putIfAbsent('cookie', () => cookies);
+        map.putIfAbsent('lang', () => lang);
+        map.putIfAbsent('month', () => videoListData[pos].month);
+        map.putIfAbsent('comment', () => comment);
+        map.putIfAbsent(
+            'video_id', () => videoListData[pos].playStatus.videoId.toString());
+        if (!baseUrl.contains('https://')) {
+          map.putIfAbsent("insecure", () => "cool");
+        }
+        try {
+          bloc.showProgressLoader(true);
+          ApiConfiguration.getInstance()
+              .apiClient
+              .liveService
+              .apiMultipartRequest(
+                  context, '$baseUrl$addCommentApi', map, "POST")
+              .then((response) {
+            try {
+              Map map = jsonDecode(response.body);
+              if (map['status'] == 200) {
+                Map<String, dynamic> mapName = Map();
+                mapName.putIfAbsent('cookie', () => cookies);
+                mapName.putIfAbsent('month', () => videoListData[pos].month);
+                mapName.putIfAbsent('video_type', () => '${widget.videoType}');
+                bloc.apiCall(mapName, context, true);
+              }
+            } catch (error) {
+              TopAlert.showAlert(context, error, true);
+            }
+          });
+        } catch (error) {
+          TopAlert.showAlert(context, error, true);
+        }
+      } else {
+        TopAlert.showAlert(context,
+            AppLocalizations.of(context).translate("comment_label"), true);
       }
     },
         icon: '$ic_chat_white',

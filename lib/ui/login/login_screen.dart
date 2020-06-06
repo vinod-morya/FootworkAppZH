@@ -94,7 +94,7 @@ class _LoginScreenState extends State<LoginScreen> {
                     return ProgressLoader(
                       fit: fit,
                       isShowLoader: snapshot.hasData ? snapshot.data : false,
-                      color: appColor,
+                      color: colorGrey,
                     );
                   }),
             ],
