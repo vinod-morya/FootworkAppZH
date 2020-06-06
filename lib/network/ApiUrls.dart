@@ -1,7 +1,9 @@
-const String baseUrl = 'https://footwork.app/staging/api/';
-//const String baseUrl = 'https://footworkmat.com/api/';
+//const String baseUrl = 'https://micahlancaster.com/staging/api/';
+const String baseUrl = 'http://122.114.31.155/api/';
 // ****************** login Api **************** //
-const String loginUrl = 'user/generate_auth_cookie';
+//const String loginUrl = 'user/generate_auth_cookie';
+const String loginUrl = 'auth/generate_auth_cookie';
+const String notificationApi = 'user/notification_status';
 
 //****************** Reset Password Api **************** //
 const String forgetPasswordUrl = 'user/retrieve_password';
@@ -35,9 +37,6 @@ const String setVideoStatus = 'user/set_video_play_status';
 //******************* getFavouriteVideo Api**************************//
 const String getFavouriteVideo = 'user/get_user_custom_video_list';
 
-//******************* getCustomVideo Api**************************//
-const String getCustomVideo = 'user/get_user_favorite_video';
-
 //******************* addComment Api**************************//
 const String addCommentApi = 'user/add_comment';
 
@@ -47,3 +46,4 @@ const String getStateList = 'user/get_state_by_country';
 
 //*******************Logout Api**************************//
 const String apiLogout = 'user/logout';
+const String apiInviteUser = 'user/invite_users';

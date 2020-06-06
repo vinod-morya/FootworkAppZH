@@ -49,6 +49,7 @@ class RegistrationDataRepository {
             data.putIfAbsent('display_name',
                 () => '${data['first_name']} ${data['last_name']}');
             data.putIfAbsent('lang', () => '$language');
+            data.putIfAbsent('app_type', () => '1');
             if (!baseUrl.contains('https://')) {
               data.putIfAbsent("insecure", () => "cool");
             }

@@ -15,19 +15,16 @@ class ChangePassDataRepository {
 
   void _changePassword(Map data, context) async {
     var language = await checkLanguage(context);
-    var url = '';
+    data.putIfAbsent("lang", () => language);
+    var url = '$baseUrl$changePassApiUrl';
     if (!baseUrl.contains('https://')) {
-      url =
-          '$baseUrl$changePassApiUrl?insecure=cool&cookie=${data['cookie']}&password=${data['password']}&lang=$language';
-    } else {
-      url =
-          '$baseUrl$changePassApiUrl?cookie=${data['cookie']}&password=${data['password']}&lang=$language';
+      data.putIfAbsent('insecure', () => "cool");
     }
     try {
       ApiConfiguration.getInstance()
           .apiClient
           .liveService
-          .apiPostRequest(context, '$url')
+          .apiMultipartRequest(context, '$url', data, "POST")
           .then((response) {
         try {
           Map map = jsonDecode(response.body);

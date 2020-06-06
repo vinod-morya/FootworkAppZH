@@ -2,7 +2,7 @@ library edge_alert;
 
 import 'package:flutter/material.dart';
 import 'package:fm_fit/fm_fit.dart';
-import 'package:footwork_chinese/constants/app_constants.dart';
+import '../constants/app_constants.dart';
 
 class EdgeAlert {
   static final int LENGTH_SHORT = 1; //1 seconds

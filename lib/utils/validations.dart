@@ -1,4 +1,4 @@
-import 'package:footwork_chinese/utils/app_localizations.dart';
+import '../utils/app_localizations.dart';
 
 class Validations {
   String validateEmail(String value, context) {

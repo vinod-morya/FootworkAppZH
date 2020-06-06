@@ -17,9 +17,9 @@ class EditProfileDataRepository {
     checkInternetConnection().then((onValue) {
       !onValue
           ? apiCallback.onAPIError(
-          CustomError(
-              AppLocalizations.of(context).translate('check_internet')),
-          NO_INTERNET_FLAG)
+              CustomError(
+                  AppLocalizations.of(context).translate('check_internet')),
+              NO_INTERNET_FLAG)
           : _onProfileSubmit(data, context);
     });
   }
@@ -28,9 +28,9 @@ class EditProfileDataRepository {
     checkInternetConnection().then((onValue) {
       !onValue
           ? apiCallback.onAPIError(
-          CustomError(
-              AppLocalizations.of(context).translate('check_internet')),
-          NO_INTERNET_FLAG)
+              CustomError(
+                  AppLocalizations.of(context).translate('check_internet')),
+              NO_INTERNET_FLAG)
           : _onStateApiCall(data, context);
     });
   }
@@ -55,10 +55,10 @@ class EditProfileDataRepository {
             var url2 = '';
             if (!baseUrl.contains('https://')) {
               url2 =
-              '$baseUrl$getUserCurrentInfo?insecure=cool&cookie=${data['cookie']}&lang=$language';
+                  '$baseUrl$getUserCurrentInfo?insecure=cool&cookie=${data['cookie']}&lang=$language';
             } else {
               url2 =
-              '$baseUrl$getUserCurrentInfo?cookie=${data['cookie']}&lang=$language';
+                  '$baseUrl$getUserCurrentInfo?cookie=${data['cookie']}&lang=$language';
             }
             try {
               ApiConfiguration.getInstance()
@@ -100,10 +100,10 @@ class EditProfileDataRepository {
     var url = '';
     if (!baseUrl.contains('https://')) {
       url =
-      '$baseUrl$getStateList?insecure=cool&cookie=${map['cookie']}&country_code=${map['country_code']}&lang=$language';
+          '$baseUrl$getStateList?insecure=cool&cookie=${map['cookie']}&country_code=${map['country_code']}&lang=$language';
     } else {
       url =
-      '$baseUrl$getStateList?cookie=${map['cookie']}&country_code=${map['country_code']}&lang=$language';
+          '$baseUrl$getStateList?cookie=${map['cookie']}&country_code=${map['country_code']}&lang=$language';
     }
 
     try {

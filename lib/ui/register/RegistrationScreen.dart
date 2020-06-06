@@ -2,6 +2,7 @@ import 'dart:async';
 import 'dart:convert';
 import 'dart:io';
 
+import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_image_compress/flutter_image_compress.dart';
@@ -14,7 +15,6 @@ import 'package:footwork_chinese/custom_widget/ImageViewer.dart';
 import 'package:footwork_chinese/custom_widget/TextField/CustomInputField.dart';
 import 'package:footwork_chinese/custom_widget/custom_progress_loader.dart';
 import 'package:footwork_chinese/custom_widget/top_alert.dart';
-import 'package:footwork_chinese/database/data_base_helper.dart';
 import 'package:footwork_chinese/model/errorResponse/customeError.dart';
 import 'package:footwork_chinese/model/errorResponse/error_reponse.dart';
 import 'package:footwork_chinese/model/loginResponse/LoginResponseModel.dart';
@@ -25,6 +25,7 @@ import 'package:footwork_chinese/utils/Utility.dart';
 import 'package:footwork_chinese/utils/app_localizations.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:path_provider/path_provider.dart';
+import 'package:url_launcher/url_launcher.dart';
 
 class RegistrationScreen extends StatefulWidget {
   @override
@@ -36,6 +37,7 @@ class _RegistrationScreenState extends State<RegistrationScreen> {
   var isHide = true;
   var isHideConfirm = true;
   var imagePath;
+  var chkTerms = false;
   File userImageFile;
   var _scaffoldKey = new GlobalKey<ScaffoldState>();
   var _blankFocusNode = FocusNode();
@@ -57,8 +59,6 @@ class _RegistrationScreenState extends State<RegistrationScreen> {
   RegistrationValidationBloc validation;
 
   StreamController apiResponseController;
-
-  var db = DataBaseHelper();
 
   @override
   void dispose() {
@@ -125,12 +125,45 @@ class _RegistrationScreenState extends State<RegistrationScreen> {
       children: <Widget>[
         GestureDetector(
           onTap: () => onImageClick(),
-          child: CircleAvatar(
-            radius: fit.t(50.0),
-            backgroundImage: imagePath == null
-                ? AssetImage(ic_user_place_holder)
-                : AssetImage(imagePath),
-          ),
+          child: imagePath == null
+              ? Container(
+                  width: fit.t(110.0),
+                  height: fit.t(110.0),
+                  decoration: BoxDecoration(
+                    color: appColor,
+                    shape: BoxShape.circle,
+                    image: DecorationImage(
+                      fit: BoxFit.fill,
+                      image: AssetImage(ic_user_place_holder),
+                    ),
+                  ),
+                )
+              : imagePath.contains('https://')
+                  ? Container(
+                      width: fit.t(110.0),
+                      height: fit.t(110.0),
+                      decoration: BoxDecoration(
+                        color: appColor,
+                        shape: BoxShape.circle,
+                        image: DecorationImage(
+                            fit: BoxFit.fill, image: NetworkImage(imagePath)),
+                      ),
+                    )
+                  : Container(
+                      width: fit.t(110.0),
+                      height: fit.t(110.0),
+                      decoration: BoxDecoration(
+                          color: appColor, shape: BoxShape.circle),
+                      child: ClipRRect(
+                        borderRadius: BorderRadius.circular(fit.t(110.0)),
+                        child: Image.file(
+                          userImageFile,
+                          fit: BoxFit.fill,
+                          width: fit.t(110.0),
+                          height: fit.t(110.0),
+                        ),
+                      ),
+                    ),
         ),
         Positioned(
           bottom: 0,
@@ -141,7 +174,7 @@ class _RegistrationScreenState extends State<RegistrationScreen> {
                 height: fit.t(30.0),
                 width: fit.t(30.0),
                 decoration:
-                    BoxDecoration(shape: BoxShape.circle, color: Colors.red),
+                    BoxDecoration(shape: BoxShape.circle, color: appColor),
                 child: Image.asset(
                   ic_edit,
                   scale: fit.scale == 1 ? 4.0 : 3.0,
@@ -221,7 +254,7 @@ class _RegistrationScreenState extends State<RegistrationScreen> {
               textStyle:
                   TextStyle(color: colorBlack, fontFamily: robotoBoldFont),
               hintText:
-                  AppLocalizations.of(context).translate("user_name_label"),
+                  AppLocalizations.of(context).translate("user_name_labels"),
               hintStyle:
                   TextStyle(color: colorGrey, fontFamily: robotoBoldFont),
             ),
@@ -236,7 +269,7 @@ class _RegistrationScreenState extends State<RegistrationScreen> {
         AppLocalizations.of(context).translate("create_account_label"),
         fit.t(20.0),
         () => _buttonPress(),
-        fontSize: fit.t(20.0),
+        fontSize: fit.t(12.0),
         padding: EdgeInsets.only(
           top: fit.t(12.0),
           bottom: fit.t(12.0),
@@ -254,37 +287,43 @@ class _RegistrationScreenState extends State<RegistrationScreen> {
     if (validation.userNameValidation(
             _userNameController.text.toString().trim(), context, "username") ==
         null) {
-      if (validation.userNameValidation(
-              _userFirstNameController.text.trim(), context, "first_name") ==
+      if (validation.emailValidation(
+              _userEmailController.text.trim(), context) ==
           null) {
         if (validation.userNameValidation(
-                _userLastNameController.text.trim(), context, "last_name") ==
+                _userFirstNameController.text.trim(), context, "first_name") ==
             null) {
-          if (validation.emailValidation(
-                  _userEmailController.text.trim(), context) ==
+          if (validation.userNameValidation(
+                  _userLastNameController.text.trim(), context, "last_name") ==
               null) {
             if (validation.passValidation(
                     _userPasswordController.text.toString().trim(), context) ==
                 null) {
               if (_userPasswordController.text.toString().trim() ==
                   _userConfirmPasswordController.text.toString().trim()) {
-                Map map = Map<String, dynamic>();
-                map.putIfAbsent("username",
-                    () => _userNameController.text.toString().trim());
-                if (userImageFile != null) {
-                  map.putIfAbsent("profile_image", () => userImageFile);
+                if (chkTerms) {
+                  Map map = Map<String, dynamic>();
+                  map.putIfAbsent("username",
+                      () => _userNameController.text.toString().trim());
+                  if (userImageFile != null) {
+                    map.putIfAbsent("profile_image", () => userImageFile);
+                  }
+                  map.putIfAbsent("first_name",
+                      () => _userFirstNameController.text.toString().trim());
+                  map.putIfAbsent("last_name",
+                      () => _userLastNameController.text.toString().trim());
+                  map.putIfAbsent("email",
+                      () => _userEmailController.text.toString().trim());
+                  map.putIfAbsent("user_pass",
+                      () => _userPasswordController.text.toString().trim());
+                  validation.submitRegistration(
+                      map, _scaffoldKey.currentState.context);
+                } else {
+                  TopAlert.showAlert(
+                      context,
+                      AppLocalizations.of(context).translate("accept_terms"),
+                      true);
                 }
-
-                map.putIfAbsent("first_name",
-                    () => _userFirstNameController.text.toString().trim());
-                map.putIfAbsent("last_name",
-                    () => _userLastNameController.text.toString().trim());
-                map.putIfAbsent(
-                    "email", () => _userEmailController.text.toString().trim());
-                map.putIfAbsent("user_pass",
-                    () => _userPasswordController.text.toString().trim());
-                validation.submitRegistration(
-                    map, _scaffoldKey.currentState.context);
               } else {
                 TopAlert.showAlert(context,
                     AppLocalizations.of(context).translate("pass_same"), true);
@@ -299,26 +338,26 @@ class _RegistrationScreenState extends State<RegistrationScreen> {
           } else {
             TopAlert.showAlert(
                 context,
-                validation.emailValidation(
-                    _userEmailController.text.toString(), context),
+                validation.userNameValidation(
+                    _userLastNameController.text.toString(),
+                    context,
+                    "last_name"),
                 true);
           }
         } else {
           TopAlert.showAlert(
               context,
               validation.userNameValidation(
-                  _userLastNameController.text.toString(),
+                  _userFirstNameController.text.toString(),
                   context,
-                  "last_name"),
+                  "first_name"),
               true);
         }
       } else {
         TopAlert.showAlert(
             context,
-            validation.userNameValidation(
-                _userFirstNameController.text.toString(),
-                context,
-                "first_name"),
+            validation.emailValidation(
+                _userEmailController.text.toString(), context),
             true);
       }
     } else {
@@ -603,6 +642,7 @@ class _RegistrationScreenState extends State<RegistrationScreen> {
                     _bottomLine(),
                     _userConfirmPassField(),
                     _bottomLine(),
+                    _confirmPrivacyWidget(),
                     _buttonWidget(),
                     SizedBox(
                       height: fit.t(10.0),
@@ -619,10 +659,12 @@ class _RegistrationScreenState extends State<RegistrationScreen> {
 
   onImageClick() {
     if (imagePath != null) {
-      Navigator.push(
-        context,
-        MaterialPageRoute(builder: (context) => PhotoViewer(imagePath, fit)),
-      );
+      if (imagePath.toString().contains('https://')) {
+        Navigator.push(
+          context,
+          MaterialPageRoute(builder: (context) => PhotoViewer(imagePath, fit)),
+        );
+      }
     }
   }
 
@@ -670,5 +712,90 @@ class _RegistrationScreenState extends State<RegistrationScreen> {
         rotate: 0,
         format: ext == 'png' ? CompressFormat.png : CompressFormat.jpeg);
     return result;
+  }
+
+  Widget _confirmPrivacyWidget() {
+    return Container(
+      margin: EdgeInsets.only(
+          top: fit.t(10.0), left: fit.t(10.0), right: fit.t(15.0)),
+      padding: EdgeInsets.only(top: fit.t(8.0), bottom: fit.t(8.0)),
+      child: Row(
+        mainAxisAlignment: MainAxisAlignment.start,
+        crossAxisAlignment: CrossAxisAlignment.center,
+        mainAxisSize: MainAxisSize.max,
+        children: <Widget>[
+          SizedBox(
+            height: 30,
+            width: 30,
+            child: Checkbox(
+              value: chkTerms,
+              onChanged: (bool value) {
+                chkTerms = value;
+                setState(() {});
+              },
+            ),
+          ),
+          Expanded(
+            child: RichText(
+              softWrap: true,
+              textAlign: TextAlign.justify,
+              text: TextSpan(
+                text: AppLocalizations.of(context).translate('agree_with'),
+                style: TextStyle(
+                  fontFamily: robotoBoldFont,
+                  color: colorBlack,
+                  decoration: TextDecoration.none,
+                  fontSize: fit.t(14.0),
+                ),
+                children: <TextSpan>[
+                  TextSpan(
+                    text: AppLocalizations.of(context).translate('terms'),
+                    style: TextStyle(
+                      fontFamily: robotoBoldFont,
+                      color: colorRed,
+                      decoration: TextDecoration.underline,
+                      fontSize: fit.t(12.0),
+                    ),
+                    recognizer: TapGestureRecognizer()
+                      ..onTap = () {
+                        _launchUrl(
+                            'https://micahlancaster.com/terms-conditions/');
+                      },
+                  ),
+                  TextSpan(
+                    text: ' & ',
+                    style: TextStyle(
+                        fontFamily: robotoBoldFont,
+                        color: colorRed,
+                        decoration: TextDecoration.none,
+                        fontSize: fit.t(12.0)),
+                  ),
+                  TextSpan(
+                    text: AppLocalizations.of(context).translate('privacy'),
+                    style: TextStyle(
+                        fontFamily: robotoBoldFont,
+                        color: colorRed,
+                        decoration: TextDecoration.underline,
+                        fontSize: fit.t(12.0)),
+                    recognizer: TapGestureRecognizer()
+                      ..onTap = () {
+                        _launchUrl('https://micahlancaster.com/privacy/');
+                      },
+                  ),
+                ],
+              ),
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+
+  _launchUrl(String url) async {
+    if (await canLaunch(url)) {
+      await launch(url);
+    } else {
+      throw 'Could not launch $url';
+    }
   }
 }

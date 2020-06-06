@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
-import 'package:footwork_chinese/constants/app_colors.dart';
-import 'package:footwork_chinese/constants/app_constants.dart';
-import 'package:footwork_chinese/utils/app_localizations.dart';
+import '../constants/app_colors.dart';
+import '../constants/app_constants.dart';
+import '../utils/app_localizations.dart';
 
 class ButtonWidget extends StatelessWidget {
   final String btnText;

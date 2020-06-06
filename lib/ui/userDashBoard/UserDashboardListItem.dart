@@ -5,16 +5,17 @@ import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
 import 'package:fm_fit/fm_fit.dart';
-import 'package:footwork_chinese/constants/app_colors.dart';
-import 'package:footwork_chinese/constants/app_constants.dart';
-import 'package:footwork_chinese/constants/app_images_path.dart';
-import 'package:footwork_chinese/custom_widget/circular_progress_widget/CircleProgress.dart';
-import 'package:footwork_chinese/model/userDashBoardResponse/UserDashBoardResponse.dart';
-import 'package:footwork_chinese/style/theme.dart';
-import 'package:footwork_chinese/ui/userVideoListing/VideoPlayWebview.dart';
-import 'package:footwork_chinese/utils/app_localizations.dart';
-import 'package:footwork_chinese/utils/date_formatter.dart';
 import 'package:webview_flutter/webview_flutter.dart';
+
+import '../../constants/app_colors.dart';
+import '../../constants/app_constants.dart';
+import '../../constants/app_images_path.dart';
+import '../../custom_widget/circular_progress_widget/CircleProgress.dart';
+import '../../model/userDashBoardResponse/UserDashBoardResponse.dart';
+import '../../style/theme.dart';
+import '../../ui/userVideoListing/VideoPlayWebview.dart';
+import '../../utils/app_localizations.dart';
+import '../../utils/date_formatter.dart';
 
 class UserDashboardListItem extends StatefulWidget {
   final DataListBean data;
@@ -23,11 +24,15 @@ class UserDashboardListItem extends StatefulWidget {
   final progressController;
   final animation;
   final FmFit fit;
+  final videoURl;
+  final thumbnail;
 
   UserDashboardListItem(
       {this.data,
       this.pos,
       this.onTap,
+      this.thumbnail,
+      this.videoURl,
       this.fit,
       this.animation,
       this.progressController});
@@ -96,12 +101,11 @@ position: relative;
                     onWebViewCreated: (WebViewController webViewController) {
                       _controller = webViewController;
                       _controller.loadUrl(
-                          'https://fast.wistia.net/embed/iframe/ywf2yh5g7o?autoplay=0&muted=0&playerColor=d50a30');
+                          '${widget.videoURl}?autoplay=0&muted=0&playerColor=D50A30');
                     },
                   )
                 : GestureDetector(
-                    onTap: () => onVideoTap(
-                        'https://fast.wistia.net/embed/iframe/ywf2yh5g7o'),
+                    onTap: () => onVideoTap('${widget.videoURl}'),
                     child: Container(
                       height: widget.fit.t(375.0),
                       width: MediaQuery.of(context).size.width,
@@ -111,8 +115,7 @@ position: relative;
                             child: CachedNetworkImage(
                               height: widget.fit.t(375.0),
                               width: MediaQuery.of(context).size.width,
-                              imageUrl:
-                                  'http://footworkmat.com/wp-content/uploads/2019/12/Thumb_Turn-Pound-Partial-Step-Under-Dribble-Foot-Switch.png',
+                              imageUrl: '${widget.thumbnail}',
                               imageBuilder: (context, imageProvider) =>
                                   Container(
                                 decoration: BoxDecoration(
@@ -152,8 +155,7 @@ position: relative;
                   ),
           )
         : GestureDetector(
-            onTap: () =>
-                widget.data.tapStatus == 1 ? widget.onTap(widget.pos) : null,
+            onTap: () => widget.onTap(widget.pos),
             child: Stack(
               children: <Widget>[
                 Container(
@@ -185,7 +187,10 @@ position: relative;
                                   RichText(
                                     text: TextSpan(
                                       text: widget.data.tapStatus == 1
-                                          ? '${AppLocalizations.of(context).translate("last_activity")}'
+                                          ? widget.data.label ==
+                                                  "Introduction video"
+                                              ? ''
+                                              : '${AppLocalizations.of(context).translate("last_activity")}'
                                           : widget.data.lastActivity != null
                                               ? '${AppLocalizations.of(context).translate("unlock")}'
                                               : '',
@@ -244,10 +249,10 @@ position: relative;
                                         left: widget.fit.t(10.0),
                                         right: widget.fit.t(20.0)),
                                     child: Text(
-                                      '\"${widget.data.label == null ? "Month 1" : widget.data.label}\"',
+                                      '\"${widget.data.label == null ? "Month 1: Laying the Foundation" : widget.data.label}\"',
                                       softWrap: true,
                                       style: TextStyle(
-                                          fontSize: widget.fit.t(11.0),
+                                          fontSize: widget.fit.t(10.0),
                                           color: widget.data.tapStatus == 1
                                               ? Color(0xFFD50A30)
                                               : colorGrey,
@@ -292,10 +297,14 @@ position: relative;
                                                       child: GestureDetector(
                                                         child: Center(
                                                           child: widget.data
-                                                                      .playVideo ==
+                                                                          .playVideo ==
+                                                                      int.parse(widget
+                                                                          .data
+                                                                          .totalVideos) &&
                                                                   int.parse(widget
-                                                                      .data
-                                                                      .totalVideos)
+                                                                          .data
+                                                                          .totalVideos) !=
+                                                                      0
                                                               ? Icon(
                                                                   Icons.check,
                                                                   size: widget
@@ -364,8 +373,6 @@ position: relative;
                                               child: Container(
                                                 margin: EdgeInsets.only(
                                                   top: widget.fit.t(20.0),
-//                                      right: widget.fit.t(10.0),
-//                                      left: widget.fit.t(80.0),
                                                   bottom: widget.fit.t(20.0),
                                                 ),
                                                 padding: EdgeInsets.only(
@@ -397,9 +404,13 @@ position: relative;
                                               child: Text(
                                                 widget.data.tapStatus == 1
                                                     ? widget.data.playVideo ==
+                                                                int.parse(widget
+                                                                    .data
+                                                                    .totalVideos) &&
                                                             int.parse(widget
-                                                                .data
-                                                                .totalVideos)
+                                                                    .data
+                                                                    .totalVideos) !=
+                                                                0
                                                         ? '${AppLocalizations.of(context).translate("completed")}!'
                                                         : '${AppLocalizations.of(context).translate("completed")}'
                                                     : '',

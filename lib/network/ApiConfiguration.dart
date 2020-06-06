@@ -1,29 +1,29 @@
-import 'package:footwork_chinese/network/ApiClient.dart';
-import 'package:footwork_chinese/network/_HttpClient.dart';
+import '../network/ApiClient.dart';
+import '../network/_HttpClient.dart';
 
 class ApiConfiguration {
   final ConfigConfig config;
   final ApiClient _apiClient;
-  static ApiConfiguration _configutation;
+  static ApiConfiguration _configuration;
 
   static void initialize(ConfigConfig config) {
     _createConfig(config);
   }
 
   static void _createConfig(ConfigConfig config) {
-    if (_configutation != null) {}
+    if (_configuration != null) {}
     final client =
         HttpClient.createGuestClient(config.nativeDeviceId, config.isLoggedIn);
-    _configutation = ApiConfiguration._(config, ApiClient.create(client));
+    _configuration = ApiConfiguration._(config, ApiClient.create(client));
   }
 
   static ApiConfiguration getInstance() {
-    if (_configutation == null) {}
-    return _configutation;
+    if (_configuration == null) {}
+    return _configuration;
   }
 
   static void createNullConfiguration(ConfigConfig config) {
-    _configutation = null;
+    _configuration = null;
     initialize(config);
   }
 

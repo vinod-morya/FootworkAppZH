@@ -7,5 +7,4 @@ final colorBlack = const Color(0xFF000000);
 final colorRed = const Color(0xFFD50A30);
 final colorGreen = const Color(0xFF37D647);
 final colorGrey = const Color(0xFF464649);
-
 final btnAppColor = const Color(0xFFca1a30);

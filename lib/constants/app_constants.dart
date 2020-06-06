@@ -6,7 +6,7 @@ const String regularFont = 'assets/fonts/roboto/Roboto-Regular.ttf';
 const String robotoBoldFont = 'assets/fonts/roboto/Roboto-Bold.ttf';
 const String robotoBoldCondenseFont =
     'assets/fonts/roboto/Roboto-BoldCondensed.ttf';
-
+const String CONTACT_US = "https://micahlancaster.com/contact-us-app/";
 const passwordLength = 25;
 const emailLength = 80;
 const userNameLength = 40;
@@ -34,23 +34,24 @@ const Gradient gradientAppToolBar = LinearGradient(colors: [
 ]);
 
 //api constants
-final String session = 'session';
-final fcmToken = 'token';
-final nativeDeviceId = 'deviceId';
-final cookie = 'cookie';
-final userData = 'user_data';
-final String deviceToken = 'asdklasdlasndlkma';
-final String userId = 'user_id';
-final String password = 'user_password';
-final String language = 'app_language';
-final String countries = 'countries_list';
-final String userName = 'userName';
-final String dashBoardData = 'checklisr_dashboard_list';
-final String historyCall = 'checklisr_history_call_time';
-final String dashboardCall = 'checklisr_dash_call_time';
-final String hitApiHistory = 'checklisr_history_api_call';
-final String dashboardCallApi = 'checklisr_dashboardCallApi';
-final String historyList = 'checklisr_history_list';
+final String session = 'ft_zh_session';
+final nativeDeviceId = 'ft_zh_deviceId';
+final cookie = 'ft_zh_cookie';
+final userData = 'ft_zh_user_data';
+final String deviceToken = 'ft_zh_asdklasdlasndlkma';
+final String userId = 'ft_zh_user_id';
+final String password = 'ft_zh_user_password';
+final String language = 'ft_zh_app_language';
+final String countries = 'ft_zh_countries_list';
+final String userName = 'ft_zh_userName';
+final String dashBoardData = 'ft_zh_dashboard_list';
+final String historyCall = 'ft_zh_history_call_time';
+final String dashboardCall = 'ft_zh_dash_call_time';
+final String hitApiHistory = 'ft_zh_history_api_call';
+final String dashboardCallApi = 'ft_zh_dashboardCallApi';
+final String historyList = 'ft_zh_history_list';
+final String videoThumbnail = 'ft_zh_videoT';
+final String videoURl = 'ft_zh_videoURl';
 
 //api flags
 const int NO_INTERNET_FLAG = 1000;
@@ -66,4 +67,7 @@ const int VIDEO_STATUS_API_FLAG = 1008;
 const int FAVOURITE_VIDEO_API_FLAG = 1009;
 const int COUNTRY_LIST = 1010;
 const int STATE_LIST = 1011;
-const int CUSTOM_VIDEO_LIST = 1011;
+const int CUSTOM_VIDEO_LIST = 1012;
+const int UPDATE_PAYMENT = 1014;
+const int MAIN_DASHBOARD = 1015;
+const int SAVE_INSTA_URL = 1016;

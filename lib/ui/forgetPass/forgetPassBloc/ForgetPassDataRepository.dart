@@ -28,7 +28,6 @@ class ForgetPassDataRepository {
     var language = await checkLanguage(context);
     var url = '';
     if (!baseUrl.contains('https://')) {
-      data.putIfAbsent("insecure", () => "cool");
       url =
           '$baseUrl$forgetPasswordUrl?insecure=cool&user_login=${data['user_name']}&lang=$language';
     } else {

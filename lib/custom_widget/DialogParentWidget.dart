@@ -286,12 +286,12 @@ class AlertMyDialog extends StatelessWidget {
     if (title == null) {
       switch (theme.platform) {
         case TargetPlatform.iOS:
-        case TargetPlatform.macOS:
           label = semanticLabel;
           break;
         case TargetPlatform.android:
         case TargetPlatform.fuchsia:
-          label = semanticLabel ?? MaterialLocalizations.of(context)?.alertDialogLabel;
+          label = semanticLabel ??
+              MaterialLocalizations.of(context)?.alertDialogLabel;
       }
     }
 
@@ -300,22 +300,23 @@ class AlertMyDialog extends StatelessWidget {
         mainAxisSize: MainAxisSize.min,
         crossAxisAlignment: CrossAxisAlignment.stretch,
         children: <Widget>[
-          (title != null)?
-            Padding(
-              padding: titlePadding ??
-                  EdgeInsets.fromLTRB(
-                      24.0, 24.0, 24.0, content == null ? 20.0 : 0.0),
-              child: DefaultTextStyle(
-                style: titleTextStyle ??
-                    MyDialogTheme.titleTextStyle ??
-                    theme.textTheme.title,
-                child: Semantics(
-                  child: title,
-                  namesRoute: true,
-                  container: true,
-                ),
-              ),
-            ):Container(),
+          (title != null)
+              ? Padding(
+                  padding: titlePadding ??
+                      EdgeInsets.fromLTRB(
+                          24.0, 24.0, 24.0, content == null ? 20.0 : 0.0),
+                  child: DefaultTextStyle(
+                    style: titleTextStyle ??
+                        MyDialogTheme.titleTextStyle ??
+                        theme.textTheme.title,
+                    child: Semantics(
+                      child: title,
+                      namesRoute: true,
+                      container: true,
+                    ),
+                  ),
+                )
+              : Container(),
           (content != null)
               ? Flexible(
                   child: Padding(
@@ -573,7 +574,6 @@ class SimpleMyDialog extends StatelessWidget {
     if (title == null) {
       switch (theme.platform) {
         case TargetPlatform.iOS:
-        case TargetPlatform.macOS:
           label = semanticLabel;
           break;
         case TargetPlatform.android:

@@ -1,6 +1,5 @@
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_svg/flutter_svg.dart';
 import 'package:fm_fit/fm_fit.dart';
 import 'package:footwork_chinese/constants/app_colors.dart';
 import 'package:footwork_chinese/constants/app_constants.dart';
@@ -86,8 +85,8 @@ class _FavouriteListItemState extends State<FavouriteListItem> {
                                           height: widget.fitScreen.t(35.0),
                                           width: widget.fitScreen.t(35.0),
                                         )
-                                      : SvgPicture.asset(
-                                          '$ic_check_blue_try',
+                                      : Image.asset(
+                                          '$ic_check_blue',
                                           height: widget.fitScreen.t(35.0),
                                           width: widget.fitScreen.t(35.0),
                                         ),

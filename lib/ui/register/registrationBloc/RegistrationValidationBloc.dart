@@ -28,19 +28,19 @@ class RegistrationValidationBloc with ApiCallback {
 
   StreamController<String> _emailController = BehaviorSubject<String>();
 
-  Stream<String> get emailStream => _passController.stream;
+  Stream<String> get emailStream => _emailController.stream;
 
   StreamController<String> _firstNameController = BehaviorSubject<String>();
 
-  Stream<String> get firstNameStream => _passController.stream;
+  Stream<String> get firstNameStream => _firstNameController.stream;
 
   StreamController<String> _lastNameController = BehaviorSubject<String>();
 
-  Stream<String> get lastNameStream => _passController.stream;
+  Stream<String> get lastNameStream => _lastNameController.stream;
 
   StreamController<String> _confirmPassController = BehaviorSubject<String>();
 
-  Stream<String> get confirmPassStream => _passController.stream;
+  Stream<String> get confirmPassStream => _confirmPassController.stream;
 
   StreamController<bool> _progressLoaderController = BehaviorSubject<bool>();
 
@@ -51,14 +51,19 @@ class RegistrationValidationBloc with ApiCallback {
   void dispose() {
     userNameController.close();
     _passController.close();
+    _emailController.close();
+    _firstNameController.close();
+    _lastNameController.close();
+    _confirmPassController.close();
     _progressLoaderController.close();
   }
 
   String userNameValidation(userName, context, text) {
     var validationMessage = text == "first_name"
-        ? validations.validateName(userName.toString().trim(), context)
+        ? validations.validateName(userName.toString().trim(), context, "first")
         : text == "last_name"
-            ? validations.validateName(userName.toString().trim(), context)
+            ? validations.validateName(
+                userName.toString().trim(), context, "last")
             : validations.validateUserName(userName.toString().trim(), context);
     if (validationMessage == null) {
       text == "first_name"

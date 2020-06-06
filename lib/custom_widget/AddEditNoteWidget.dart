@@ -1,11 +1,12 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/rendering.dart';
 import 'package:fm_fit/fm_fit.dart';
-import 'package:footwork_chinese/constants/app_colors.dart';
-import 'package:footwork_chinese/constants/app_constants.dart';
-import 'package:footwork_chinese/constants/app_images_path.dart';
-import 'package:footwork_chinese/utils/app_localizations.dart';
-import 'package:footwork_chinese/utils/date_formatter.dart';
+
+import '../constants/app_colors.dart';
+import '../constants/app_constants.dart';
+import '../constants/app_images_path.dart';
+import '../utils/app_localizations.dart';
+import '../utils/date_formatter.dart';
 
 class AddEditNotes extends StatefulWidget {
   final icon;

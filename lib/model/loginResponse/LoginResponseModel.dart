@@ -43,6 +43,7 @@ class UserBean {
   String postcode = "";
   String phone = "";
   String password = "";
+  String notificationStatus = "";
   int id;
   int userRole;
   CapabilitiesBean capabilities;
@@ -57,6 +58,7 @@ class UserBean {
       this.displayname,
       this.firstname,
       this.lastname,
+      this.notificationStatus,
       this.password,
       this.nickname,
       this.description,
@@ -75,6 +77,7 @@ class UserBean {
     this.username = json['username'];
     this.nicename = json['nicename'];
     this.email = json['email'];
+    this.notificationStatus = json['notification_status'];
     this.url = json['url'];
     this.password = json['password'];
     this.registered = json['registered'];
@@ -104,6 +107,7 @@ class UserBean {
     data['email'] = this.email;
     data['password'] = this.password;
     data['url'] = this.url;
+    data['notification_status'] = this.notificationStatus;
     data['registered'] = this.registered;
     data['displayname'] = this.displayname;
     data['firstname'] = this.firstname;

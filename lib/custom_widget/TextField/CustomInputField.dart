@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
-import 'package:footwork_chinese/constants/app_colors.dart';
+
+import '../../constants/app_colors.dart';
 
 class CustomInputField extends StatelessWidget {
   final String icon;
@@ -46,6 +47,8 @@ class CustomInputField extends StatelessWidget {
       controller: controller,
       focusNode: focusNode,
       enabled: enabled,
+      autocorrect: false,
+      enableSuggestions: false,
       style: textStyle,
       keyboardType: textInputType,
       cursorColor: colorBlack,

@@ -1,6 +1,5 @@
 import 'dart:convert';
 
-import 'package:dio/dio.dart';
 import 'package:footwork_chinese/constants/app_constants.dart';
 import 'package:footwork_chinese/model/errorResponse/customeError.dart';
 import 'package:footwork_chinese/network/ApiConfiguration.dart';
@@ -27,62 +26,58 @@ class LoginDataRepository {
 
   void _onLogin(Map data, context) async {
     var language = await checkLanguage(context);
-    var url = '';
+    data.putIfAbsent('lang', () => language);
+    var url = '$baseUrl$loginUrl';
     if (!baseUrl.contains('https://')) {
-      url =
-          '$baseUrl$loginUrl?insecure=cool&username=${data['username']}&password=${data['password']}&lang=$language';
-    } else {
-      url =
-          '$baseUrl$loginUrl?username=${data['username']}&password=${data['password']}&lang=$language';
+      data.putIfAbsent('insecure', () => "cool");
     }
     try {
-      Dio()
-          .get('$url')
+      ApiConfiguration.getInstance()
+          .apiClient
+          .liveService
+          .apiMultipartRequest(context, '$url', data, 'POST')
           .then((response) {
+        try {
+          Map map = jsonDecode(response.body);
+          if (map['status'] == 200) {
             try {
-              Map map = (response.data);
-              if (map['status'] == 200) {
+              var url2 = '';
+              if (!baseUrl.contains('https://')) {
+                url2 =
+                    '$baseUrl$getUserCurrentInfo?insecure=cool&cookie=${map['cookie']}&lang=$language';
+              } else {
+                url2 =
+                    '$baseUrl$getUserCurrentInfo?cookie=${map['cookie']}&lang=$language';
+              }
+              ApiConfiguration.getInstance()
+                  .apiClient
+                  .liveService
+                  .apiPostRequest(context, '$url2')
+                  .then((response) {
                 try {
-                  var url2 = '';
-                  if (!baseUrl.contains('https://')) {
-                    url2 =
-                        '$baseUrl$getUserCurrentInfo?insecure=cool&cookie=${map['cookie']}&lang=$language';
+                  Map userResponseMap = jsonDecode(response.body);
+                  if (userResponseMap['status'] == 200) {
+                    userResponseMap.putIfAbsent("cookie", () => map['cookie']);
+                    apiCallback.onAPISuccess(userResponseMap, LOGIN_FLAG);
                   } else {
-                    url2 =
-                        '$baseUrl$getUserCurrentInfo?cookie=${map['cookie']}&lang=$language';
+                    apiCallback.onAPIError(userResponseMap, LOGIN_FLAG);
                   }
-                  ApiConfiguration.getInstance()
-                      .apiClient
-                      .liveService
-                      .apiPostRequest(context, '$url2')
-                      .then((response) {
-                    try {
-                      Map userResponseMap = jsonDecode(response.body);
-                      if (userResponseMap['status'] == 200) {
-                        userResponseMap.putIfAbsent(
-                            "cookie", () => map['cookie']);
-                        apiCallback.onAPISuccess(userResponseMap, LOGIN_FLAG);
-                      } else {
-                        apiCallback.onAPIError(userResponseMap, LOGIN_FLAG);
-                      }
-                    } catch (error) {
-                      apiCallback.onAPIError(error, ERROR_EXCEPTION_FLAG);
-                    }
-                  });
                 } catch (error) {
                   apiCallback.onAPIError(error, ERROR_EXCEPTION_FLAG);
                 }
-              } else {
-                apiCallback.onAPIError(map, LOGIN_FLAG);
-              }
+              });
             } catch (error) {
               apiCallback.onAPIError(error, ERROR_EXCEPTION_FLAG);
             }
-          })
-          .timeout(Duration(seconds: 100))
-          .catchError((error) {
-            apiCallback.onAPIError(error, ERROR_EXCEPTION_FLAG);
-          });
+          } else {
+            apiCallback.onAPIError(map, LOGIN_FLAG);
+          }
+        } catch (error) {
+          apiCallback.onAPIError(error, ERROR_EXCEPTION_FLAG);
+        }
+      }).catchError((error) {
+        apiCallback.onAPIError(error, ERROR_EXCEPTION_FLAG);
+      });
     } catch (error) {
       apiCallback.onAPIError(error, ERROR_EXCEPTION_FLAG);
     }

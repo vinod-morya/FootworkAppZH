@@ -1,8 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:fm_fit/fm_fit.dart';
-import 'package:footwork_chinese/constants/app_colors.dart';
-import 'package:footwork_chinese/constants/app_constants.dart';
-import 'package:footwork_chinese/constants/app_images_path.dart';
+
+import '../constants/app_colors.dart';
+import '../constants/app_constants.dart';
+import '../constants/app_images_path.dart';
 
 class NoDataWidget extends StatelessWidget {
   final String txt;

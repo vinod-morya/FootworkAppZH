@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
-import 'package:footwork_chinese/constants/app_constants.dart';
-import 'package:footwork_chinese/constants/app_images_path.dart';
+import '../constants/app_constants.dart';
+import '../constants/app_images_path.dart';
 import 'package:gradient_app_bar/gradient_app_bar.dart';
 
 class AppbarCustom extends StatelessWidget with PreferredSizeWidget {

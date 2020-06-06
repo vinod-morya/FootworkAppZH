@@ -5,11 +5,12 @@ import 'package:footwork_chinese/constants/app_constants.dart';
 import 'package:footwork_chinese/constants/app_images_path.dart';
 import 'package:footwork_chinese/style/theme.dart';
 import 'package:footwork_chinese/ui/editProfile/Profile.dart';
-import 'package:footwork_chinese/ui/history/History.dart';
 import 'package:footwork_chinese/ui/settings/Settings.dart';
 import 'package:footwork_chinese/ui/userDashBoard/UserDashBoard.dart';
 import 'package:footwork_chinese/utils/app_localizations.dart';
 import 'package:gradient_app_bar/gradient_app_bar.dart';
+
+import '../history/History.dart';
 
 class MasterDashboard extends StatefulWidget {
   @override
@@ -105,6 +106,7 @@ class _MasterDashboardState extends State<MasterDashboard> {
     return GradientAppBar(
       gradient: ColorsTheme.dashBoardGradient,
       centerTitle: true,
+      elevation: 0.0,
       title: Text(
         title,
         style: TextStyle(

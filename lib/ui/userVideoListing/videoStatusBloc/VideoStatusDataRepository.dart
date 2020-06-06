@@ -14,28 +14,29 @@ class VideoStatusDataRepository {
 
   VideoStatusDataRepository(this.apiCallback);
 
-  void onFetchData(Map data, context) {
+  void onFetchData(Map data, context, String from) {
     checkInternetConnection().then((onValue) {
       !onValue
           ? apiCallback.onAPIError(
               CustomError(
                   AppLocalizations.of(context).translate('check_internet')),
               NO_INTERNET_FLAG)
-          : _onFetchData(data, context);
+          : _onFetchData(data, context, from);
     });
   }
 
-  void _onFetchData(Map data, BuildContext context) async {
+  void _onFetchData(Map data, BuildContext context, String from) async {
     var language = await checkLanguage(context);
     data.putIfAbsent('lang', () => language);
     if (!baseUrl.contains('https://')) {
       data.putIfAbsent('insecure', () => 'cool');
     }
+    var url = "$baseUrl$setVideoStatus";
     try {
       ApiConfiguration.getInstance()
           .apiClient
           .liveService
-          .apiMultipartRequest(context, '$baseUrl$setVideoStatus', data, "POST")
+          .apiMultipartRequest(context, '$url', data, "POST")
           .then((response) {
         try {
           Map map = jsonDecode(response.body);

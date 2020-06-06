@@ -29,9 +29,9 @@ class VideoStatusBloc with ApiCallback {
     }
   }
 
-  apiCall(Map map, context, isLoader) {
+  apiCall(Map map, context, isLoader, [String from]) {
     showProgressLoader(isLoader);
-    _dataProvider.onFetchData(map, context);
+    _dataProvider.onFetchData(map, context, from);
   }
 
   @override

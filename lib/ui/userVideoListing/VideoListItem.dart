@@ -100,7 +100,7 @@ class _VideoListItemState extends State<VideoListItem> {
                                       : widget.data.playStatus[0]
                                                   .videoPlayStatus ==
                                               "2"
-                                          ? '${AppLocalizations.of(context).translate('need_more_work')}'
+                                          ? '${AppLocalizations.of(context).translate("need_more_work")}'
                                           : '${AppLocalizations.of(context).translate("completed")}!'
                                   : '${AppLocalizations.of(context).translate("mark_complete_label")}',
                               style: TextStyle(

@@ -3,18 +3,24 @@ class UserDashBoardResponse {
   int userId;
   int currentMonth;
   MembershipsInfoBean membershipsInfo;
+  dynamic thumbNail;
+  dynamic videoUrl;
   List<DataListBean> data;
+  List<PurchasedMonth> purchasedMonth;
 
   UserDashBoardResponse(
       {this.status,
       this.userId,
       this.currentMonth,
       this.membershipsInfo,
+      this.purchasedMonth,
       this.data});
 
   UserDashBoardResponse.fromJson(Map<String, dynamic> json) {
     this.status = json['status'];
     this.userId = json['user_id'];
+    this.thumbNail = json['video_thumbnail'];
+    this.videoUrl = json['video_url'];
     this.currentMonth = json['current_month'];
     this.membershipsInfo = json['memberships_info'] != null
         ? MembershipsInfoBean.fromJson(json['memberships_info'])
@@ -22,15 +28,26 @@ class UserDashBoardResponse {
     this.data = (json['data'] as List) != null
         ? (json['data'] as List).map((i) => DataListBean.fromJson(i)).toList()
         : null;
+    this.purchasedMonth = json['purchased_month'] != null
+        ? (json['purchased_month'] as List)
+            .map((i) => PurchasedMonth.fromJson(i))
+            .toList()
+        : null;
   }
 
   Map<String, dynamic> toJson() {
     final Map<String, dynamic> data = new Map<String, dynamic>();
     data['status'] = this.status;
     data['user_id'] = this.userId;
+    data['video_thumbnail'] = this.thumbNail;
+    data['video_url'] = this.videoUrl;
     data['current_month'] = this.currentMonth;
     if (this.membershipsInfo != null) {
       data['memberships_info'] = this.membershipsInfo.toJson();
+    }
+    if (this.purchasedMonth != null) {
+      data['purchased_month'] =
+          this.purchasedMonth.map((v) => v.toJson()).toList();
     }
     data['data'] =
         this.data != null ? this.data.map((i) => i.toJson()).toList() : null;
@@ -75,36 +92,36 @@ class MembershipsInfoBean {
 }
 
 class DataListBean {
-  String lastActivity;
+  String totalVideos;
+  String month;
   String label;
-  dynamic totalVideos;
-  dynamic month;
+  String lastActivity;
   int playVideo;
   int tapStatus;
 
   DataListBean(
-      {this.lastActivity,
-      this.totalVideos,
+      {this.totalVideos,
       this.month,
-      this.playVideo,
       this.label,
+      this.lastActivity,
+      this.playVideo,
       this.tapStatus});
 
   DataListBean.fromJson(Map<String, dynamic> json) {
-    this.lastActivity = json['last_activity'];
     this.totalVideos = json['total_videos'];
     this.month = json['month'];
     this.label = json['label'];
+    this.lastActivity = json['last_activity'];
     this.playVideo = json['play_video'];
     this.tapStatus = json['tap_status'];
   }
 
   Map<String, dynamic> toJson() {
     final Map<String, dynamic> data = new Map<String, dynamic>();
-    data['last_activity'] = this.lastActivity;
     data['total_videos'] = this.totalVideos;
     data['month'] = this.month;
     data['label'] = this.label;
+    data['last_activity'] = this.lastActivity;
     data['play_video'] = this.playVideo;
     data['tap_status'] = this.tapStatus;
     return data;
@@ -243,6 +260,34 @@ class PostBean {
     data['ID'] = this.ID;
     data['post_parent'] = this.postParent;
     data['menu_order'] = this.menuOrder;
+    return data;
+  }
+}
+
+class PurchasedMonth {
+  String devicetype;
+  String orderId;
+  String purchasedmonth;
+  int purchasetime;
+
+  PurchasedMonth(
+      {this.devicetype, this.orderId, this.purchasedmonth, this.purchasetime});
+
+  factory PurchasedMonth.fromJson(Map<String, dynamic> json) {
+    return PurchasedMonth(
+      devicetype: json['devicetype'],
+      orderId: json['orderId'],
+      purchasedmonth: json['purchasedmonth'],
+      purchasetime: json['purchasetime'],
+    );
+  }
+
+  Map<String, dynamic> toJson() {
+    final Map<String, dynamic> data = new Map<String, dynamic>();
+    data['devicetype'] = this.devicetype;
+    data['orderId'] = this.orderId;
+    data['purchasedmonth'] = this.purchasedmonth;
+    data['purchasetime'] = this.purchasetime;
     return data;
   }
 }

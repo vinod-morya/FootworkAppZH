@@ -1,7 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:fm_fit/fm_fit.dart';
-import 'package:footwork_chinese/constants/app_colors.dart';
 import 'package:photo_view/photo_view.dart';
+
+import '../constants/app_colors.dart';
 
 class PhotoViewer extends StatelessWidget {
   final imagePath;

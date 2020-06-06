@@ -29,16 +29,17 @@ class EditProfileValidationBloc with ApiCallback {
 
   String userNameValidation(userName, context, text) {
     var validationMessage = text == "first_name"
-        ? validations.validateName(userName.toString().trim(), context)
+        ? validations.validateName(userName.toString().trim(), context, "first")
         : text == "last_name"
-        ? validations.validateName(userName.toString().trim(), context)
-        : validations.validateUserName(userName.toString().trim(), context);
+            ? validations.validateName(
+                userName.toString().trim(), context, "last")
+            : validations.validateUserName(userName.toString().trim(), context);
     return validationMessage;
   }
 
   String emailValidation(email, context) {
     var validationMessage =
-    validations.validateEmail(email.toString().trim(), context);
+        validations.validateEmail(email.toString().trim(), context);
     return validationMessage;
   }
 

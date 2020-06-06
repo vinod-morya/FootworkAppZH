@@ -9,7 +9,6 @@ import 'package:footwork_chinese/constants/app_constants.dart';
 import 'package:footwork_chinese/constants/app_images_path.dart';
 import 'package:footwork_chinese/custom_widget/custom_progress_loader.dart';
 import 'package:footwork_chinese/custom_widget/top_alert.dart';
-import 'package:footwork_chinese/database/data_base_helper.dart';
 import 'package:footwork_chinese/model/commonReponse/commonResponse.dart';
 import 'package:footwork_chinese/model/errorResponse/customeError.dart';
 import 'package:footwork_chinese/model/errorResponse/error_reponse.dart';
@@ -50,8 +49,6 @@ class ChangePasswordState extends State<ChangePassword> {
   bool isHideConfirm = true;
 
   String cookies;
-
-  var db = new DataBaseHelper();
 
   FmFit fit = FmFit(width: 750);
 
@@ -382,20 +379,17 @@ class ChangePasswordState extends State<ChangePassword> {
 
     data.putIfAbsent('username', () => userDataModel.username);
     data.putIfAbsent('password', () => userPassword);
-    var url = '';
+    var url = '$baseUrl$loginUrl';
     var language = await checkLanguage(context);
+    data.putIfAbsent('lang', () => language);
     if (!baseUrl.contains('https://')) {
-      url =
-          '$baseUrl$loginUrl?insecure=cool&username=${data['username']}&password=${data['password']}&lang=$language';
-    } else {
-      url =
-          '$baseUrl$loginUrl?username=${data['username']}&password=${data['password']}&lang=$language';
+      data.putIfAbsent('insecure', () => "cool");
     }
     try {
       ApiConfiguration.getInstance()
           .apiClient
           .liveService
-          .apiGetRequest(context, '$url')
+          .apiMultipartRequest(context, '$url', data, 'POST')
           .then((response) {
         try {
           Map map = jsonDecode(response.body);
@@ -435,20 +429,25 @@ class ChangePasswordState extends State<ChangePassword> {
                     TopAlert.showAlert(context, '$message', false);
                   } else {}
                 } catch (error) {
+                  clearDataLocally();
                   Navigator.pushReplacementNamed(context, '/login');
                 }
               });
             } catch (error) {
+              clearDataLocally();
               Navigator.pushReplacementNamed(context, '/login');
             }
           } else {
+            clearDataLocally();
             Navigator.pushReplacementNamed(context, '/login');
           }
         } catch (error) {
+          clearDataLocally();
           Navigator.pushReplacementNamed(context, '/login');
         }
       });
     } catch (error) {
+      clearDataLocally();
       Navigator.pushReplacementNamed(context, '/login');
     }
   }

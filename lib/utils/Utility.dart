@@ -4,11 +4,12 @@ import 'dart:math';
 import 'package:data_connection_checker/data_connection_checker.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
-import 'package:footwork_chinese/constants/app_constants.dart';
-import 'package:footwork_chinese/custom_widget/top_alert.dart';
-import 'package:footwork_chinese/utils/app_localizations.dart';
 import 'package:intl/intl.dart';
 import 'package:shared_preferences/shared_preferences.dart';
+
+import '../constants/app_constants.dart';
+import '../custom_widget/top_alert.dart';
+import '../utils/app_localizations.dart';
 
 showSnackBar(String message, final scaffoldKey) {
   scaffoldKey.currentState.showSnackBar(new SnackBar(
@@ -179,7 +180,12 @@ List<TextInputFormatter> nameformatter() {
 }
 
 Future<bool> checkInternetConnection() async {
-  return await DataConnectionChecker().hasConnection;
+  bool result = await DataConnectionChecker().hasConnection;
+  if (result) {
+    return true;
+  } else {
+    return false;
+  }
 }
 
 checkInternetMessage(context) {
@@ -201,13 +207,16 @@ Future<String> checkLanguage(context) async {
 //  if (((lang == null || lang.isEmpty))) {
 //    if (AppLocalizations.of(context).locale.languageCode == 'zh') {
 //      return "zh";
+//    } else if (AppLocalizations.of(context).locale.languageCode == 'tr') {
+//      return "tr";
+//    } else if (AppLocalizations.of(context).locale.languageCode == 'fr') {
+//      return "fr";
 //    } else {
-//      return "en";
 //    }
+  return "zh";
 //  } else {
 //    return lang;
 //  }
-  return "zh";
 }
 
 String convertMilliToDate(int date, String format) {

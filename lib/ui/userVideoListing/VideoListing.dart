@@ -46,7 +46,7 @@ class _VideoListingState extends State<VideoListing> {
   VideoListBloc bloc;
   StreamController apiResponseController;
   StreamController apiSuccessResponseController;
-
+  String errorMessage = null;
   VideoStatusBloc _bloc;
   StreamController _controller;
 
@@ -145,59 +145,75 @@ class _VideoListingState extends State<VideoListing> {
         width: MediaQuery.of(context).size.width,
         height: MediaQuery.of(context).size.height,
         color: Colors.transparent,
-        child: StreamBuilder<List<VideoListBean>>(
-            stream: apiSuccessResponseController.stream,
-            builder: (context, snapshot) {
-              if (snapshot != null &&
-                  snapshot.data != null &&
-                  snapshot.hasData) {
-                videoListData.clear();
-                videoListData.addAll(snapshot.data);
-                videoListData.add(VideoListBean());
-                return ListView.separated(
-                  itemBuilder: (BuildContext context, int index) {
-                    return videoListData.length == 1
-                        ? NoDataWidget(
-                            fit: fit,
-                            txt: AppLocalizations.of(context)
-                                .translate("no_videos"),
-                          )
-                        : index == (videoListData.length - 1)
+        child: errorMessage == null
+            ? StreamBuilder<List<VideoListBean>>(
+                stream: apiSuccessResponseController.stream,
+                builder: (context, snapshot) {
+                  if (snapshot != null &&
+                      snapshot.data != null &&
+                      snapshot.hasData) {
+                    videoListData.clear();
+                    if (widget.title == 'Introduction video') {
+                      if (snapshot.data.length > 0) {
+                        snapshot.data[0].label = 'Intro Video';
+                        snapshot.data[0].videoThumb =
+                            'https://micahlancaster.com/wp-content/uploads/2020/03/homescreen_video_thumbnail.png';
+                        snapshot.data[0].videoUrl =
+                            'https://fast.wistia.net/embed/iframe/d2p0u95bk9';
+                        videoListData.add(snapshot.data[0]);
+                      }
+                    } else {
+                      videoListData.addAll(snapshot.data);
+                    }
+                    videoListData.add(VideoListBean());
+                    return ListView.separated(
+                      itemBuilder: (BuildContext context, int index) {
+                        return videoListData.length == 1
                             ? NoDataWidget(
                                 fit: fit,
                                 txt: AppLocalizations.of(context)
-                                    .translate("reach_end_text"),
+                                    .translate("no_videos"),
                               )
-                            : VideoListItem(
-                                fit: fit,
-                                data: videoListData[index],
-                                pos: index,
-                                onTapChat: _onChatIconClicked,
-                                onTap: onClickedPlayVideo,
-                                onTapFavourite: _onClickMarkFavourite,
-                                onTapMarkComplete: _onClickMarkCompleted,
-                              );
-                  },
-                  itemCount: videoListData.length,
-                  separatorBuilder: (BuildContext context, int index) {
-                    return Divider(
-                      color: index == videoListData.length - 2
-                          ? Color(0xFFebebec)
-                          : colorGrey,
-                      height: fit.t(0.2),
-                      indent: fit.t(15.0),
-                      endIndent: fit.t(15.0),
+                            : index == (videoListData.length - 1)
+                                ? NoDataWidget(
+                                    fit: fit,
+                                    txt: AppLocalizations.of(context)
+                                        .translate("reach_end_text"),
+                                  )
+                                : VideoListItem(
+                                    fit: fit,
+                                    data: videoListData[index],
+                                    pos: index,
+                                    onTapChat: _onChatIconClicked,
+                                    onTap: onClickedPlayVideo,
+                                    onTapFavourite: _onClickMarkFavourite,
+                                    onTapMarkComplete: _onClickMarkCompleted,
+                                  );
+                      },
+                      itemCount: videoListData.length,
+                      separatorBuilder: (BuildContext context, int index) {
+                        return Divider(
+                          color: index == videoListData.length - 2
+                              ? Color(0xFFebebec)
+                              : colorGrey,
+                          height: fit.t(0.2),
+                          indent: fit.t(15.0),
+                          endIndent: fit.t(15.0),
+                        );
+                      },
                     );
-                  },
-                );
-              } else if (snapshot != null && snapshot.hasError) {
-                return Text(snapshot.error.toString());
-              } else {
-                return Container(
-                  child: Text(''),
-                );
-              }
-            }),
+                  } else if (snapshot != null && snapshot.hasError) {
+                    return Text(snapshot.error.toString());
+                  } else {
+                    return Container(
+                      child: Text(''),
+                    );
+                  }
+                })
+            : NoDataWidget(
+                fit: fit,
+                txt: AppLocalizations.of(context).translate("no_videos"),
+              ),
       ),
     );
   }
@@ -206,6 +222,7 @@ class _VideoListingState extends State<VideoListing> {
     StreamSubscription subscription;
     subscription = apiResponseController.stream.listen((data) {
       if (data is VideoListResponseData) {
+        errorMessage = null;
         if (from == "mark_favourite") {
           DialogUtils.showCustomDialog(context,
               fit: fit,
@@ -222,6 +239,8 @@ class _VideoListingState extends State<VideoListing> {
         TopAlert.showAlert(
             _scaffoldKey.currentState.context, data.errorMessage, true);
       } else if (data is Exception) {
+        errorMessage = "some Error";
+        setState(() {});
         TopAlert.showAlert(
             _scaffoldKey.currentState.context,
             AppLocalizations.of(context).translate("something_went_wrong"),
@@ -307,7 +326,7 @@ class _VideoListingState extends State<VideoListing> {
             'month', () => videoListData[position].month.toString());
         map.putIfAbsent('video_play_status', () => videoStatus);
         map.putIfAbsent('video_play_time', () => result.toString());
-        _bloc.apiCall(map, context, false);
+        _bloc.apiCall(map, context, false, null);
       }
     }
   }
@@ -394,7 +413,7 @@ class _VideoListingState extends State<VideoListing> {
       map.putIfAbsent('video_id', () => videoListData[position].id.toString());
       map.putIfAbsent('month', () => videoListData[position].month);
       map.putIfAbsent('video_play_status', () => "2");
-      _bloc.apiCall(map, context, true);
+      _bloc.apiCall(map, context, true, null);
     }, cancelBtnFunction: (value) {
       Navigator.of(context).pop();
       bloc.showProgressLoader(true);
@@ -406,7 +425,7 @@ class _VideoListingState extends State<VideoListing> {
       map.putIfAbsent('month', () => videoListData[position].month);
       map.putIfAbsent('video_play_status',
           () => (videoStatus == "0" || videoStatus == "2") ? "1" : "0");
-      _bloc.apiCall(map, context, true);
+      _bloc.apiCall(map, context, true, null);
     });
   }
 
@@ -420,10 +439,10 @@ class _VideoListingState extends State<VideoListing> {
     showDialogAddEditComment(context,
         okBtnText: AppLocalizations.of(context).translate('save_comment'),
         okBtnFunction: (comment) {
-      if (comment != null && comment.isNotEmpty) {
+      if (comment != null && comment.toString().trim().isNotEmpty) {
         Navigator.of(context).pop();
         Map<String, dynamic> map = Map();
-        map.putIfAbsent('comment', () => comment);
+        map.putIfAbsent('comment', () => comment.toString().trim());
         map.putIfAbsent('cookie', () => cookies);
         map.putIfAbsent('lang', () => lang);
         map.putIfAbsent('month', () => videoListData[pos].month);

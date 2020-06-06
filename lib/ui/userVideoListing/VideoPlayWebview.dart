@@ -75,7 +75,6 @@ position: relative;
       },
     );
 
-//ca1a30
     SystemChrome.setPreferredOrientations([
       DeviceOrientation.landscapeRight,
       DeviceOrientation.landscapeLeft,

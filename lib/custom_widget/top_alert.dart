@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
-import 'package:footwork_chinese/constants/app_colors.dart';
-import 'package:footwork_chinese/custom_widget/edge_alert.dart';
+
+import '../constants/app_colors.dart';
+import '../custom_widget/edge_alert.dart';
 
 class TopAlert {
   static void showAlert(context, title, isAlert,

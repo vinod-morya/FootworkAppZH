@@ -92,7 +92,6 @@ class HttpClient {
   Future<T> _execute<T>(Future<T> fn(http.Client client)) async {
     final client = http.Client();
     try {
-//      return await fn(client).timeout(Duration(seconds: 300));
       return await fn(client);
     } finally {
       client.close();

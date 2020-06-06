@@ -19,7 +19,7 @@ class MyApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
-      title: '脚步训练系统',
+      title: '篮球脚步训练',
       debugShowCheckedModeBanner: false,
       // List all the app's supported locales here
       supportedLocales: [
@@ -45,12 +45,11 @@ class MyApp extends StatelessWidget {
         if (locale == null) {
           return supportedLocales.first;
         }
-        for (var supportedLocale in supportedLocales) {
-          if (supportedLocale.languageCode == locale.languageCode &&
-              supportedLocale.countryCode == locale.countryCode) {
-            return supportedLocale;
-          }
-        }
+//        for (var supportedLocale in supportedLocales) {
+//          if (supportedLocale.languageCode == locale.languageCode) {
+//            return supportedLocale;
+//          }
+//        }
 
         // If the locale of the device is not supported, use the first one
         // from the list (English, in this case).

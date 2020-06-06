@@ -29,6 +29,7 @@ class DataListBean {
   String label;
   String lang;
   String videoUrl;
+  String video_number;
   String videoThumb;
   String createdDate;
   String updatedDate;
@@ -40,6 +41,7 @@ class DataListBean {
       this.label,
       this.lang,
       this.videoUrl,
+      this.video_number,
       this.videoThumb,
       this.createdDate,
       this.updatedDate,
@@ -52,6 +54,7 @@ class DataListBean {
     this.lang = json['lang'];
     this.videoUrl = json['video_url'];
     this.videoThumb = json['video_thumb'];
+    this.video_number = json['video_number'];
     this.createdDate = json['created_date'];
     this.updatedDate = json['updated_date'];
     this.playStatus = json['play_status'] != null
@@ -69,6 +72,7 @@ class DataListBean {
     data['video_thumb'] = this.videoThumb;
     data['created_date'] = this.createdDate;
     data['updated_date'] = this.updatedDate;
+    data['video_number'] = this.video_number;
     if (this.playStatus != null) {
       data['play_status'] = this.playStatus.toJson();
     }
@@ -85,6 +89,10 @@ class PlayStatusBean {
   String videoPlayTime;
   String isFavorite;
   String createdAt;
+  String lang;
+  String instagram_url;
+  String purchase_id;
+  String video_number;
   String comment;
   String updatedAt;
   dynamic rating;
@@ -94,6 +102,10 @@ class PlayStatusBean {
       this.userId,
       this.rating,
       this.videoId,
+      this.lang,
+      this.instagram_url,
+      this.purchase_id,
+      this.video_number,
       this.month,
       this.videoPlayStatus,
       this.videoPlayTime,
@@ -108,6 +120,11 @@ class PlayStatusBean {
     this.rating = json['rating'];
     this.videoId = json['video_id'];
     this.month = json['month'];
+    this.instagram_url = json['instagram_url'];
+    this.lang = json['lang'];
+    this.purchase_id = json['purchase_id'];
+    this.video_number = json['video_number'];
+
     this.comment = json['comment'];
     this.videoPlayStatus = json['video_play_status'];
     this.videoPlayTime = json['video_play_time'];
@@ -121,12 +138,16 @@ class PlayStatusBean {
     data['id'] = this.id;
     data['user_id'] = this.userId;
     data['video_id'] = this.videoId;
+    data['purchase_id'] = this.purchase_id;
     data['comment'] = this.comment;
     data['month'] = this.month;
     data['rating'] = this.rating;
     data['video_play_status'] = this.videoPlayStatus;
     data['video_play_time'] = this.videoPlayTime;
     data['is_favorite'] = this.isFavorite;
+    data['instagram_url'] = this.instagram_url;
+    data['lang'] = this.lang;
+    data['video_number'] = this.video_number;
     data['created_at'] = this.createdAt;
     data['updated_at'] = this.updatedAt;
     return data;

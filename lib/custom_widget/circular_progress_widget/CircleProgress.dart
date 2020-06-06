@@ -15,24 +15,28 @@ class CircleProgress extends CustomPainter {
     Paint outerCircle = Paint()
       ..strokeWidth = 3
       ..color = progressColors
-      ..style = PaintingStyle.stroke;
+      ..style = PaintingStyle.stroke
+      ..strokeCap = StrokeCap.butt;
 
     Paint completeArc = Paint()
-      ..strokeWidth = 4
+      ..strokeWidth = 3
       ..color = this.color
       ..style = PaintingStyle.stroke
-      ..strokeCap = StrokeCap.round;
+      ..strokeCap = StrokeCap.butt;
 
     Offset center = Offset(size.width / 2, size.height / 2);
     double radius = min(size.width / 2, size.height / 2) - 10;
 
-    canvas.drawCircle(
-        center, radius, outerCircle); // this draws main outer circle
+//    canvas.drawCircle(center, radius, completeArc); // this draws main outer circle
 
     double angle = 2 * pi * (currentProgress / 100);
+    double angle1 = 2 * pi * ((100 - currentProgress) / 100);
 
     canvas.drawArc(Rect.fromCircle(center: center, radius: radius), -pi / 2,
         angle, false, completeArc);
+
+    canvas.drawArc(Rect.fromCircle(center: center, radius: radius),
+        angle - pi / 2, angle1, false, outerCircle);
   }
 
   @override

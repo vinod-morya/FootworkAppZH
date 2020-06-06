@@ -2,7 +2,7 @@ import 'dart:async';
 import 'dart:convert';
 
 import 'package:flutter/material.dart';
-import 'package:footwork_chinese/network/_HttpClient.dart';
+import '../network/_HttpClient.dart';
 
 class ApiClient {
   final ApiService _liveService;
@@ -42,6 +42,13 @@ class _ServiceImpl implements ApiService {
   @override
   Future apiPostRequest(BuildContext context, String url,
       [Map<String, dynamic> data]) async {
+    String newUrl = "";
+    if (data != null) {
+      newUrl = url;
+      data.putIfAbsent("app_type", () => "1");
+    } else {
+      newUrl = url + "&app_type=1";
+    }
 //    try {
 //      if (data != null && data.length > 0) {
 //            print('POST : $url request -> $data');
@@ -49,15 +56,15 @@ class _ServiceImpl implements ApiService {
 //    } catch (e) {
 //      print(e);
 //    }
-    final response = await client.post("$url", body: json.encode(data));
-//    print('POST : $url response -> ${response.body}');
+    final response = await client.post("$newUrl", body: json.encode(data));
+    print('POST : $url response -> ${response.body}');
     return response;
   }
 
   @override
   Future apiGetRequest(BuildContext context, String url) async {
-    final response = await client.get(url);
-//    print('GET : $url response -> ${response.body}');
+    final response = await client.get(url + "&app_type=1");
+    print('GET : $url response -> ${response.body}');
     return response;
   }
 
@@ -75,7 +82,7 @@ class _ServiceImpl implements ApiService {
 //      print(e);
 //    }
     final response = await client.put("$url", body: json.encode(request));
-//    print('PUT : $url response -> ${response.body}');
+    print('PUT : $url response -> ${response.body}');
     return response;
   }
 
@@ -89,15 +96,16 @@ class _ServiceImpl implements ApiService {
   @override
   Future apiMultipartRequest(BuildContext context, String url,
       Map<String, dynamic> data, String apiType) async {
+    data.putIfAbsent("app_type", () => "1");
 //    try {
-//      if (data!=null &&data.length > 0) {
-//            print('MULTIPART : $url request -> $data');
-//          }
+//      if (data != null && data.length > 0) {
+//        print('MULTIPART : $url request -> $data');
+//      }
 //    } catch (e) {
 //      print(e);
 //    }
     final response = await client.mutipartPost(url, data, apiType);
-//    print('MULTIPART : $url response -> ${response.body}');
+    print('MULTIPART : $url response -> ${response.body}');
     return response;
   }
 }

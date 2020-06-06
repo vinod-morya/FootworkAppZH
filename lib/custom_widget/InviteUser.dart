@@ -2,11 +2,11 @@ import 'package:flutter/material.dart';
 import 'package:flutter/rendering.dart';
 import 'package:flutter/services.dart';
 import 'package:fm_fit/fm_fit.dart';
-import 'package:footwork_chinese/constants/app_colors.dart';
-import 'package:footwork_chinese/constants/app_constants.dart';
-import 'package:footwork_chinese/constants/app_images_path.dart';
-import 'package:footwork_chinese/custom_widget/TextField/CustomInputField.dart';
-import 'package:footwork_chinese/utils/app_localizations.dart';
+import '../constants/app_colors.dart';
+import '../constants/app_constants.dart';
+import '../constants/app_images_path.dart';
+import '../custom_widget/TextField/CustomInputField.dart';
+import '../utils/app_localizations.dart';
 
 class InviteUser extends StatefulWidget {
   final okBtnFunction;
@@ -20,7 +20,6 @@ class InviteUser extends StatefulWidget {
 }
 
 class _AddEditNotesState extends State<InviteUser> {
-  String data = '';
   var _inputFieldController = TextEditingController();
   FmFit fit = FmFit(width: 750);
 
@@ -139,7 +138,8 @@ class _AddEditNotesState extends State<InviteUser> {
                               ],
                             ),
                             GestureDetector(
-                              onTap: () => widget.okBtnFunction(data),
+                              onTap: () => widget.okBtnFunction(
+                                  _inputFieldController.text.toString()),
                               child: Container(
                                 margin: EdgeInsets.symmetric(
                                     horizontal: fit.t(24.0),
@@ -190,10 +190,6 @@ class _AddEditNotesState extends State<InviteUser> {
             ),
           ],
         ));
-  }
-
-  _onvalueChange(String value) {
-    data = value;
   }
 
   Widget _bottomLine() {

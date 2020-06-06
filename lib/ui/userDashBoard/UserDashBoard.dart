@@ -9,7 +9,6 @@ import 'package:footwork_chinese/constants/app_constants.dart';
 import 'package:footwork_chinese/custom_widget/NoDataWidget.dart';
 import 'package:footwork_chinese/custom_widget/custom_progress_loader.dart';
 import 'package:footwork_chinese/custom_widget/top_alert.dart';
-import 'package:footwork_chinese/database/data_base_helper.dart';
 import 'package:footwork_chinese/model/CountryListResponse.dart';
 import 'package:footwork_chinese/model/errorResponse/customeError.dart';
 import 'package:footwork_chinese/model/errorResponse/error_reponse.dart';
@@ -24,6 +23,8 @@ import 'package:footwork_chinese/utils/Utility.dart';
 import 'package:footwork_chinese/utils/app_localizations.dart';
 import 'package:url_launcher/url_launcher.dart';
 
+import '../../model/commonReponse/commonResponse.dart';
+
 class UserDashBoard extends StatefulWidget {
   @override
   _UserDashBoardState createState() => _UserDashBoardState();
@@ -32,7 +33,6 @@ class UserDashBoard extends StatefulWidget {
 class _UserDashBoardState extends State<UserDashBoard>
     with TickerProviderStateMixin {
   UserBean userDataModel;
-  var db = new DataBaseHelper();
   List<DataListBean> monthListing = List();
   DashBoardBloc bloc;
   StreamController apiResponseController;
@@ -44,6 +44,10 @@ class _UserDashBoardState extends State<UserDashBoard>
   int callSavedTime;
   bool isApiCall = true;
   var refreshKey = GlobalKey<RefreshIndicatorState>();
+  String thumbnail;
+  String videoUrl;
+
+  MembershipsInfoBean memberInfo;
 
   @override
   void initState() {
@@ -72,6 +76,7 @@ class _UserDashBoardState extends State<UserDashBoard>
               : getAuth(context, onCookie);
         });
       } else {
+        clearDataLocally();
         Navigator.pushReplacementNamed(context, '/login');
       }
     });
@@ -82,8 +87,9 @@ class _UserDashBoardState extends State<UserDashBoard>
         bloc.getCountryCode(mapName, context);
       }
     });
-    controller = AnimationController(
-        vsync: this, duration: Duration(milliseconds: 1000));
+    controller =
+        AnimationController(vsync: this, duration: Duration(milliseconds: 1));
+
     super.initState();
   }
 
@@ -136,8 +142,11 @@ class _UserDashBoardState extends State<UserDashBoard>
                       Iterable inReverse = dataList.reversed;
                       List<DataListBean> dataInReverse = inReverse.toList();
                       monthListing.addAll(dataInReverse);
-                      monthListing.add(snapshot.data
-                          .singleWhere((DataListBean a) => a.tapStatus == 0));
+                      for (int i = 0; i < snapshot.data.length; i++) {
+                        if (snapshot.data[i].tapStatus == 0) {
+                          monthListing.add(snapshot.data[i]);
+                        }
+                      }
                       monthListing.insert(0, DataListBean());
                       monthListing.add(DataListBean());
                     }
@@ -145,7 +154,7 @@ class _UserDashBoardState extends State<UserDashBoard>
                       key: refreshKey,
                       onRefresh: refreshList,
                       child: ListView.builder(
-                        physics: BouncingScrollPhysics(),
+                        physics: AlwaysScrollableScrollPhysics(),
                         itemBuilder: (BuildContext context, int index) {
                           return index == (monthListing.length - 1)
                               ? NoDataWidget(
@@ -156,6 +165,8 @@ class _UserDashBoardState extends State<UserDashBoard>
                               : UserDashboardListItem(
                                   fit: fit,
                                   progressController: controller,
+                                  videoURl: videoUrl,
+                                  thumbnail: thumbnail,
                                   animation: Tween<double>(
                                           begin: 0,
                                           end: monthListing[index].tapStatus ==
@@ -192,17 +203,20 @@ class _UserDashBoardState extends State<UserDashBoard>
   }
 
   void onClickedMonth(int position) async {
-    var result = await Navigator.push(
-      context,
-      MaterialPageRoute(
-          builder: (context) => VideoListing(
-              '${monthListing[position].label}', monthListing[position].month)),
-    );
-    if (result != null) {
-      if (result) {
-        Map<String, String> map = Map<String, String>();
-        map.putIfAbsent("cookie", () => cookies);
-        bloc.apiCall(map, context);
+    if (monthListing[position].tapStatus == 1) {
+      var result = await Navigator.push(
+        context,
+        MaterialPageRoute(
+            builder: (context) => VideoListing(
+                '${monthListing[position].label}',
+                monthListing[position].month)),
+      );
+      if (result != null) {
+        if (result) {
+          Map<String, String> map = Map<String, String>();
+          map.putIfAbsent("cookie", () => cookies);
+          bloc.apiCall(map, context);
+        }
       }
     }
   }
@@ -232,11 +246,19 @@ class _UserDashBoardState extends State<UserDashBoard>
           map.putIfAbsent("cookie", () => onCookie);
           bloc.apiCall(map, context);
           writeStringDataLocally(
-              key: dashboardCall, value: (callSavedTime + 43200000).toString());
+              key: dashboardCall, value: (callSavedTime + 600000).toString());
         } else {
-          var response =
-              UserDashBoardResponse.fromJson(jsonDecode(onFetchdashBoardData));
-          apiSuccessResponseController.add(response.data);
+          getStringDataLocally(key: videoURl).then((value) {
+            videoUrl = value;
+            getStringDataLocally(key: videoThumbnail).then((thumbUrl) {
+              thumbnail = thumbUrl;
+              var response = UserDashBoardResponse.fromJson(
+                  jsonDecode(onFetchdashBoardData));
+              memberInfo = response.membershipsInfo;
+              apiResponseController.add(response);
+              apiSuccessResponseController.add(response.data);
+            });
+          });
         }
       });
       ApiConfiguration.getInstance()
@@ -252,10 +274,6 @@ class _UserDashBoardState extends State<UserDashBoard>
               _onLogin(data, context);
             }
           } else {
-            TopAlert.showAlert(
-                context,
-                AppLocalizations.of(context).translate("session_expired"),
-                true);
             clearDataLocally();
             Navigator.pushReplacementNamed(context, '/login');
           }
@@ -264,8 +282,6 @@ class _UserDashBoardState extends State<UserDashBoard>
         }
       });
     } catch (error) {
-      TopAlert.showAlert(context,
-          AppLocalizations.of(context).translate("session_expired"), true);
       clearDataLocally();
       Navigator.pushReplacementNamed(context, '/login');
     }
@@ -275,41 +291,91 @@ class _UserDashBoardState extends State<UserDashBoard>
     StreamSubscription subscription;
     subscription = apiResponseController.stream.listen((data) {
       if (data is UserDashBoardResponse) {
+        memberInfo = data.membershipsInfo;
         writeStringDataLocally(key: dashBoardData, value: json.encode(data));
+        if (data.videoUrl != null) {
+          videoUrl = data.videoUrl;
+        } else {
+          videoUrl = "https://fast.wistia.net/embed/iframe/d2p0u95bk9";
+        }
+        writeStringDataLocally(key: videoURl, value: videoUrl);
+        if (data.thumbNail != null) {
+          thumbnail = data.thumbNail;
+        } else {
+          thumbnail =
+              "https://micahlancaster.com/wp-content/uploads/2020/03/homescreen_video_thumbnail.png";
+        }
+        writeStringDataLocally(key: videoThumbnail, value: thumbnail);
+        setState(() {});
+      } else if (data is CommonResponse) {
+        errorText = null;
+        callSavedTime = DateTime.now().millisecondsSinceEpoch;
+        Map<String, String> map = Map<String, String>();
+        map.putIfAbsent("cookie", () => cookies);
+        bloc.apiCall(map, context);
+        writeStringDataLocally(
+            key: dashboardCall, value: (callSavedTime + 600000).toString());
+        setState(() {});
       } else if (data is CountryListResponse) {
         writeStringDataLocally(key: countries, value: json.encode(data));
       } else if (data is ErrorResponse) {
         errorText = data.error;
+        videoUrl = "https://fast.wistia.net/embed/iframe/d2p0u95bk9";
+        thumbnail =
+            "https://micahlancaster.com/wp-content/uploads/2020/03/homescreen_video_thumbnail.png";
+        writeStringDataLocally(key: videoThumbnail, value: thumbnail);
+        writeStringDataLocally(key: videoURl, value: videoUrl);
+        writeStringDataLocally(key: dashBoardData, value: '');
         setState(() {});
         TopAlert.showAlert(context, data.error, true);
       } else if (data is CustomError) {
         TopAlert.showAlert(context, data.errorMessage, true);
+        videoUrl = "https://fast.wistia.net/embed/iframe/d2p0u95bk9";
+        thumbnail =
+            "https://micahlancaster.com/wp-content/uploads/2020/03/homescreen_video_thumbnail.png";
+        writeStringDataLocally(key: videoThumbnail, value: thumbnail);
+        writeStringDataLocally(key: videoURl, value: videoUrl);
+        setState(() {});
       } else if (data is Exception) {
+        videoUrl = "https://fast.wistia.net/embed/iframe/d2p0u95bk9";
+        thumbnail =
+            "https://micahlancaster.com/wp-content/uploads/2020/03/homescreen_video_thumbnail.png";
+        writeStringDataLocally(key: videoThumbnail, value: thumbnail);
+        writeStringDataLocally(key: videoURl, value: videoUrl);
         TopAlert.showAlert(
             context,
             AppLocalizations.of(context).translate("something_went_wrong"),
             true);
+        setState(() {});
       }
     }, onError: (error) {
       if (error is CustomError) {
-        TopAlert.showAlert(context, error.errorMessage, true);
+        if (error.errorMessage != null) {
+          TopAlert.showAlert(context, error.errorMessage, true);
+        }
       } else {
-        TopAlert.showAlert(context, error.toString(), true);
+        if (error != null) {
+          TopAlert.showAlert(context, error.toString(), true);
+        }
       }
     });
   }
 
   @override
   void dispose() {
-    super.dispose();
     apiResponseController.close();
     apiSuccessResponseController.close();
     bloc.dispose();
+    super.dispose();
   }
 
   double _calculateEndAnimation(DataListBean data) {
     try {
-      return (data.playVideo / int.parse(data.totalVideos)) * 100;
+      if (data.playVideo == 0 && data.totalVideos == "0") {
+        return 0;
+      } else {
+        return (data.playVideo / int.parse(data.totalVideos)) * 100;
+      }
     } catch (e) {
       return 0;
     }
@@ -320,19 +386,16 @@ class _UserDashBoardState extends State<UserDashBoard>
     data.putIfAbsent('username', () => userDataModel.username);
     data.putIfAbsent('password', () => userPassword);
     var language = await checkLanguage(context);
-    var url = '';
+    data.putIfAbsent('lang', () => language);
+    var url = '$baseUrl$loginUrl';
     if (!baseUrl.contains('https://')) {
-      url =
-          '$baseUrl$loginUrl?insecure=cool&username=${data['username']}&password=${data['password']}&lang=$language';
-    } else {
-      url =
-          '$baseUrl$loginUrl?username=${data['username']}&password=${data['password']}&lang=$language';
+      data.putIfAbsent('insecure', () => "cool");
     }
     try {
       ApiConfiguration.getInstance()
           .apiClient
           .liveService
-          .apiGetRequest(context, '$url')
+          .apiMultipartRequest(context, '$url', data, 'POST')
           .then((response) {
         try {
           Map map = jsonDecode(response.body);
@@ -373,51 +436,58 @@ class _UserDashBoardState extends State<UserDashBoard>
                         ConfigConfig("", true));
                   } else {}
                 } catch (e) {
+                  clearDataLocally();
                   Navigator.pushReplacementNamed(context, '/login');
                 }
               });
             } catch (error) {
+              clearDataLocally();
               Navigator.pushReplacementNamed(context, '/login');
             }
           } else {
+            clearDataLocally();
             Navigator.pushReplacementNamed(context, '/login');
           }
         } catch (e) {
+          clearDataLocally();
           Navigator.pushReplacementNamed(context, '/login');
         }
       });
     } catch (error) {
+      clearDataLocally();
       Navigator.pushReplacementNamed(context, '/login');
     }
   }
 
   Widget getListWidget(List<DataListBean> monthListing, String errorText,
       AnimationController controller) {
-    String username = userDataModel.username;
-    String pass = userDataModel.password;
-    String hash = '?log=$username&pwd=$pass';
     monthListing.clear();
     monthListing.add(DataListBean());
     monthListing.add(DataListBean());
     monthListing.add(DataListBean());
+
     return RefreshIndicator(
       key: refreshKey,
       onRefresh: refreshList,
       child: ListView.builder(
-        physics: BouncingScrollPhysics(),
+        physics: AlwaysScrollableScrollPhysics(),
         itemBuilder: (BuildContext context, int index) {
           return index == (monthListing.length - 1)
               ? GestureDetector(
-                  onTap: () => _launchUrl('https://footworkmat.com$hash'),
+                  onTap: () => _launchUrl(
+                      'https://micahlancaster.com/footwork-training-system-short/'),
                   child: NoDataWidget(
                     fit: fit,
                     txt: '$errorText.',
-                    url: 'www.footworkmat.com',
+                    url: AppLocalizations.of(context)
+                        .translate("subscribe_here"),
                   ),
                 )
               : UserDashboardListItem(
                   fit: fit,
                   progressController: controller,
+                  videoURl: videoUrl,
+                  thumbnail: thumbnail,
                   animation: Tween<double>(
                           begin: 0,
                           end: monthListing[index].tapStatus == 1

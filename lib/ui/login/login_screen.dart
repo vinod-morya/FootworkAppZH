@@ -2,6 +2,7 @@ import 'dart:async';
 import 'dart:convert';
 import 'dart:io';
 
+import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:fm_fit/fm_fit.dart';
@@ -12,7 +13,6 @@ import 'package:footwork_chinese/custom_widget/ButtonWidget.dart';
 import 'package:footwork_chinese/custom_widget/TextField/CustomInputField.dart';
 import 'package:footwork_chinese/custom_widget/custom_progress_loader.dart';
 import 'package:footwork_chinese/custom_widget/top_alert.dart';
-import 'package:footwork_chinese/database/data_base_helper.dart';
 import 'package:footwork_chinese/model/errorResponse/customeError.dart';
 import 'package:footwork_chinese/model/errorResponse/error_reponse.dart';
 import 'package:footwork_chinese/model/loginResponse/LoginResponseModel.dart';
@@ -20,6 +20,7 @@ import 'package:footwork_chinese/network/ApiConfiguration.dart';
 import 'package:footwork_chinese/ui/login/loginbloc/LoginValidationBloc.dart';
 import 'package:footwork_chinese/utils/Utility.dart';
 import 'package:footwork_chinese/utils/app_localizations.dart';
+import 'package:url_launcher/url_launcher.dart';
 
 class LoginScreen extends StatefulWidget {
   @override
@@ -39,7 +40,6 @@ class _LoginScreenState extends State<LoginScreen> {
   var _passwordController = TextEditingController();
 
   var isHide = true;
-  var db = new DataBaseHelper();
   FmFit fit = FmFit(width: 750);
 
   //video controller
@@ -75,7 +75,6 @@ class _LoginScreenState extends State<LoginScreen> {
         bottomOpacity: 0.0,
         centerTitle: true,
         title: _widgetLoginText(),
-//        leading: _widgetBackButton(),
         elevation: 0,
       ),
       body: GestureDetector(
@@ -338,29 +337,44 @@ class _LoginScreenState extends State<LoginScreen> {
           alignment: Alignment.lerp(Alignment.center, Alignment.center, 0.2),
           child: Container(
             margin: EdgeInsets.only(top: fit.t(20.0)),
-            child: GestureDetector(
-              onTap: () => Navigator.pushNamed(context, "/registrationScreen"),
-              child: RichText(
-                softWrap: true,
-                text: TextSpan(
-                  text: AppLocalizations.of(context).translate("new_user"),
-                  style: TextStyle(
-                    color: colorBlack,
-                    fontSize: fit.t(18.0),
-                    fontFamily: robotoBoldFont,
-                  ),
-                  children: <TextSpan>[
-                    TextSpan(
-                      text: AppLocalizations.of(context)
-                          .translate("sign_up_label"),
-                      style: TextStyle(
-                          fontFamily: robotoBoldFont,
-                          color: colorRed,
-                          decoration: TextDecoration.none,
-                          fontSize: fit.t(18.0)),
-                    ),
-                  ],
+            child: RichText(
+              softWrap: true,
+              textAlign: TextAlign.center,
+              text: TextSpan(
+                text: AppLocalizations.of(context).translate("new_user"),
+                style: TextStyle(
+                  color: colorBlack,
+                  fontSize: fit.t(18.0),
+                  fontFamily: robotoBoldFont,
                 ),
+                children: <TextSpan>[
+                  TextSpan(
+                    text:
+                        AppLocalizations.of(context).translate("sign_up_label"),
+                    style: TextStyle(
+                        fontFamily: robotoBoldFont,
+                        color: colorRed,
+                        decoration: TextDecoration.none,
+                        fontSize: fit.t(18.0)),
+                    recognizer: TapGestureRecognizer()
+                      ..onTap = () {
+                        Navigator.pushNamed(context, "/registrationScreen");
+                      },
+                  ),
+                  TextSpan(
+                    text:
+                        '\n\n${AppLocalizations.of(context).translate('contact_us')}!',
+                    style: TextStyle(
+                        fontFamily: robotoBoldFont,
+                        color: colorRed,
+                        decoration: TextDecoration.underline,
+                        fontSize: fit.t(14.0)),
+                    recognizer: TapGestureRecognizer()
+                      ..onTap = () {
+                        _launchUrl('https://micahlancaster.com/contact-us/');
+                      },
+                  ),
+                ],
               ),
             ),
           ),
@@ -443,5 +457,13 @@ class _LoginScreenState extends State<LoginScreen> {
             _scaffoldKey.currentState.context, error.toString(), true);
       }
     });
+  }
+
+  _launchUrl(String url) async {
+    if (await canLaunch(url)) {
+      await launch(url);
+    } else {
+      throw 'Could not launch $url';
+    }
   }
 }

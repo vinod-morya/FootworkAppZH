@@ -1,8 +1,10 @@
 import 'package:flutter/material.dart';
-import 'package:footwork_chinese/custom_widget/AddEditNoteWidget.dart';
-import 'package:footwork_chinese/custom_widget/DialogParentWidget.dart';
-import 'package:footwork_chinese/custom_widget/InviteUser.dart';
-import 'package:footwork_chinese/custom_widget/MarkAsCompleteWidget.dart';
+
+import '../custom_widget/AddEditInstaUrlWidget.dart';
+import '../custom_widget/AddEditNoteWidget.dart';
+import '../custom_widget/DialogParentWidget.dart';
+import '../custom_widget/InviteUser.dart';
+import '../custom_widget/MarkAsCompleteWidget.dart';
 
 showDialogMarkAsComplete(BuildContext context,
     {@required String title,
@@ -56,6 +58,24 @@ showDialogInviteUser(BuildContext context,
           elevation: 0.0,
           backgroundColor: Colors.black54,
           child: InviteUser(okBtnFunction, okBtnText, inviteText),
+        ),
+      ));
+}
+
+showDialogInstaUrl(BuildContext context,
+    {String okBtnText,
+    String content,
+    String date,
+    String icon,
+    @required Function(String value) okBtnFunction}) {
+  showDialog(
+      context: context,
+      barrierDismissible: false,
+      child: Center(
+        child: MyDialog(
+          elevation: 0.0,
+          backgroundColor: Colors.black54,
+          child: AddEditInstaUrl(icon, okBtnFunction, okBtnText, date, content),
         ),
       ));
 }

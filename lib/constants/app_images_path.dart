@@ -31,3 +31,9 @@ const ic_user_place_holder = 'assets/images/ic_user_place_holder.png';
 const ic_chat_white = 'assets/images/ic_chat_white.png';
 const ic_edit_icon = 'assets/images/ic_edit_icon.png';
 const ic_video_place_holder = 'assets/images/ic_video_place_holder.png';
+
+const ic_footwork = 'assets/images/ic_footwork.png';
+const ic_skill_battles = 'assets/images/ic_skill_battles.png';
+const ic_standard_training = 'assets/images/ic_standard_training.png';
+const ic_insta_white = 'assets/images/ic_insta_white.png';
+const ic_insta_red = 'assets/images/ic_insta_red.png';
