@@ -21,7 +21,7 @@ class PhotoViewer extends StatelessWidget {
       ),
       body: Container(
         child: PhotoView(
-          imageProvider: imagePath.toString().contains('https://')
+          imageProvider: imagePath.toString().contains('http://')
               ? NetworkImage(imagePath)
               : AssetImage(imagePath),
           minScale: PhotoViewComputedScale.contained * (fit.t(0.8)),

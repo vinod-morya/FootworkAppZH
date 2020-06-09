@@ -588,7 +588,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
                             ),
                           ),
                         )
-                      : imagePath.contains('https://')
+                      : imagePath.contains('http://')
                           ? Container(
                               width: fit.t(110.0),
                               height: fit.t(110.0),
@@ -827,7 +827,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
 
   onImageClick() {
     if (imagePath != null) {
-      if (imagePath.toString().contains('https://')) {
+      if (imagePath.toString().contains('http://')) {
         Navigator.push(
           context,
           MaterialPageRoute(builder: (context) => PhotoViewer(imagePath, fit)),

@@ -291,6 +291,9 @@ class _UserDashBoardState extends State<UserDashBoard>
     StreamSubscription subscription;
     subscription = apiResponseController.stream.listen((data) {
       if (data is UserDashBoardResponse) {
+        if (data.data.length > 0) {
+          errorText = null;
+        }
         memberInfo = data.membershipsInfo;
         writeStringDataLocally(key: dashBoardData, value: json.encode(data));
         if (data.videoUrl != null) {
@@ -303,7 +306,7 @@ class _UserDashBoardState extends State<UserDashBoard>
           thumbnail = data.thumbNail;
         } else {
           thumbnail =
-              "https://micahlancaster.com/wp-content/uploads/2020/03/homescreen_video_thumbnail.png";
+          "https://micahlancaster.com/wp-content/uploads/2020/03/homescreen_video_thumbnail.png";
         }
         writeStringDataLocally(key: videoThumbnail, value: thumbnail);
         setState(() {});

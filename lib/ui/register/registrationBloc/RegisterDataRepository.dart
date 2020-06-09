@@ -31,7 +31,7 @@ class RegistrationDataRepository {
     }
     var url = '';
     if (!baseUrl.contains('https://')) {
-      url = '$baseUrl$getNonceKey?insecure=cool';
+      url = '$baseUrl$getNonceKey&insecure=cool';
     } else {
       url = '$baseUrl$getNonceKey';
     }

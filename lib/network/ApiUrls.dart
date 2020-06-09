@@ -2,7 +2,7 @@
 const String baseUrl = 'http://122.114.31.155/api/';
 // ****************** login Api **************** //
 //const String loginUrl = 'user/generate_auth_cookie';
-const String loginUrl = 'auth/generate_auth_cookie';
+const String loginUrl = 'user/generate_auth_cookie';
 const String notificationApi = 'user/notification_status';
 
 //****************** Reset Password Api **************** //

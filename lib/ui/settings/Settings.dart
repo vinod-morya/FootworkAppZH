@@ -1,5 +1,4 @@
 import 'dart:convert';
-import 'dart:io';
 
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
@@ -135,67 +134,6 @@ class _SettingsViewState extends State<SettingsView> {
                         ),
                       ),
                     ),
-                  ),
-                ),
-                Divider(
-                  height: fit.t(0.5),
-                  endIndent: fit.t(20.0),
-                  indent: fit.t(20.0),
-                  color: appColor,
-                ),
-                Container(
-                  margin: EdgeInsets.only(top: fit.t(4.0), bottom: fit.t(4.0)),
-                  padding: EdgeInsets.only(left: fit.t(4.0)),
-                  child: ListTile(
-                    leading: Image.asset(
-                      ic_notification,
-                      height: fit.t(35.0),
-                      width: fit.t(30.0),
-                      color: appColor,
-                    ),
-                    title: Padding(
-                      padding: EdgeInsets.only(left: fit.t(4.0)),
-                      child: Text(
-                        AppLocalizations.of(context).translate("notification"),
-                        style: TextStyle(
-                          color: appColor,
-                          fontFamily: robotoMediumFont,
-                          fontSize: fit.t(16.0),
-                          fontWeight: FontWeight.w500,
-                        ),
-                      ),
-                    ),
-                    trailing: Platform.isAndroid
-                        ? Switch(
-                            value: isSwitched,
-                            onChanged: (value) {
-                              setState(() {
-                                isSwitched = value;
-                                if (value) {
-                                  _callApiNotificationStatus(value);
-                                } else {
-                                  _showDialogNotification(value);
-                                }
-                              });
-                            },
-                            activeTrackColor: Color(0x40D50A30),
-                            activeColor: appColor,
-                          )
-                        : CupertinoSwitch(
-                            value: isSwitched,
-                            onChanged: (value) {
-                              setState(() {
-                                isSwitched = value;
-                                if (value) {
-                                  _callApiNotificationStatus(value);
-                                } else {
-                                  _showDialogNotification(value);
-                                }
-                              });
-                            },
-                            trackColor: Color(0x40D50A30),
-                            activeColor: appColor,
-                          ),
                   ),
                 ),
                 Divider(
@@ -534,3 +472,65 @@ class _SettingsViewState extends State<SettingsView> {
     });
   }
 }
+
+/*                Container(
+                  margin: EdgeInsets.only(top: fit.t(4.0), bottom: fit.t(4.0)),
+                  padding: EdgeInsets.only(left: fit.t(4.0)),
+                  child: ListTile(
+                    leading: Image.asset(
+                      ic_notification,
+                      height: fit.t(35.0),
+                      width: fit.t(30.0),
+                      color: appColor,
+                    ),
+                    title: Padding(
+                      padding: EdgeInsets.only(left: fit.t(4.0)),
+                      child: Text(
+                        AppLocalizations.of(context).translate("notification"),
+                        style: TextStyle(
+                          color: appColor,
+                          fontFamily: robotoMediumFont,
+                          fontSize: fit.t(16.0),
+                          fontWeight: FontWeight.w500,
+                        ),
+                      ),
+                    ),
+                    trailing: Platform.isAndroid
+                        ? Switch(
+                            value: isSwitched,
+                            onChanged: (value) {
+                              setState(() {
+                                isSwitched = value;
+                                if (value) {
+                                  _callApiNotificationStatus(value);
+                                } else {
+                                  _showDialogNotification(value);
+                                }
+                              });
+                            },
+                            activeTrackColor: Color(0x40D50A30),
+                            activeColor: appColor,
+                          )
+                        : CupertinoSwitch(
+                            value: isSwitched,
+                            onChanged: (value) {
+                              setState(() {
+                                isSwitched = value;
+                                if (value) {
+                                  _callApiNotificationStatus(value);
+                                } else {
+                                  _showDialogNotification(value);
+                                }
+                              });
+                            },
+                            trackColor: Color(0x40D50A30),
+                            activeColor: appColor,
+                          ),
+                  ),
+                ),
+                Divider(
+                  height: fit.t(0.5),
+                  endIndent: fit.t(20.0),
+                  indent: fit.t(20.0),
+                  color: appColor,
+                ),*/
