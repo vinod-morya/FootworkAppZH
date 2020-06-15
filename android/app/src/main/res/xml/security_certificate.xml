@@ -3,5 +3,6 @@
     <domain-config cleartextTrafficPermitted="true">
         <domain includeSubdomains="true">122.114.31.155</domain>
         <domain includeSubdomains="true">nbafootwork.cn</domain>
+        <domain includeSubdomains="true">www.nbafootwork.cn</domain>
     </domain-config>
 </network-security-config>

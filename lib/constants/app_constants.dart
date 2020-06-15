@@ -6,7 +6,10 @@ const String regularFont = 'assets/fonts/roboto/Roboto-Regular.ttf';
 const String robotoBoldFont = 'assets/fonts/roboto/Roboto-Bold.ttf';
 const String robotoBoldCondenseFont =
     'assets/fonts/roboto/Roboto-BoldCondensed.ttf';
-const String CONTACT_US = "https://micahlancaster.com/contact-us-app/";
+const String CONTACT_US = "http://www.nbafootwork.cn/contact-us-app/";
+const String SIGN_UP_CONTACT = "http://www.nbafootwork.cn/contact-us/";
+const String TERMS_OF_USE = "http://www.nbafootwork.cn/terms-conditions/";
+const String PRIVACY_USE = "http://www.nbafootwork.cn/privacy/";
 const passwordLength = 25;
 const emailLength = 80;
 const userNameLength = 40;

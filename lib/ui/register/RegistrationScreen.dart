@@ -758,8 +758,7 @@ class _RegistrationScreenState extends State<RegistrationScreen> {
                     ),
                     recognizer: TapGestureRecognizer()
                       ..onTap = () {
-                        _launchUrl(
-                            'https://micahlancaster.com/terms-conditions/');
+                        _launchUrl('$TERMS_OF_USE');
                       },
                   ),
                   TextSpan(
@@ -779,7 +778,7 @@ class _RegistrationScreenState extends State<RegistrationScreen> {
                         fontSize: fit.t(12.0)),
                     recognizer: TapGestureRecognizer()
                       ..onTap = () {
-                        _launchUrl('https://micahlancaster.com/privacy/');
+                        _launchUrl('$PRIVACY_USE');
                       },
                   ),
                 ],

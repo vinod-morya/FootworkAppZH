@@ -371,7 +371,7 @@ class _LoginScreenState extends State<LoginScreen> {
                         fontSize: fit.t(14.0)),
                     recognizer: TapGestureRecognizer()
                       ..onTap = () {
-                        _launchUrl('https://micahlancaster.com/contact-us/');
+                        _launchUrl('$SIGN_UP_CONTACT');
                       },
                   ),
                 ],
