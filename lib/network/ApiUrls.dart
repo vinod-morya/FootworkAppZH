@@ -46,3 +46,8 @@ const String getStateList = 'user/get_state_by_country';
 //*******************Logout Api**************************//
 const String apiLogout = 'user/logout';
 const String apiInviteUser = 'user/invite_users';
+
+//*******************Stripe Api**************************//
+const String createStripeSource = 'user/stripe_create_source';
+const String authorizeAccount = 'user/authorized_account';
+const String updatePurchase = 'user/footwork_month_purchase';

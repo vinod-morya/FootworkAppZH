@@ -10,6 +10,7 @@ const String CONTACT_US = "http://www.nbafootwork.cn/contact-us-app/";
 const String SIGN_UP_CONTACT = "http://www.nbafootwork.cn/contact-us/";
 const String TERMS_OF_USE = "http://www.nbafootwork.cn/terms-conditions/";
 const String PRIVACY_USE = "http://www.nbafootwork.cn/privacy/";
+const String returnUrl = "stripesdk://footwork.stripesdk.mlxt.us";
 const passwordLength = 25;
 const emailLength = 80;
 const userNameLength = 40;

@@ -7,6 +7,7 @@ import 'package:fm_fit/fm_fit.dart';
 import 'package:footwork_chinese/constants/app_colors.dart';
 import 'package:footwork_chinese/constants/app_constants.dart';
 import 'package:footwork_chinese/custom_widget/NoDataWidget.dart';
+import 'package:footwork_chinese/custom_widget/custom_dilaog.dart';
 import 'package:footwork_chinese/custom_widget/custom_progress_loader.dart';
 import 'package:footwork_chinese/custom_widget/top_alert.dart';
 import 'package:footwork_chinese/model/CountryListResponse.dart';
@@ -21,6 +22,7 @@ import 'package:footwork_chinese/ui/userDashBoard/UserDashboardListItem.dart';
 import 'package:footwork_chinese/ui/userVideoListing/VideoListing.dart';
 import 'package:footwork_chinese/utils/Utility.dart';
 import 'package:footwork_chinese/utils/app_localizations.dart';
+import 'package:uni_links/uni_links.dart';
 import 'package:url_launcher/url_launcher.dart';
 
 import '../../model/commonReponse/commonResponse.dart';
@@ -35,6 +37,7 @@ class _UserDashBoardState extends State<UserDashBoard>
   UserBean userDataModel;
   List<DataListBean> monthListing = List();
   DashBoardBloc bloc;
+  String monthPurchasingFor = "";
   StreamController apiResponseController;
   StreamController apiSuccessResponseController;
   AnimationController controller;
@@ -48,9 +51,42 @@ class _UserDashBoardState extends State<UserDashBoard>
   String videoUrl;
 
   MembershipsInfoBean memberInfo;
+  String source;
+
+  bool deepLink = false;
+  Map<String, dynamic> data = Map();
+
+  bool isCall = false;
+  StreamSubscription _sub;
+
+  Future<Null> initUniLinks() async {
+    _sub = getUriLinksStream().listen((Uri uri) {
+      if (uri != null) {
+        if (uri.toString().contains(returnUrl)) {
+          if (uri != null) {
+            deepLink = true;
+            isCall = true;
+            print('uri data -> $uri');
+            uri?.queryParametersAll?.forEach((key, value) {
+              data.putIfAbsent(key, () => value[0]);
+            });
+            _sub.cancel();
+            if (data.length > 1) {
+              if (data.containsKey('source')) {
+                callApiAuthorizePayment(data);
+              }
+            }
+          }
+        }
+      }
+    }, onError: (err) {
+      setError(err);
+    });
+  }
 
   @override
   void initState() {
+    initUniLinks();
     SystemChrome.setPreferredOrientations(
         [DeviceOrientation.portraitDown, DeviceOrientation.portraitUp]);
     getStringDataLocally(key: userData).then((onUserModel) {
@@ -70,9 +106,9 @@ class _UserDashBoardState extends State<UserDashBoard>
         checkInternetConnection().then((onValue) {
           !onValue
               ? TopAlert.showAlert(
-                  context,
-                  AppLocalizations.of(context).translate("check_internet"),
-                  true)
+              context,
+              AppLocalizations.of(context).translate("check_internet"),
+              true)
               : getAuth(context, onCookie);
         });
       } else {
@@ -95,9 +131,18 @@ class _UserDashBoardState extends State<UserDashBoard>
 
   @override
   Widget build(BuildContext context) {
-    fit = FmFit(width: MediaQuery.of(context).size.width);
-    if (MediaQuery.of(context).size.width > 600) {
-      fit.scale = 1.0 + MediaQuery.of(context).size.aspectRatio;
+    fit = FmFit(width: MediaQuery
+        .of(context)
+        .size
+        .width);
+    if (MediaQuery
+        .of(context)
+        .size
+        .width > 600) {
+      fit.scale = 1.0 + MediaQuery
+          .of(context)
+          .size
+          .aspectRatio;
     } else {
       fit.scale = 1.0;
     }
@@ -218,7 +263,186 @@ class _UserDashBoardState extends State<UserDashBoard>
           bloc.apiCall(map, context);
         }
       }
+    } else {
+      openDialogPayment(monthListing[position]);
     }
+  }
+
+  void openDialogPayment(DataListBean monthListing) {
+    monthPurchasingFor = monthListing.month == null ? "1" : monthListing.month;
+    showDialogInApp(context, title: 'BASKETBALL FOOT TRAINING',
+      body: 'To purchase this month you need to make payment of ¥129.\n\nPlease choose method to pay.',
+      aliPayBtnFunction: aliPayCall,
+      weChatPayBtnFunction: weChatCall,
+    );
+  }
+
+  void callApiAuthorizePayment(Map<String, dynamic> datas) {
+    Map<String, dynamic> data = Map();
+    data.putIfAbsent('cookie', () => cookies);
+    data.putIfAbsent('payment_type', () => 'alipay');
+    if (datas['redirect_status'] == null) {
+      data.putIfAbsent('status', () => 'succeeded');
+    } else {
+      if (datas['redirect_status'] == 'succeeded') {
+        data.putIfAbsent('status', () => 'succeeded');
+      } else {
+        data.putIfAbsent('status', () => 'failed');
+      }
+    }
+    data.putIfAbsent('source', () => datas['source']);
+    data.putIfAbsent('insecure', () => 'cool');
+    checkInternetConnection().then((onValue) {
+      if (onValue) {
+        bloc.showProgressLoader(true);
+        ApiConfiguration
+            .getInstance()
+            .apiClient
+            .liveService
+            .apiMultipartRequest(
+            context, '$baseUrl$authorizeAccount', data, 'POST')
+            .then((response) {
+          try {
+            Map map = jsonDecode(response.body);
+            if (map['status'] == 200) {
+              callApiUpdatePayment('alipay', datas['source']);
+            } else {
+              bloc.showProgressLoader(false);
+            }
+          } catch (error) {
+            bloc.showProgressLoader(false);
+            setError(error);
+          }
+        });
+      } else {
+        TopAlert.showAlert(
+            context, AppLocalizations.of(context).translate('check_internet'),
+            true);
+      }
+    });
+  }
+
+  void callApiUpdatePayment(String type, String source) {
+    checkInternetConnection().then((onValue) {
+      if (onValue) {
+        Map<String, dynamic> data = Map();
+        data.putIfAbsent('cookie', () => cookies);
+        data.putIfAbsent('payment_type', () => type);
+        data.putIfAbsent('lang', () => 'en');
+        data.putIfAbsent('source', () => source);
+        data.putIfAbsent('currency', () => 'cny');
+        data.putIfAbsent('amount', () => '129');
+        data.putIfAbsent('purchasemonth', () => monthPurchasingFor);
+        data.putIfAbsent('deviceType', () => getDeviceType());
+        data.putIfAbsent('insecure', () => 'cool');
+        ApiConfiguration
+            .getInstance()
+            .apiClient
+            .liveService
+            .apiMultipartRequest(
+            context, '$baseUrl$updatePurchase', data, 'POST')
+            .then((response) {
+          try {
+            Map map = jsonDecode(response.body);
+            if (map['status'] == 200) {
+              bloc.showProgressLoader(false);
+              Map<String, String> dashboardCall = Map<String, String>();
+              dashboardCall.putIfAbsent("cookie", () => cookies);
+              bloc.apiCall(dashboardCall, context);
+            }
+          } catch (error) {
+            bloc.showProgressLoader(false);
+            setError(error);
+          }
+        });
+      } else {
+        TopAlert.showAlert(
+            context, AppLocalizations.of(context).translate('check_internet'),
+            true);
+      }
+    });
+  }
+
+  void aliPayCall() {
+    checkInternetConnection().then((onValue) {
+      if (onValue) {
+        bloc.showProgressLoader(true);
+        Map<String, dynamic> data = Map();
+        data.putIfAbsent('cookie', () => cookies);
+        data.putIfAbsent('payment_type', () => 'alipay');
+        data.putIfAbsent('currency', () => 'cny');
+        data.putIfAbsent('amount', () => '129');
+        data.putIfAbsent('return_url', () => returnUrl);
+        data.putIfAbsent('email', () => userDataModel.email);
+        data.putIfAbsent('insecure', () => 'cool');
+
+        ApiConfiguration
+            .getInstance()
+            .apiClient
+            .liveService
+            .apiMultipartRequest(
+            context, '$baseUrl$createStripeSource', data, 'POST')
+            .then((response) {
+          try {
+            Map map = jsonDecode(response.body);
+            if (map['status'] == 200) {
+              source = map['data']['id'];
+              var launch = map['data']['redirect']['url'];
+              _launchUrl(launch);
+            } else if (map['status'] == 209) {
+              source = map['data']['source'];
+              var launch = map['data']['url'];
+              _launchUrl(launch);
+            } else {
+              bloc.showProgressLoader(false);
+            }
+          } catch (error) {
+            bloc.showProgressLoader(false);
+            setError(error);
+          }
+        });
+      } else {
+        TopAlert.showAlert(
+            context, AppLocalizations.of(context).translate('check_internet'),
+            true);
+      }
+    });
+    Navigator.of(context).pop();
+  }
+
+  void weChatCall() {
+    Map<String, dynamic> data = Map();
+    data.putIfAbsent('cookie', () => cookies);
+    data.putIfAbsent('payment_type', () => 'wechat');
+    data.putIfAbsent('currency', () => 'cny');
+    data.putIfAbsent('amount', () => '200');
+    data.putIfAbsent('return_url', () => returnUrl);
+    data.putIfAbsent('email', () => userDataModel.email);
+    data.putIfAbsent('insecure', () => 'cool');
+
+    ApiConfiguration
+        .getInstance()
+        .apiClient
+        .liveService
+        .apiMultipartRequest(
+        context, '$baseUrl$createStripeSource', data, 'POST')
+        .then((response) {
+      try {
+        Map map = jsonDecode(response.body);
+        if (map['status'] == 200) {
+          source = map['data']['id'];
+          var launch = map['data']['redirect']['url'];
+          _launchUrl(launch);
+          Navigator.of(context).pop();
+        }
+      } catch (error) {
+        print(error);
+      }
+    });
+  }
+
+  void setError(dynamic error) {
+    TopAlert.showAlert(context, '${error.toString()}', false);
   }
 
   Future<Null> refreshList() async {
@@ -369,6 +593,7 @@ class _UserDashBoardState extends State<UserDashBoard>
     apiResponseController.close();
     apiSuccessResponseController.close();
     bloc.dispose();
+    _sub?.cancel();
     super.dispose();
   }
 

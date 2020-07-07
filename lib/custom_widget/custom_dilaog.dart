@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:footwork_chinese/custom_widget/InAppWidget.dart';
 
 import '../custom_widget/AddEditInstaUrlWidget.dart';
 import '../custom_widget/AddEditNoteWidget.dart';
@@ -76,6 +77,24 @@ showDialogInstaUrl(BuildContext context,
           elevation: 0.0,
           backgroundColor: Colors.black54,
           child: AddEditInstaUrl(icon, okBtnFunction, okBtnText, date, content),
+        ),
+      ));
+}
+
+showDialogInApp(BuildContext context,
+    {String title,
+    String body,
+    @required Function aliPayBtnFunction,
+    @required Function weChatPayBtnFunction}) {
+  showDialog(
+      context: context,
+      barrierDismissible: false,
+      child: Center(
+        child: MyDialog(
+          elevation: 0.0,
+          backgroundColor: Colors.black54,
+          child: InAppWidget(body, title, aliPayBtnFunction,
+              weChatPayBtnFunction),
         ),
       ));
 }
