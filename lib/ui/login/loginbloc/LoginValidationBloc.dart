@@ -1,5 +1,6 @@
 import 'dart:async';
 
+import 'package:flutter/src/widgets/framework.dart';
 import 'package:footwork_chinese/constants/app_constants.dart';
 import 'package:footwork_chinese/model/errorResponse/customeError.dart';
 import 'package:footwork_chinese/model/errorResponse/error_reponse.dart';
@@ -114,5 +115,10 @@ class LoginValidationBloc with ApiCallback {
         }
         break;
     }
+  }
+
+  void submitRegistration(Map map, BuildContext context) {
+    showProgressLoader(true);
+    _dataProvider.onUserRegistration(map, context);
   }
 }

@@ -1,3 +1,5 @@
+import 'dart:io';
+
 import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 import 'package:fm_fit/fm_fit.dart';
@@ -10,11 +12,14 @@ import 'package:url_launcher/url_launcher.dart';
 class InAppWidget extends StatefulWidget {
   final title;
   final body;
-  final aliPayBtnFunction;
-  final weChatPayBtnFunction;
+  final monthlyBtnText;
+  final yearlyBtnText;
+  final yearlyBtnFunction;
+  final monthlyBtnFunction;
+  final restoreBtnFunction;
 
-  InAppWidget(
-      this.body, this.title, this.aliPayBtnFunction, this.weChatPayBtnFunction);
+  InAppWidget(this.body, this.title, this.monthlyBtnText, this.yearlyBtnText,
+      this.yearlyBtnFunction, this.monthlyBtnFunction, this.restoreBtnFunction);
 
   @override
   _InAppWidgetState createState() => _InAppWidgetState();
@@ -39,10 +44,10 @@ class _InAppWidgetState extends State<InAppWidget> {
     }
     return Container(
         padding: EdgeInsets.symmetric(
-            horizontal: fit.t(40.0), vertical: fit.t(10.0)),
+            horizontal: fit.t(20.0), vertical: fit.t(60.0)),
         width: fit.t(MediaQuery.of(context).size.width),
         height: fit.t(MediaQuery.of(context).size.height),
-        margin: EdgeInsets.only(top: fit.t(50.0)),
+        margin: EdgeInsets.only(top: fit.t(10.0)),
         child: Stack(
           children: <Widget>[
             ListView(
@@ -111,7 +116,7 @@ class _InAppWidgetState extends State<InAppWidget> {
                             children: <TextSpan>[
                               TextSpan(
                                 text:
-                                    '\n\nMicah Lancaster\'s Checklist approach allows you to experience 4 basketball foot training assignments every month, putting the guess work behind you.\n\n',
+                                '\n\nMicah Lancaster\'s Checklist approach allows you to experience 4 basketball foot training assignments every month, putting the guess work behind you.\n\nTwo type of subscription monthly and yearly\n',
                                 style: TextStyle(
                                     color: colorGrey,
                                     fontSize: fit.t(11.0),
@@ -131,7 +136,7 @@ class _InAppWidgetState extends State<InAppWidget> {
                         ),
                       ),
                       GestureDetector(
-                        onTap: () => widget.aliPayBtnFunction(),
+                        onTap: () => widget.monthlyBtnFunction(),
                         child: Container(
                           margin: EdgeInsets.only(
                               left: fit.t(24.0),
@@ -147,9 +152,9 @@ class _InAppWidgetState extends State<InAppWidget> {
                               padding: EdgeInsets.only(
                                   top: fit.t(4.0), bottom: fit.t(4.0)),
                               child: Text(
-                                'Buy with AliPay',
+                                'Buy ' + widget.monthlyBtnText,
                                 style: TextStyle(
-                                    fontSize: fit.t(24.0),
+                                    fontSize: fit.t(18.0),
                                     fontFamily: robotoBoldFont,
                                     color: Colors.white,
                                     fontWeight: FontWeight.w600),
@@ -159,7 +164,7 @@ class _InAppWidgetState extends State<InAppWidget> {
                         ),
                       ),
                       GestureDetector(
-                        onTap: () => widget.weChatPayBtnFunction(),
+                        onTap: () => widget.yearlyBtnFunction(),
                         child: Container(
                           margin: EdgeInsets.only(
                               left: fit.t(24.0),
@@ -175,7 +180,7 @@ class _InAppWidgetState extends State<InAppWidget> {
                             child: Container(
                               padding: EdgeInsets.only(
                                   top: fit.t(4.0), bottom: fit.t(4.0)),
-                              child: Text('Buy with WeChatPay',
+                              child: Text('Buy ' + widget.yearlyBtnText,
                                   style: TextStyle(
                                       fontSize: fit.t(20.0),
                                       fontFamily: robotoBoldFont,
@@ -185,6 +190,47 @@ class _InAppWidgetState extends State<InAppWidget> {
                           ),
                         ),
                       ),
+                      Platform.isAndroid ? Container() : GestureDetector(
+                        onTap: () => widget.restoreBtnFunction(),
+                        child: Container(
+                          margin: EdgeInsets.only(
+                              left: fit.t(24.0),
+                              right: fit.t(24.0),
+                              bottom: fit.t(24.0),
+                              top: fit.t(0.0)),
+                          height: fit.t(35.0),
+                          child: Center(
+                            child: Container(
+                              padding: EdgeInsets.only(
+                                  top: fit.t(4.0), bottom: fit.t(4.0)),
+                              child: Text(
+                                  AppLocalizations.of(context)
+                                      .translate("restore"),
+                                  style: TextStyle(
+                                      fontSize: fit.t(16.0),
+                                      fontFamily: robotoBoldFont,
+                                      color: Colors.blue,
+                                      fontWeight: FontWeight.w600)),
+                            ),
+                          ),
+                        ),
+                      ),
+                      Platform.isAndroid ? Container() : Container(
+                        margin: EdgeInsets.only(
+                          top: fit.t(10.0),
+                          bottom: fit.t(10.0),
+                          left: fit.t(24.0),
+                          right: fit.t(24.0),
+                        ),
+                        child: Text(
+                            'Subscriptions will automatically renew unless canceled within 24-hours before the end of the current period. You can cancel anytime with your iTunes account settings. Any unused portion of a free trial will be forfeited if you purchase a subscription \nFor more information, see our',
+                            textAlign: TextAlign.center,
+                            style: TextStyle(
+                                fontSize: fit.t(9.0),
+                                fontFamily: robotoBoldFont,
+                                color: colorGrey,
+                                fontWeight: FontWeight.w600)),
+                      ),
                       Container(
                         margin: EdgeInsets.only(
                             top: fit.t(10.0), bottom: fit.t(10.0)),
@@ -193,7 +239,7 @@ class _InAppWidgetState extends State<InAppWidget> {
                           textAlign: TextAlign.center,
                           text: TextSpan(
                             text:
-                                AppLocalizations.of(context).translate('terms'),
+                            AppLocalizations.of(context).translate('terms'),
                             style: TextStyle(
                                 fontFamily: robotoBoldFont,
                                 color: appColor,
@@ -215,7 +261,8 @@ class _InAppWidgetState extends State<InAppWidget> {
                                       fontSize: fit.t(15.0))),
                               TextSpan(
                                 text:
-                                    '${AppLocalizations.of(context).translate('privacy')}',
+                                '${AppLocalizations.of(context).translate(
+                                    'privacy')}',
                                 style: TextStyle(
                                     fontFamily: robotoBoldFont,
                                     color: appColor,
@@ -239,7 +286,7 @@ class _InAppWidgetState extends State<InAppWidget> {
             ),
             Positioned(
               right: 0,
-              top: fit.t(55.0),
+              top: fit.t(60.0),
               child: GestureDetector(
                 onTap: () => Navigator.of(context).pop(),
                 child: Container(
@@ -251,7 +298,7 @@ class _InAppWidgetState extends State<InAppWidget> {
                     size: fit.t(15.0),
                   ),
                   decoration:
-                      BoxDecoration(shape: BoxShape.circle, color: colorWhite),
+                  BoxDecoration(shape: BoxShape.circle, color: colorWhite),
                 ),
               ),
             ),

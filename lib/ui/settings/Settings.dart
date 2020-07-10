@@ -1,4 +1,5 @@
 import 'dart:convert';
+import 'dart:io';
 
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
@@ -14,13 +15,19 @@ import 'package:footwork_chinese/model/commonReponse/commonResponse.dart';
 import 'package:footwork_chinese/model/loginResponse/LoginResponseModel.dart';
 import 'package:footwork_chinese/network/ApiConfiguration.dart';
 import 'package:footwork_chinese/network/ApiUrls.dart';
+import 'package:footwork_chinese/style/theme.dart';
 import 'package:footwork_chinese/ui/settings/WebViewSupport.dart';
 import 'package:footwork_chinese/ui/settings/changePassword/ChangePassword.dart';
 import 'package:footwork_chinese/utils/DialogUtils.dart';
 import 'package:footwork_chinese/utils/Utility.dart';
 import 'package:footwork_chinese/utils/app_localizations.dart';
+import 'package:gradient_app_bar/gradient_app_bar.dart';
 
 class SettingsView extends StatefulWidget {
+  final title;
+
+  SettingsView(this.title);
+
   @override
   _SettingsViewState createState() => _SettingsViewState();
 }
@@ -32,6 +39,40 @@ class _SettingsViewState extends State<SettingsView> {
   UserBean userDataModel;
   FmFit fit = FmFit(width: 750);
   bool isShowProgress = false;
+
+  Widget _widgetBackButton() {
+    return Container(
+      margin: EdgeInsets.only(left: 0.0, top: fit.t(5.0)),
+      padding: EdgeInsets.only(top: 0.0, left: 0.0, right: 0.0),
+      child: Row(
+        children: <Widget>[
+          IconButton(
+            padding: EdgeInsets.all(fit.t(5.0)),
+            onPressed: () => Navigator.pop(context),
+            icon: Icon(
+              Platform.isAndroid == true
+                  ? Icons.arrow_back
+                  : Icons.arrow_back_ios,
+              color: colorWhite,
+              size: fit.t(30.0),
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+
+  Widget _gradientAppBarWidget() {
+    return GradientAppBar(
+      gradient: ColorsTheme.dashBoardGradient,
+      centerTitle: true,
+      title: Text(
+        widget.title,
+        style: TextStyle(color: colorWhite, fontFamily: robotoBoldCondenseFont),
+      ),
+      leading: _widgetBackButton(),
+    );
+  }
 
   @override
   void initState() {
@@ -64,174 +105,182 @@ class _SettingsViewState extends State<SettingsView> {
     checkLanguage(context).then((onValue) {
       lang = onValue;
     });
-    return Container(
-      color: Color(0xFFebebec),
-      child: Stack(
-        children: <Widget>[
-          Container(
-            width: MediaQuery.of(context).size.width,
-            height: MediaQuery.of(context).size.height,
-            color: Colors.transparent,
-            child: Column(
-              mainAxisSize: MainAxisSize.min,
-              mainAxisAlignment: MainAxisAlignment.start,
-              crossAxisAlignment: CrossAxisAlignment.center,
-              children: <Widget>[
-                Container(
-                  margin: EdgeInsets.only(top: fit.t(4.0), bottom: fit.t(4.0)),
-                  padding:
-                      EdgeInsets.only(left: fit.t(8.0), right: fit.t(12.0)),
-                  child: ListTile(
-                    onTap: () => _onInviteUser(context),
-                    leading: Image.asset(
-                      ic_invite_user,
-                      height: fit.t(25.0),
-                      width: fit.t(25.0),
-                      color: appColor,
-                    ),
-                    title: Padding(
-                      padding: EdgeInsets.only(left: fit.t(8.0)),
-                      child: Text(
-                        AppLocalizations.of(context).translate("invite_user"),
-                        style: TextStyle(
-                          color: appColor,
-                          fontFamily: robotoMediumFont,
-                          fontSize: fit.t(16.0),
-                          fontWeight: FontWeight.w500,
-                        ),
-                      ),
-                    ),
-                  ),
-                ),
-                Divider(
-                  height: fit.t(0.5),
-                  endIndent: fit.t(20.0),
-                  indent: fit.t(20.0),
-                  color: appColor,
-                ),
-                Container(
-                  margin: EdgeInsets.only(top: fit.t(4.0), bottom: fit.t(4.0)),
-                  padding: EdgeInsets.only(left: fit.t(6.0)),
-                  child: ListTile(
-                    onTap: () => Navigator.of(context).push(MaterialPageRoute(
-                        builder: (context) => ChangePassword())),
-                    leading: Image.asset(
-                      ic_password,
-                      height: fit.t(35.0),
-                      width: fit.t(30.0),
-                      color: appColor,
-                    ),
-                    title: Padding(
-                      padding: EdgeInsets.only(left: fit.t(2.0)),
-                      child: Text(
-                        AppLocalizations.of(context)
-                            .translate("change_password"),
-                        style: TextStyle(
-                          color: appColor,
-                          fontFamily: robotoMediumFont,
-                          fontSize: fit.t(16.0),
-                          fontWeight: FontWeight.w500,
-                        ),
-                      ),
-                    ),
-                  ),
-                ),
-                Divider(
-                  height: fit.t(0.5),
-                  endIndent: fit.t(20.0),
-                  indent: fit.t(20.0),
-                  color: appColor,
-                ),
-                Container(
-                  margin: EdgeInsets.only(top: fit.t(4.0), bottom: fit.t(4.0)),
-                  padding: EdgeInsets.only(left: fit.t(4.0)),
-                  child: ListTile(
-                    onTap: () {
-                      Navigator.of(context).push(MaterialPageRoute(
-                          builder: (BuildContext context) => WebViewSupport()));
-                    },
-                    leading: Padding(
-                      padding: EdgeInsets.only(left: fit.t(4.0)),
-                      child: Icon(
-                        Icons.contact_mail,
-                        size: fit.t(30.0),
+    return Scaffold(
+      appBar: _gradientAppBarWidget(),
+      body: Container(
+        color: Color(0xFFebebec),
+        child: Stack(
+          children: <Widget>[
+            Container(
+              width: MediaQuery.of(context).size.width,
+              height: MediaQuery.of(context).size.height,
+              color: Colors.transparent,
+              child: Column(
+                mainAxisSize: MainAxisSize.min,
+                mainAxisAlignment: MainAxisAlignment.start,
+                crossAxisAlignment: CrossAxisAlignment.center,
+                children: <Widget>[
+                  Container(
+                    margin:
+                        EdgeInsets.only(top: fit.t(4.0), bottom: fit.t(4.0)),
+                    padding:
+                        EdgeInsets.only(left: fit.t(8.0), right: fit.t(12.0)),
+                    child: ListTile(
+                      onTap: () => _onInviteUser(context),
+                      leading: Image.asset(
+                        ic_invite_user,
+                        height: fit.t(25.0),
+                        width: fit.t(25.0),
                         color: appColor,
                       ),
-                    ),
-                    title: Padding(
-                      padding: EdgeInsets.only(left: fit.t(0.0)),
-                      child: Text(
-                        AppLocalizations.of(context).translate("contact_us"),
-                        style: TextStyle(
-                          color: appColor,
-                          fontFamily: robotoMediumFont,
-                          fontSize: fit.t(16.0),
-                          fontWeight: FontWeight.w500,
+                      title: Padding(
+                        padding: EdgeInsets.only(left: fit.t(8.0)),
+                        child: Text(
+                          AppLocalizations.of(context).translate("invite_user"),
+                          style: TextStyle(
+                            color: appColor,
+                            fontFamily: robotoMediumFont,
+                            fontSize: fit.t(16.0),
+                            fontWeight: FontWeight.w500,
+                          ),
                         ),
                       ),
                     ),
                   ),
-                ),
-                Divider(
-                  height: fit.t(0.5),
-                  endIndent: fit.t(20.0),
-                  indent: fit.t(20.0),
-                  color: appColor,
-                ),
-                Container(
-                  margin: EdgeInsets.only(top: fit.t(4.0), bottom: fit.t(4.0)),
-                  padding: EdgeInsets.only(left: fit.t(4.0)),
-                  child: ListTile(
-                    onTap: () {
-                      DialogUtils.showCustomDialog(context,
-                          fit: fit,
-                          okBtnText:
-                              AppLocalizations.of(context).translate("ok"),
-                          cancelBtnText:
-                              AppLocalizations.of(context).translate("cancel"),
-                          title: '',
-                          content: AppLocalizations.of(context)
-                              .translate("sure_to_logout"),
-                          okBtnFunction: _onLogout);
-                    },
-                    leading: Padding(
-                      padding: EdgeInsets.only(left: fit.t(4.0)),
-                      child: Image.asset(
-                        ic_logout,
+                  Divider(
+                    height: fit.t(0.5),
+                    endIndent: fit.t(20.0),
+                    indent: fit.t(20.0),
+                    color: appColor,
+                  ),
+                  Container(
+                    margin:
+                        EdgeInsets.only(top: fit.t(4.0), bottom: fit.t(4.0)),
+                    padding: EdgeInsets.only(left: fit.t(6.0)),
+                    child: ListTile(
+                      onTap: () => Navigator.of(context).push(MaterialPageRoute(
+                          builder: (context) => ChangePassword())),
+                      leading: Image.asset(
+                        ic_password,
                         height: fit.t(35.0),
                         width: fit.t(30.0),
                         color: appColor,
                       ),
-                    ),
-                    title: Padding(
-                      padding: EdgeInsets.only(left: fit.t(0.0)),
-                      child: Text(
-                        AppLocalizations.of(context).translate("logout"),
-                        style: TextStyle(
-                          color: appColor,
-                          fontFamily: robotoMediumFont,
-                          fontSize: fit.t(16.0),
-                          fontWeight: FontWeight.w500,
+                      title: Padding(
+                        padding: EdgeInsets.only(left: fit.t(2.0)),
+                        child: Text(
+                          AppLocalizations.of(context)
+                              .translate("change_password"),
+                          style: TextStyle(
+                            color: appColor,
+                            fontFamily: robotoMediumFont,
+                            fontSize: fit.t(16.0),
+                            fontWeight: FontWeight.w500,
+                          ),
                         ),
                       ),
                     ),
                   ),
-                ),
-                Divider(
-                  height: fit.t(0.5),
-                  endIndent: fit.t(20.0),
-                  indent: fit.t(20.0),
-                  color: appColor,
-                ),
-              ],
+                  Divider(
+                    height: fit.t(0.5),
+                    endIndent: fit.t(20.0),
+                    indent: fit.t(20.0),
+                    color: appColor,
+                  ),
+                  Container(
+                    margin:
+                        EdgeInsets.only(top: fit.t(4.0), bottom: fit.t(4.0)),
+                    padding: EdgeInsets.only(left: fit.t(4.0)),
+                    child: ListTile(
+                      onTap: () {
+                        Navigator.of(context).push(MaterialPageRoute(
+                            builder: (BuildContext context) =>
+                                WebViewSupport()));
+                      },
+                      leading: Padding(
+                        padding: EdgeInsets.only(left: fit.t(4.0)),
+                        child: Icon(
+                          Icons.contact_mail,
+                          size: fit.t(30.0),
+                          color: appColor,
+                        ),
+                      ),
+                      title: Padding(
+                        padding: EdgeInsets.only(left: fit.t(0.0)),
+                        child: Text(
+                          AppLocalizations.of(context).translate("contact_us"),
+                          style: TextStyle(
+                            color: appColor,
+                            fontFamily: robotoMediumFont,
+                            fontSize: fit.t(16.0),
+                            fontWeight: FontWeight.w500,
+                          ),
+                        ),
+                      ),
+                    ),
+                  ),
+                  Divider(
+                    height: fit.t(0.5),
+                    endIndent: fit.t(20.0),
+                    indent: fit.t(20.0),
+                    color: appColor,
+                  ),
+                  Container(
+                    margin:
+                        EdgeInsets.only(top: fit.t(4.0), bottom: fit.t(4.0)),
+                    padding: EdgeInsets.only(left: fit.t(4.0)),
+                    child: ListTile(
+                      onTap: () {
+                        DialogUtils.showCustomDialog(context,
+                            fit: fit,
+                            okBtnText:
+                                AppLocalizations.of(context).translate("ok"),
+                            cancelBtnText: AppLocalizations.of(context)
+                                .translate("cancel"),
+                            title: '',
+                            content: AppLocalizations.of(context)
+                                .translate("sure_to_logout"),
+                            okBtnFunction: _onLogout);
+                      },
+                      leading: Padding(
+                        padding: EdgeInsets.only(left: fit.t(4.0)),
+                        child: Image.asset(
+                          ic_logout,
+                          height: fit.t(35.0),
+                          width: fit.t(30.0),
+                          color: appColor,
+                        ),
+                      ),
+                      title: Padding(
+                        padding: EdgeInsets.only(left: fit.t(0.0)),
+                        child: Text(
+                          AppLocalizations.of(context).translate("logout"),
+                          style: TextStyle(
+                            color: appColor,
+                            fontFamily: robotoMediumFont,
+                            fontSize: fit.t(16.0),
+                            fontWeight: FontWeight.w500,
+                          ),
+                        ),
+                      ),
+                    ),
+                  ),
+                  Divider(
+                    height: fit.t(0.5),
+                    endIndent: fit.t(20.0),
+                    indent: fit.t(20.0),
+                    color: appColor,
+                  ),
+                ],
+              ),
             ),
-          ),
-          ProgressLoader(
-            fit: fit,
-            isShowLoader: isShowProgress,
-            color: appColor,
-          ),
-        ],
+            ProgressLoader(
+              fit: fit,
+              isShowLoader: isShowProgress,
+              color: appColor,
+            ),
+          ],
+        ),
       ),
     );
   }

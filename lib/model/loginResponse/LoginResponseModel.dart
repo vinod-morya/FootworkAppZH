@@ -2,13 +2,15 @@ class LoginResponseModel {
   int status;
   String cookie;
   String cookieName;
+  String from;
   UserBean user;
 
-  LoginResponseModel({this.status, this.cookie, this.cookieName, this.user});
+  LoginResponseModel({this.status, this.cookie, this.cookieName,this.from, this.user});
 
   LoginResponseModel.fromJson(Map<String, dynamic> json) {
     this.status = json['status'];
     this.cookie = json['cookie'];
+    this.from = json['from'];
     this.cookieName = json['cookie_name'];
     this.user = json['user'] != null ? UserBean.fromJson(json['user']) : null;
   }
@@ -17,6 +19,7 @@ class LoginResponseModel {
     final Map<String, dynamic> data = new Map<String, dynamic>();
     data['status'] = this.status;
     data['cookie'] = this.cookie;
+    data['from'] = this.from;
     data['cookie_name'] = this.cookieName;
     if (this.user != null) {
       data['user'] = this.user.toJson();

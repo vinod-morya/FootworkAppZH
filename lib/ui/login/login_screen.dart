@@ -2,6 +2,7 @@ import 'dart:async';
 import 'dart:convert';
 import 'dart:io';
 
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
@@ -134,15 +135,106 @@ class _LoginScreenState extends State<LoginScreen> {
           child: Column(
             children: <Widget>[
               _widgetAppLogo(),
+              Platform.isIOS ? _widgetAppTextLogo() : Container(),
               _inputFields(),
               _forgotPassWidget(),
               _loginButtonWidget(),
-              _newRegistrationText(),
+              Platform.isIOS ? _termsOfUse() : _newRegistrationText(),
             ],
           ),
         ),
       ],
     );
+  }
+
+  Widget _termsOfUse() {
+    return Flexible(
+      fit: FlexFit.tight,
+      flex: 1,
+      child: Container(
+        margin: EdgeInsets.only(
+            bottom: Platform.isAndroid ? fit.t(10.0) : fit.t(50.0)),
+        child: Align(
+          alignment: Alignment.lerp(Alignment.center, Alignment.center, 0.2),
+          child: Container(
+            margin: EdgeInsets.only(top: fit.t(20.0)),
+            child: RichText(
+              softWrap: true,
+              textAlign: TextAlign.center,
+              text: TextSpan(
+                text: AppLocalizations.of(context).translate('terms'),
+                style: TextStyle(
+                    fontFamily: robotoBoldFont,
+                    color: appColor,
+                    fontWeight: FontWeight.w500,
+                    decoration: TextDecoration.underline,
+                    fontSize: fit.t(14.0)),
+                recognizer: TapGestureRecognizer()
+                  ..onTap = () {
+                    _launchUrl('https://micahlancaster.com/terms-conditions/');
+                  },
+                children: <TextSpan>[
+                  TextSpan(
+                      text: ' | ',
+                      style: TextStyle(
+                          fontFamily: robotoBoldFont,
+                          color: appColor,
+                          decoration: TextDecoration.none,
+                          fontSize: fit.t(14.0))),
+                  TextSpan(
+                    text:
+                        '${AppLocalizations.of(context).translate('privacy')}',
+                    style: TextStyle(
+                        fontFamily: robotoBoldFont,
+                        color: appColor,
+                        decoration: TextDecoration.underline,
+                        fontWeight: FontWeight.w500,
+                        fontSize: fit.t(14.0)),
+                    recognizer: TapGestureRecognizer()
+                      ..onTap = () {
+                        _launchUrl('https://micahlancaster.com/privacy/');
+                      },
+                  ),
+                  TextSpan(
+                      text: '\n\n',
+                      style: TextStyle(
+                          fontFamily: robotoBoldFont,
+                          color: colorBlack,
+                          decoration: TextDecoration.none,
+                          fontSize: fit.t(14.0))),
+                  TextSpan(
+                    text:
+                        '${AppLocalizations.of(context).translate('contact_us')}',
+                    style: TextStyle(
+                        fontFamily: robotoBoldFont,
+                        color: appColor,
+                        fontWeight: FontWeight.w500,
+                        decoration: TextDecoration.underline,
+                        fontSize: fit.t(14.0)),
+                    recognizer: TapGestureRecognizer()
+                      ..onTap = () {
+                        _launchUrl('https://micahlancaster.com/contact-us/');
+                      },
+                  )
+                ],
+              ),
+            ),
+          ),
+        ),
+      ),
+    );
+  }
+
+  Widget _widgetAppTextLogo() {
+    return Container(
+        padding: EdgeInsets.only(top: fit.t(30.0)),
+        child: Text(
+          AppLocalizations.of(context).translate("login_signup_up"),
+          style: TextStyle(
+              color: appColor,
+              fontWeight: FontWeight.bold,
+              fontFamily: robotoBoldCondenseFont),
+        ));
   }
 
   //App Logo widget
@@ -309,15 +401,17 @@ class _LoginScreenState extends State<LoginScreen> {
         top: fit.t(25.0),
       ),
       child: ButtonWidget(
-        AppLocalizations.of(context).translate("login_label"),
+        Platform.isAndroid ? AppLocalizations.of(context).translate(
+            "login_label") : AppLocalizations.of(context).translate(
+            "login_signup"),
         fit.t(20),
-        () => _onLoginClick(_scaffoldKey.currentState.context),
+            () => _onLoginClick(_scaffoldKey.currentState.context),
         fontSize: fit.t(20),
         padding: EdgeInsets.only(
           top: fit.t(12.0),
           bottom: fit.t(12.0),
-          right: fit.t(90.0),
-          left: fit.t(90.0),
+          right: fit.t(80.0),
+          left: fit.t(80.0),
         ),
         textColor: colorWhite,
         buttonColor: Color(0xFF3864a1),
@@ -423,12 +517,19 @@ class _LoginScreenState extends State<LoginScreen> {
     subscription = apiResponseController.stream.listen((data) {
       if (data is LoginResponseModel) {
         if (data.status == 200) {
+          if (Platform.isIOS) {
+            if (data.from == "1") {
+              TopAlert.showAlert(
+                  context,
+                  AppLocalizations.of(context).translate("new_account_msg"),
+                  false);
+            }
+          }
           writeStringDataLocally(key: cookie, value: data.cookie);
           writeStringDataLocally(key: userId, value: data.user.id.toString());
           writeStringDataLocally(
               key: password, value: _passwordController.text.toString().trim());
           data.user.password = _passwordController.text.toString().trim();
-//          db.saveUser(data.user);
           writeStringDataLocally(key: userData, value: json.encode(data.user));
           ApiConfiguration.createNullConfiguration(ConfigConfig("", true));
           Future.delayed(const Duration(microseconds: 200), () {
@@ -438,7 +539,106 @@ class _LoginScreenState extends State<LoginScreen> {
           });
         }
       } else if (data is ErrorResponse) {
-        TopAlert.showAlert(_scaffoldKey.currentState.context, data.error, true);
+        if (Platform.isIOS) {
+          if (data.error.contains("Username does not exist.")) {
+            var isEmail = false;
+            if (validateEmail(
+                _userNameController.text.toString().trim(), context) == null) {
+              isEmail = true;
+            }
+
+            var userName = _userNameController.text
+                .toString()
+                .trim()
+                .replaceAll(" ", "")
+                .replaceAll("\@", "")
+                .replaceAll("\#", "")
+                .replaceAll("\%", "")
+                .replaceAll("\^", "")
+                .replaceAll(".", "")
+                .replaceAll("\&", "")
+                .replaceAll("\`", "")
+                .replaceAll("\~", "")
+                .replaceAll("\$", "")
+                .replaceAll("\*", "")
+                .replaceAll("\(", "")
+                .replaceAll("\)", "")
+                .replaceAll("\-", "")
+                .replaceAll("\_", "")
+                .replaceAll("\+", "")
+                .replaceAll("\=", "");
+
+            try {
+              if (isEmail) {
+                var userValue = _userNameController.text.toString()
+                    .trim()
+                    .split(
+                    '@');
+                if (userValue.length > 0) {
+                  userName = userValue[0];
+                }
+              }
+            } catch (e) {}
+
+            var userEmail = _userNameController.text
+                .toString()
+                .trim()
+                .replaceAll(" ", "")
+                .replaceAll("\@", "")
+                .replaceAll("\#", "")
+                .replaceAll("\%", "")
+                .replaceAll("\^", "")
+                .replaceAll(".", "")
+                .replaceAll("\&", "")
+                .replaceAll("\`", "")
+                .replaceAll("\~", "")
+                .replaceAll("\$", "")
+                .replaceAll("\*", "")
+                .replaceAll("\(", "")
+                .replaceAll("\)", "")
+                .replaceAll("\-", "")
+                .replaceAll("\_", "")
+                .replaceAll("\+", "")
+                .replaceAll("\=", "") +
+                "@1micahlancaster.com";
+
+            if (validateEmail(
+                _userNameController.text.toString().trim(), context) == null) {
+              userEmail = _userNameController.text.toString().trim();
+            }
+
+            Map map = Map<String, dynamic>();
+            map.putIfAbsent(
+                "username", () => _userNameController.text.toString().trim());
+            map.putIfAbsent(
+                "first_name", () => userName);
+            map.putIfAbsent(
+                "last_name", () => userName);
+            map.putIfAbsent("email", () => userEmail);
+            map.putIfAbsent(
+                "user_pass", () => _passwordController.text.toString().trim());
+            validation.submitRegistration(
+                map, _scaffoldKey.currentState.context);
+          } else {
+            final action = CupertinoAlertDialog(
+              title: Text(AppLocalizations.of(context).translate("app_name")),
+              content: Text("${data.error}"),
+              actions: <Widget>[
+                CupertinoDialogAction(
+                    isDefaultAction: true,
+                    child: Text(AppLocalizations.of(context).translate("ok")),
+                    onPressed: () {
+                      Navigator.of(context).pop();
+                    }),
+              ],
+            );
+            showCupertinoModalPopup(
+                context: context, builder: (context) => action);
+          }
+        } else {
+          TopAlert.showAlert(
+              _scaffoldKey.currentState.context, data.error, true);
+        }
       } else if (data is CustomError) {
         TopAlert.showAlert(
             _scaffoldKey.currentState.context, data.errorMessage, true);
@@ -457,6 +657,16 @@ class _LoginScreenState extends State<LoginScreen> {
             _scaffoldKey.currentState.context, error.toString(), true);
       }
     });
+  }
+
+  String validateEmail(String value, context) {
+    if (value.isEmpty)
+      return AppLocalizations.of(context).translate("email_empty");
+    final RegExp nameExp = new RegExp(
+        r'^([A-Za-z0-9+_\-\.])+\@([A-Za-z0-9_\-\.])+\.([A-Za-z]{2,63})$');
+    if (!nameExp.hasMatch(value))
+      return AppLocalizations.of(context).translate("email_invalid");
+    return null;
   }
 
   _launchUrl(String url) async {

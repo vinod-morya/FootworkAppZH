@@ -249,7 +249,7 @@ position: relative;
                                         left: widget.fit.t(10.0),
                                         right: widget.fit.t(20.0)),
                                     child: Text(
-                                      '\"${widget.data.label == null ? "Month 1: Laying the Foundation" : widget.data.label}\"',
+                                      '\"${widget.data.label == null ? "月1：奠定基础" : widget.data.label}\"',
                                       softWrap: true,
                                       style: TextStyle(
                                           fontSize: widget.fit.t(10.0),

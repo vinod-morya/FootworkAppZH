@@ -19,7 +19,7 @@ class MasterDashboard extends StatefulWidget {
 
 class _MasterDashboardState extends State<MasterDashboard> {
   int _currentIndex = 0;
-  final List<Widget> _children = [UserDashBoard(), History(), SettingsView()];
+  final List<Widget> _children = [UserDashBoard(), History()];
   FmFit fit = FmFit(width: 750);
   String title;
 
@@ -80,23 +80,6 @@ class _MasterDashboardState extends State<MasterDashboard> {
                   fontSize: fit.t(12.0)),
             ),
           ),
-          BottomNavigationBarItem(
-              icon: Icon(
-                Icons.settings,
-                size: fit.t(22.0),
-              ),
-              activeIcon: Icon(
-                Icons.settings,
-                color: appColor,
-                size: fit.t(22.0),
-              ),
-              title: Text(
-                AppLocalizations.of(context).translate('settings_caps'),
-                style: TextStyle(
-                    fontFamily: robotoBoldFont,
-                    fontWeight: FontWeight.w600,
-                    fontSize: fit.t(12.0)),
-              ))
         ],
       ),
     );
@@ -115,24 +98,45 @@ class _MasterDashboardState extends State<MasterDashboard> {
           fontSize: fit.t(16.0),
         ),
       ),
+      leading: GestureDetector(
+        onTap: () {
+          Navigator.of(context).push(MaterialPageRoute(
+              builder: (context) => ProfileScreen(
+                  AppLocalizations.of(context).translate('profile')),
+              maintainState: true,
+              fullscreenDialog: false));
+        },
+        child: Padding(
+          padding: EdgeInsets.all(12.0),
+          child: Container(
+            width: fit.t(40.0),
+            height: fit.t(40.0),
+            child: Image.asset(
+              ic_profile,
+              height: fit.t(45.0),
+              width: fit.t(45.0),
+            ),
+          ),
+        ),
+      ),
       actions: <Widget>[
         GestureDetector(
           onTap: () => Navigator.of(context).push(MaterialPageRoute(
-              builder: (context) => ProfileScreen(
-                  AppLocalizations.of(context).translate('profile')),
+              builder: (context) {
+                return SettingsView(
+                    AppLocalizations.of(context).translate('settings'));
+              },
               maintainState: true,
               fullscreenDialog: false)),
           child: Padding(
             padding: EdgeInsets.all(8.0),
             child: Container(
-              width: fit.t(40.0),
-              height: fit.t(40.0),
-              child: Image.asset(
-                ic_profile,
-                height: fit.t(45.0),
-                width: fit.t(45.0),
-              ),
-            ),
+                width: fit.t(40.0),
+                height: fit.t(40.0),
+                child: Icon(
+                  Icons.settings,
+                  size: fit.t(25.0),
+                )),
           ),
         )
       ],

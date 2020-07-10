@@ -179,7 +179,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
           map.putIfAbsent("last_name",
               () => _userLastNameController.text.toString().trim());
           map.putIfAbsent(
-              "email", () => _userEmailController.text.toString().trim());
+              "user_email", () => _userEmailController.text.toString().trim());
 
           map.putIfAbsent("billing_phone",
               () => _userPhoneController.text.toString().trim());
@@ -234,7 +234,9 @@ class _ProfileScreenState extends State<ProfileScreen> {
           obscureText: false,
           controller: _userEmailController,
           focusNode: _userEmailFocusNode,
-          enabled: false,
+          enabled: editable
+              ? _userEmailController.text.isEmpty ? true : false
+              : false,
           textInputType: TextInputType.emailAddress,
           textStyle: TextStyle(color: appColor, fontFamily: robotoMediumFont),
           hintText: AppLocalizations.of(context).translate("email_label"),
@@ -713,7 +715,10 @@ class _ProfileScreenState extends State<ProfileScreen> {
   void setUserData() {
     _userFirstNameController.text = userDataModel.firstname;
     _userLastNameController.text = userDataModel.lastname;
-    _userEmailController.text = userDataModel.email;
+    _userEmailController.text =
+    userDataModel.email.contains("1micahlancaster.com")
+        ? ''
+        : '${userDataModel.email}';
     _userPhoneController.text = userDataModel.phone;
     for (int i = 0; i < countryList.length; i++) {
       if (countryList[i].code == userDataModel.country) {

@@ -56,6 +56,7 @@ final String dashboardCallApi = 'ft_zh_dashboardCallApi';
 final String historyList = 'ft_zh_history_list';
 final String videoThumbnail = 'ft_zh_videoT';
 final String videoURl = 'ft_zh_videoURl';
+final String inAppPurchaseData = 'ft_zh_pymt_data';
 
 //api flags
 const int NO_INTERNET_FLAG = 1000;

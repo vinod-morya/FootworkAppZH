@@ -51,3 +51,4 @@ const String apiInviteUser = 'user/invite_users';
 const String createStripeSource = 'user/stripe_create_source';
 const String authorizeAccount = 'user/authorized_account';
 const String updatePurchase = 'user/footwork_month_purchase';
+const String paymentUpdate = 'user/footwork_inapp_purchase';

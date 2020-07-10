@@ -1,9 +1,9 @@
 {
-  "app_name": "Footwork",
+  "app_name": "篮球脚步训练",
   "existing": "Existing",
   "new": "New",
   "email": "Enter email",
-  "user_name_label": "Username/Email",
+  "user_name_label": "Username",
   "user_name_labels": "Username",
   "password_label": "Password",
   "forget_pass": "Forgot password ?",
@@ -127,12 +127,17 @@
   "sure_purchase_video": "Are you sure you want to purchase this video",
   "sure_disable_notification": "Are you sure you want to disable all notifications for App.",
   "approve": "Approve",
-  "restore": "Restore",
+  "restore": "Restore Purchases",
+  "monthly_subscription": "篮球脚步训练 每月订阅",
+  "yearly_subscription": "篮球脚步训练 年度订阅",
   "Skill_battle": "Skill Battle",
   "standard": "Training System",
   "insta_url": "Instagram url...",
   "add_url": "SAVE URL",
   "no_past_purchase": "No past verified purchases found.",
   "fetch_products": "Fetching products...",
-  "empty_insta": "Instagram url field cannot be empty."
+  "login_signup_up": "Login or SignUp",
+  "login_signup": "Login/SignUp",
+  "empty_insta": "Instagram url field cannot be empty.",
+  "new_account_msg": "New account created successfully."
 }

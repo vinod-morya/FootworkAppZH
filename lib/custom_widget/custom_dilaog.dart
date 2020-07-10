@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:footwork_chinese/custom_widget/InAppWidget.dart';
+import 'package:footwork_chinese/custom_widget/PurchaseWidget.dart';
 
 import '../custom_widget/AddEditInstaUrlWidget.dart';
 import '../custom_widget/AddEditNoteWidget.dart';
@@ -82,10 +83,13 @@ showDialogInstaUrl(BuildContext context,
 }
 
 showDialogInApp(BuildContext context,
-    {String title,
-    String body,
-    @required Function aliPayBtnFunction,
-    @required Function weChatPayBtnFunction}) {
+    {String monthlyTxt,
+      String yearlyTxt,
+      String title,
+      String body,
+      @required Function monthlyBtnFunction,
+      @required Function yearlyBtnFunction,
+      @required Function restoreBtnFunction}) {
   showDialog(
       context: context,
       barrierDismissible: false,
@@ -93,8 +97,24 @@ showDialogInApp(BuildContext context,
         child: MyDialog(
           elevation: 0.0,
           backgroundColor: Colors.black54,
-          child: InAppWidget(body, title, aliPayBtnFunction,
-              weChatPayBtnFunction),
+          child: InAppWidget(body,title, monthlyTxt, yearlyTxt, yearlyBtnFunction,
+              monthlyBtnFunction, restoreBtnFunction),
+        ),
+      ));
+}
+
+showDialogPurchase(BuildContext context,
+    {String title,
+    String body,
+    @required Function aliPayBtnFunction}) {
+  showDialog(
+      context: context,
+      barrierDismissible: false,
+      child: Center(
+        child: MyDialog(
+          elevation: 0.0,
+          backgroundColor: Colors.black54,
+          child: PurchaseWidget(body, title, aliPayBtnFunction),
         ),
       ));
 }

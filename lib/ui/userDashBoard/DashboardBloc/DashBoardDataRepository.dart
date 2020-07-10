@@ -1,5 +1,6 @@
 import 'dart:convert';
 
+import 'package:flutter/src/widgets/framework.dart';
 import 'package:footwork_chinese/constants/app_constants.dart';
 import 'package:footwork_chinese/model/errorResponse/customeError.dart';
 import 'package:footwork_chinese/network/ApiConfiguration.dart';
@@ -87,6 +88,43 @@ class DashBoardDataRepository {
             apiCallback.onAPISuccess(map, COUNTRY_LIST);
           } else {
             apiCallback.onAPIError(map, COUNTRY_LIST);
+          }
+        } catch (error) {
+          apiCallback.onAPIError(error, ERROR_EXCEPTION_FLAG);
+        }
+      });
+    } catch (error) {
+      apiCallback.onAPIError(error, ERROR_EXCEPTION_FLAG);
+    }
+  }
+
+  void posUpdateMonth(Map<String, dynamic> request, BuildContext context) {
+    checkInternetConnection().then((onValue) {
+      !onValue
+          ? apiCallback.onAPIError(
+          CustomError(
+              AppLocalizations.of(context).translate('check_internet')),
+          NO_INTERNET_FLAG)
+          : _posUpdateMonth(request, context);
+    });
+  }
+
+  _posUpdateMonth(Map<String, dynamic> request, BuildContext context) async {
+    var language = await checkLanguage(context);
+    var url = '$baseUrl$paymentUpdate';
+    request.putIfAbsent('lang', () => language);
+    try {
+      ApiConfiguration.getInstance()
+          .apiClient
+          .liveService
+          .apiMultipartRequest(context, '$url', request, 'POST')
+          .then((response) {
+        try {
+          Map map = jsonDecode(response.body);
+          if (map['status'] == 200) {
+            apiCallback.onAPISuccess(map, UPDATE_PAYMENT);
+          } else {
+            apiCallback.onAPIError(map, UPDATE_PAYMENT);
           }
         } catch (error) {
           apiCallback.onAPIError(error, ERROR_EXCEPTION_FLAG);

@@ -1,7 +1,9 @@
 import 'dart:async';
 
+import 'package:flutter/src/widgets/framework.dart';
 import 'package:footwork_chinese/constants/app_constants.dart';
 import 'package:footwork_chinese/model/CountryListResponse.dart';
+import 'package:footwork_chinese/model/commonReponse/commonResponse.dart';
 import 'package:footwork_chinese/model/errorResponse/error_reponse.dart';
 import 'package:footwork_chinese/model/userDashBoardResponse/UserDashBoardResponse.dart';
 import 'package:footwork_chinese/network/api_callbacks.dart';
@@ -59,6 +61,13 @@ class DashBoardBloc with ApiCallback {
           apiController.add(response);
         }
       }
+    } else if (flag == UPDATE_PAYMENT) {
+      var response = CommonResponse.fromJson(data);
+      if (response.status == 200) {
+        if (!apiController.isClosed) {
+          apiController.add(response);
+        }
+      }
     }
   }
 
@@ -68,6 +77,13 @@ class DashBoardBloc with ApiCallback {
     switch (flag) {
       case COUNTRY_LIST:
         var errorResponse = ErrorResponse.fromJson(error);
+        if (!apiController.isClosed) {
+          apiController.add(errorResponse);
+        }
+        break;
+      case UPDATE_PAYMENT:
+        var errorResponse = ErrorResponse.fromJson(error);
+        errorResponse.code = UPDATE_PAYMENT;
         if (!apiController.isClosed) {
           apiController.add(errorResponse);
         }
@@ -90,5 +106,11 @@ class DashBoardBloc with ApiCallback {
         }
         break;
     }
+  }
+
+  void purchasedMonthUpdate(
+      BuildContext context, Map<String, dynamic> request) {
+    showProgressLoader(true);
+    _dataProvider.posUpdateMonth(request, context);
   }
 }

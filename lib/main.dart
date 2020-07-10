@@ -5,6 +5,7 @@ import 'package:footwork_chinese/ui/forgetPass/ForgotPassword.dart';
 import 'package:footwork_chinese/ui/login/login_screen.dart';
 import 'package:footwork_chinese/ui/register/RegistrationScreen.dart';
 import 'package:footwork_chinese/ui/splash/SplashScreen.dart';
+import 'package:footwork_chinese/utils/FallbackCupertinoLocalisationsDelegate.dart';
 import 'package:footwork_chinese/utils/app_localizations.dart';
 
 import 'network/ApiConfiguration.dart';
@@ -37,6 +38,7 @@ class MyApp extends StatelessWidget {
         GlobalMaterialLocalizations.delegate,
         // Built-in localization for text direction LTR/RTL
         GlobalWidgetsLocalizations.delegate,
+        const FallbackCupertinoLocalisationsDelegate(),
       ],
 
       // Returns a locale, which will be used by the app
