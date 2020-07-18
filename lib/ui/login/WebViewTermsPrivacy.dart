@@ -5,19 +5,23 @@ import 'package:flutter/services.dart';
 import 'package:flutter_webview_plugin/flutter_webview_plugin.dart';
 import 'package:fm_fit/fm_fit.dart';
 import 'package:footwork_chinese/constants/app_colors.dart';
-import 'package:footwork_chinese/constants/app_constants.dart';
 import 'package:footwork_chinese/style/theme.dart';
 import 'package:gradient_app_bar/gradient_app_bar.dart';
 
 const kUserAgent =
     'Mozilla/5.0 (Linux; Android 6.0; Nexus 5 Build/MRA58N) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/62.0.3202.94 Mobile Safari/537.36';
 
-class WebViewSupport extends StatefulWidget {
+class WebViewTermsPrivacy extends StatefulWidget {
+  final url;
+  final title;
+
+  WebViewTermsPrivacy({this.url, this.title});
+
   @override
-  _WebViewSupportState createState() => _WebViewSupportState();
+  _WebViewTermsPrivacyState createState() => _WebViewTermsPrivacyState();
 }
 
-class _WebViewSupportState extends State<WebViewSupport> {
+class _WebViewTermsPrivacyState extends State<WebViewTermsPrivacy> {
   FmFit fit = FmFit(width: 750);
 
   @override
@@ -44,7 +48,7 @@ class _WebViewSupportState extends State<WebViewSupport> {
       appBar: _gradientAppBarWidget(),
       useWideViewPort: true,
       supportMultipleWindows: false,
-      url: '$CONTACT_US',
+      url: widget.url,
       withLocalStorage: true,
       hidden: true,
       ignoreSSLErrors: false,
@@ -66,6 +70,7 @@ class _WebViewSupportState extends State<WebViewSupport> {
     return GradientAppBar(
       gradient: ColorsTheme.dashBoardGradient,
       centerTitle: true,
+      title: Text(widget.title),
       leading: InkWell(
         child: Icon(
           Platform.isAndroid ? Icons.arrow_back : Icons.arrow_back_ios,

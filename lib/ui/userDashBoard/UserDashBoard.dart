@@ -33,9 +33,8 @@ import 'package:url_launcher/url_launcher.dart';
 
 import '../../model/commonReponse/commonResponse.dart';
 
-const String kNonConsumableIdMonth = 'com.training.footwork_chinese_monthly';
-const String kNonConsumableIdYear = 'com.training.footwork_yearly_sub';
-const List<String> _kProductConsumableId = <String>[kNonConsumableIdMonth];
+const String kNonConsumableIdYear =
+    'com.training.footwork_chinese_yearly_sub_yuan';
 const List<String> _kProductConsumableIdYearly = <String>[kNonConsumableIdYear];
 
 class UserDashBoard extends StatefulWidget {
@@ -318,17 +317,13 @@ class _UserDashBoardState extends State<UserDashBoard>
     if (callInApp) {
       if (memberInfo == null || memberInfo.id == null) {
         showDialogInApp(context,
-            monthlyTxt: "\$35/月",
-            yearlyTxt: "\$299/年",
+            yearlyTxt: "\¥298/年",
             title: "篮球脚步训练",
             body:
-            "${AppLocalizations.of(context).translate(
-                "monthly_subscription")}\n ${AppLocalizations.of(context)
-                .translate("yearly_subscription")}",
+                "${AppLocalizations.of(context).translate("yearly_subscription")}",
             yearlyBtnFunction: _yearlySubscriptionClick,
-            monthlyBtnFunction: _monthlySubscriptionClick,
             restoreBtnFunction:
-            Platform.isAndroid ? null : _restorePurchaseClick);
+                Platform.isAndroid ? null : _restorePurchaseClick);
       }
     }
   }
@@ -336,15 +331,6 @@ class _UserDashBoardState extends State<UserDashBoard>
   _restorePurchaseClick() {
     Navigator.of(context).pop();
     _restoreActionDialog();
-  }
-
-  void _monthlySubscriptionClick() {
-    Navigator.of(context).pop();
-    if (Platform.isAndroid) {
-      openDialogPayment('1');
-    } else {
-      initStoreInfo("1");
-    }
   }
 
   void _yearlySubscriptionClick() {
@@ -358,19 +344,13 @@ class _UserDashBoardState extends State<UserDashBoard>
 
   void openDialogPayment(String purtype) {
     var price = '';
-    if (purtype == "1") {
-      price = "\$35/月";
-      amount = '35';
-      type = '1';
-    } else {
-      price = "\$299/年";
-      amount = '299';
-      type = '2';
-    }
+    price = "\¥298/年";
+    amount = '298';
+    type = '2';
     showDialogPurchase(
       context,
       title: '篮球脚步训练',
-      body: '继续购买 $price.\n请选择付款方式.',
+      body: '继续购买$price\n请选择付款方式',
       aliPayBtnFunction: aliPayCall,
     );
   }
@@ -955,14 +935,8 @@ class _UserDashBoardState extends State<UserDashBoard>
       }
 
       ProductDetailsResponse productDetailResponse;
-      if (value == "1") {
-        productDetailResponse = await _connection
-            .queryProductDetails(_kProductConsumableId.toSet());
-      } else {
-        productDetailResponse = await _connection
-            .queryProductDetails(_kProductConsumableIdYearly.toSet());
-      }
-
+      productDetailResponse = await _connection
+          .queryProductDetails(_kProductConsumableIdYearly.toSet());
       if (productDetailResponse.error != null) {
         setState(() {
           _queryProductError = productDetailResponse.error.message;
@@ -1083,7 +1057,7 @@ class _UserDashBoardState extends State<UserDashBoard>
                       applicationUserName:
                       '${userDataModel.username}_${userDataModel.id
                           .toString()}',
-                      sandboxTesting: false);
+                      sandboxTesting: true);
                   _connection.buyNonConsumable(purchaseParam: purchaseParam);
                   bloc.showProgressLoader(false);
                   Navigator.of(context).pop();
@@ -1110,11 +1084,7 @@ class _UserDashBoardState extends State<UserDashBoard>
 
   void deliverProduct(PurchaseDetails purchaseDetails) async {
     bloc.showProgressLoader(false);
-    if (purchaseDetails.productID == kNonConsumableIdMonth) {
-      await ConsumableStore.save(purchaseDetails.purchaseID);
-      bloc.showProgressLoader(false);
-      callApiUpdatePaymentInApp(purchaseDetails, "monthly");
-    } else if (purchaseDetails.productID == kNonConsumableIdYear) {
+    if (purchaseDetails.productID == kNonConsumableIdYear) {
       await ConsumableStore.save(purchaseDetails.purchaseID);
       bloc.showProgressLoader(false);
       callApiUpdatePaymentInApp(purchaseDetails, "yearly");
@@ -1123,9 +1093,7 @@ class _UserDashBoardState extends State<UserDashBoard>
 
   Future<bool> _verifyPurchase(PurchaseDetails purchaseDetails) {
     if (purchaseDetails.error == null) {
-      if (purchaseDetails.productID == kNonConsumableIdMonth) {
-        return Future<bool>.value(true);
-      } else if (purchaseDetails.productID == kNonConsumableIdYear) {
+      if (purchaseDetails.productID == kNonConsumableIdYear) {
         return Future<bool>.value(true);
       }
     }

@@ -19,6 +19,7 @@ import 'package:footwork_chinese/model/errorResponse/customeError.dart';
 import 'package:footwork_chinese/model/errorResponse/error_reponse.dart';
 import 'package:footwork_chinese/model/loginResponse/LoginResponseModel.dart';
 import 'package:footwork_chinese/network/ApiConfiguration.dart';
+import 'package:footwork_chinese/ui/login/WebViewTermsPrivacy.dart';
 import 'package:footwork_chinese/ui/register/registrationBloc/RegistrationValidationBloc.dart';
 import 'package:footwork_chinese/utils/DialogUtils.dart';
 import 'package:footwork_chinese/utils/Utility.dart';
@@ -758,7 +759,13 @@ class _RegistrationScreenState extends State<RegistrationScreen> {
                     ),
                     recognizer: TapGestureRecognizer()
                       ..onTap = () {
-                        _launchUrl('$TERMS_OF_USE');
+                        Navigator.push(
+                            context,
+                            MaterialPageRoute(
+                                builder: (context) => WebViewTermsPrivacy(
+                                    url: '$TERMS_OF_USE',
+                                    title: AppLocalizations.of(context)
+                                        .translate('terms'))));
                       },
                   ),
                   TextSpan(
@@ -778,7 +785,16 @@ class _RegistrationScreenState extends State<RegistrationScreen> {
                         fontSize: fit.t(12.0)),
                     recognizer: TapGestureRecognizer()
                       ..onTap = () {
-                        _launchUrl('$PRIVACY_USE');
+                        Navigator.push(
+                            context,
+                            MaterialPageRoute(
+                                builder: (context) =>
+                                    WebViewTermsPrivacy(
+                                        url: '$PRIVACY_USE',
+                                        title:
+                                        AppLocalizations.of(context).translate(
+                                            'privacy')))
+                        );
                       },
                   ),
                 ],

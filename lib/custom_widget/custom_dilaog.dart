@@ -83,11 +83,9 @@ showDialogInstaUrl(BuildContext context,
 }
 
 showDialogInApp(BuildContext context,
-    {String monthlyTxt,
-      String yearlyTxt,
+    {String yearlyTxt,
       String title,
       String body,
-      @required Function monthlyBtnFunction,
       @required Function yearlyBtnFunction,
       @required Function restoreBtnFunction}) {
   showDialog(
@@ -97,8 +95,8 @@ showDialogInApp(BuildContext context,
         child: MyDialog(
           elevation: 0.0,
           backgroundColor: Colors.black54,
-          child: InAppWidget(body,title, monthlyTxt, yearlyTxt, yearlyBtnFunction,
-              monthlyBtnFunction, restoreBtnFunction),
+          child: InAppWidget(body,title, yearlyTxt, yearlyBtnFunction,
+               restoreBtnFunction),
         ),
       ));
 }

@@ -3,7 +3,6 @@ import 'package:fm_fit/fm_fit.dart';
 import 'package:footwork_chinese/constants/app_colors.dart';
 import 'package:footwork_chinese/constants/app_constants.dart';
 import 'package:footwork_chinese/constants/app_images_path.dart';
-import 'package:url_launcher/url_launcher.dart';
 
 class PurchaseWidget extends StatefulWidget {
   final title;
@@ -108,7 +107,7 @@ class _PurchaseWidgetState extends State<PurchaseWidget> {
                             children: <TextSpan>[
                               TextSpan(
                                 text:
-                                    '\n\nMicah Lancaster\'s Checklist approach allows you to experience 4 basketball foot training assignments every month, putting the guess work behind you.\n\n',
+                                    '\n\n米卡·兰开斯特（Micah Lancaster）的“检查表”方法使您每个月都能进行4次篮球脚训练任务，使猜测工作变得无所适从。\n\n',
                                 style: TextStyle(
                                     color: colorGrey,
                                     fontSize: fit.t(11.0),
@@ -144,7 +143,7 @@ class _PurchaseWidgetState extends State<PurchaseWidget> {
                               padding: EdgeInsets.only(
                                   top: fit.t(4.0), bottom: fit.t(4.0)),
                               child: Text(
-                                'Continue with AliPay',
+                                '继续支付宝',
                                 style: TextStyle(
                                     fontSize: fit.t(24.0),
                                     fontFamily: robotoBoldFont,
@@ -155,80 +154,6 @@ class _PurchaseWidgetState extends State<PurchaseWidget> {
                           ),
                         ),
                       ),
-//                      GestureDetector(
-//                        onTap: () => widget.weChatPayBtnFunction(),
-//                        child: Container(
-//                          margin: EdgeInsets.only(
-//                              left: fit.t(24.0),
-//                              right: fit.t(24.0),
-//                              bottom: fit.t(10.0),
-//                              top: fit.t(8.0)),
-//                          decoration: BoxDecoration(
-//                            borderRadius: BorderRadius.circular(fit.t(24.0)),
-//                            color: btnAppColor,
-//                          ),
-//                          height: fit.t(35.0),
-//                          child: Center(
-//                            child: Container(
-//                              padding: EdgeInsets.only(
-//                                  top: fit.t(4.0), bottom: fit.t(4.0)),
-//                              child: Text('Buy with WeChatPay',
-//                                  style: TextStyle(
-//                                      fontSize: fit.t(20.0),
-//                                      fontFamily: robotoBoldFont,
-//                                      color: Colors.white,
-//                                      fontWeight: FontWeight.w600)),
-//                            ),
-//                          ),
-//                        ),
-//                      ),
-//                      Container(
-//                        margin: EdgeInsets.only(
-//                            top: fit.t(10.0), bottom: fit.t(10.0)),
-//                        child: RichText(
-//                          softWrap: true,
-//                          textAlign: TextAlign.center,
-//                          text: TextSpan(
-//                            text:
-//                                AppLocalizations.of(context).translate('terms'),
-//                            style: TextStyle(
-//                                fontFamily: robotoBoldFont,
-//                                color: appColor,
-//                                fontWeight: FontWeight.w500,
-//                                decoration: TextDecoration.underline,
-//                                fontSize: fit.t(15.0)),
-//                            recognizer: TapGestureRecognizer()
-//                              ..onTap = () {
-//                                _launchUrl(
-//                                    'https://micahlancaster.com/terms-conditions/');
-//                              },
-//                            children: <TextSpan>[
-//                              TextSpan(
-//                                  text: ' | ',
-//                                  style: TextStyle(
-//                                      fontFamily: robotoBoldFont,
-//                                      color: colorBlack,
-//                                      decoration: TextDecoration.none,
-//                                      fontSize: fit.t(15.0))),
-//                              TextSpan(
-//                                text:
-//                                    '${AppLocalizations.of(context).translate('privacy')}',
-//                                style: TextStyle(
-//                                    fontFamily: robotoBoldFont,
-//                                    color: appColor,
-//                                    decoration: TextDecoration.underline,
-//                                    fontWeight: FontWeight.w500,
-//                                    fontSize: fit.t(15.0)),
-//                                recognizer: TapGestureRecognizer()
-//                                  ..onTap = () {
-//                                    _launchUrl(
-//                                        'https://micahlancaster.com/privacy/');
-//                                  },
-//                              )
-//                            ],
-//                          ),
-//                        ),
-//                      ),
                     ],
                   ),
                 ),
@@ -256,11 +181,4 @@ class _PurchaseWidgetState extends State<PurchaseWidget> {
         ));
   }
 
-  _launchUrl(String url) async {
-    if (await canLaunch(url)) {
-      await launch(url);
-    } else {
-      throw 'Could not launch $url';
-    }
-  }
 }

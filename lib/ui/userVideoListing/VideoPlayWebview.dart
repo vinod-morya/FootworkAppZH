@@ -70,8 +70,15 @@ position: relative;
       initialMediaPlaybackPolicy: AutoMediaPlaybackPolicy.always_allow,
       onWebViewCreated: (WebViewController webViewController) {
         _controller = webViewController;
-        _controller.loadUrl(
-            '${widget.video_url}?autoplay=1&muted=0&playerColor=d50a30');
+        if (widget.video_url.toString().contains("wistia")) {
+          _controller.loadUrl(
+              '${widget.video_url}?autoplay=1&muted=0&playerColor=d50a30');
+        } else {
+          _controller.loadUrl('${widget.video_url}');
+        }
+      },
+      onWebResourceError: (error) {
+        print(error);
       },
     );
 
@@ -113,6 +120,9 @@ position: relative;
       DeviceOrientation.portraitUp,
       DeviceOrientation.portraitDown,
     ]);
+    _controller?.clearCache();
+    _controller = null;
+    webView = null;
     super.dispose();
   }
 

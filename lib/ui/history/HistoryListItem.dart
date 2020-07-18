@@ -43,7 +43,7 @@ class HistoryListItem extends StatelessWidget {
               ),
               Flexible(
                 child: Container(
-                  padding: EdgeInsets.only(top: fit.t(5.0)),
+                  padding: EdgeInsets.only(top: fit.t(0.0)),
                   child: Text(
                     data.title,
                     overflow:TextOverflow.ellipsis,

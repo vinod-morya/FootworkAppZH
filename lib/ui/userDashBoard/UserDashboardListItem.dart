@@ -345,16 +345,18 @@ position: relative;
                                                                         TextSpan>[
                                                                       TextSpan(
                                                                         text:
-                                                                            '\n${AppLocalizations.of(context).translate("of")} ${widget.data.totalVideos}',
+                                                                            '/${widget.data.totalVideos}',
                                                                         style:
                                                                             TextStyle(
                                                                           fontSize: widget
                                                                               .fit
-                                                                              .t(10.0),
-                                                                          fontFamily:
-                                                                              robotoBoldFont,
-                                                                          fontWeight:
-                                                                              FontWeight.w500,
+                                                                              .t(18.0),
+                                                                              fontStyle:
+                                                                              FontStyle
+                                                                                  .normal,
+                                                                              fontWeight:
+                                                                              FontWeight
+                                                                                  .w400,
                                                                           color:
                                                                               colorBlack,
                                                                         ),

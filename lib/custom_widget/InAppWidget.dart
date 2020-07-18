@@ -6,20 +6,18 @@ import 'package:fm_fit/fm_fit.dart';
 import 'package:footwork_chinese/constants/app_colors.dart';
 import 'package:footwork_chinese/constants/app_constants.dart';
 import 'package:footwork_chinese/constants/app_images_path.dart';
+import 'package:footwork_chinese/ui/login/WebViewTermsPrivacy.dart';
 import 'package:footwork_chinese/utils/app_localizations.dart';
-import 'package:url_launcher/url_launcher.dart';
 
 class InAppWidget extends StatefulWidget {
   final title;
   final body;
-  final monthlyBtnText;
   final yearlyBtnText;
   final yearlyBtnFunction;
-  final monthlyBtnFunction;
   final restoreBtnFunction;
 
-  InAppWidget(this.body, this.title, this.monthlyBtnText, this.yearlyBtnText,
-      this.yearlyBtnFunction, this.monthlyBtnFunction, this.restoreBtnFunction);
+  InAppWidget(this.body, this.title, this.yearlyBtnText, this.yearlyBtnFunction,
+      this.restoreBtnFunction);
 
   @override
   _InAppWidgetState createState() => _InAppWidgetState();
@@ -64,7 +62,7 @@ class _InAppWidgetState extends State<InAppWidget> {
                     color: Colors.white,
                   ),
                   margin: EdgeInsets.only(
-                      top: fit.t(30.0), left: fit.t(10.0), right: fit.t(10.0)),
+                      top: fit.t(20.0), left: fit.t(10.0), right: fit.t(10.0)),
                   width: MediaQuery.of(context).size.width,
                   child: Column(
                     children: <Widget>[
@@ -102,8 +100,8 @@ class _InAppWidgetState extends State<InAppWidget> {
                         padding: EdgeInsets.only(
                             left: fit.t(20.0),
                             right: fit.t(20.0),
-                            top: fit.t(15.0),
-                            bottom: fit.t(10.0)),
+                            top: fit.t(10.0),
+                            bottom: fit.t(5.0)),
                         child: RichText(
                           textAlign: TextAlign.center,
                           text: TextSpan(
@@ -116,10 +114,10 @@ class _InAppWidgetState extends State<InAppWidget> {
                             children: <TextSpan>[
                               TextSpan(
                                 text:
-                                '\n\nMicah Lancaster\'s Checklist approach allows you to experience 4 basketball foot training assignments every month, putting the guess work behind you.\n\nTwo type of subscription monthly and yearly\n',
+                                '\n\n米卡·兰开斯特（Micah Lancaster）的“检查表”方法使您每个月都能进行4次篮球脚训练任务，使猜测工作变得无所适从。\n\n订阅类型\n',
                                 style: TextStyle(
                                     color: colorGrey,
-                                    fontSize: fit.t(11.0),
+                                    fontSize: fit.t(10.0),
                                     fontFamily: regularFont,
                                     fontWeight: FontWeight.w600),
                               ),
@@ -131,35 +129,16 @@ class _InAppWidgetState extends State<InAppWidget> {
                                     fontFamily: regularFont,
                                     fontWeight: FontWeight.w600),
                               ),
-                            ],
-                          ),
-                        ),
-                      ),
-                      GestureDetector(
-                        onTap: () => widget.monthlyBtnFunction(),
-                        child: Container(
-                          margin: EdgeInsets.only(
-                              left: fit.t(24.0),
-                              right: fit.t(24.0),
-                              bottom: fit.t(10.0),
-                              top: fit.t(8.0)),
-                          decoration: BoxDecoration(
-                              borderRadius: BorderRadius.circular(fit.t(24.0)),
-                              color: Color(0xFF96989d)),
-                          height: fit.t(35.0),
-                          child: Center(
-                            child: Container(
-                              padding: EdgeInsets.only(
-                                  top: fit.t(4.0), bottom: fit.t(4.0)),
-                              child: Text(
-                                'Buy ' + widget.monthlyBtnText,
+                              TextSpan(
+                                text:
+                                '\n\n 购买确认后，每年会向您的iTunes帐户收取298日元，除非在本期结束前至少24小时关闭自动更新功能，否则它将自动更新。',
                                 style: TextStyle(
-                                    fontSize: fit.t(18.0),
-                                    fontFamily: robotoBoldFont,
-                                    color: Colors.white,
+                                    color: colorGrey,
+                                    fontSize: fit.t(11.0),
+                                    fontFamily: regularFont,
                                     fontWeight: FontWeight.w600),
                               ),
-                            ),
+                            ],
                           ),
                         ),
                       ),
@@ -180,7 +159,7 @@ class _InAppWidgetState extends State<InAppWidget> {
                             child: Container(
                               padding: EdgeInsets.only(
                                   top: fit.t(4.0), bottom: fit.t(4.0)),
-                              child: Text('Buy ' + widget.yearlyBtnText,
+                              child: Text('购买 ' + widget.yearlyBtnText,
                                   style: TextStyle(
                                       fontSize: fit.t(20.0),
                                       fontFamily: robotoBoldFont,
@@ -196,7 +175,7 @@ class _InAppWidgetState extends State<InAppWidget> {
                           margin: EdgeInsets.only(
                               left: fit.t(24.0),
                               right: fit.t(24.0),
-                              bottom: fit.t(24.0),
+                              bottom: fit.t(8.0),
                               top: fit.t(0.0)),
                           height: fit.t(35.0),
                           child: Center(
@@ -217,13 +196,13 @@ class _InAppWidgetState extends State<InAppWidget> {
                       ),
                       Platform.isAndroid ? Container() : Container(
                         margin: EdgeInsets.only(
-                          top: fit.t(10.0),
+                          top: fit.t(0.0),
                           bottom: fit.t(10.0),
                           left: fit.t(24.0),
                           right: fit.t(24.0),
                         ),
                         child: Text(
-                            'Subscriptions will automatically renew unless canceled within 24-hours before the end of the current period. You can cancel anytime with your iTunes account settings. Any unused portion of a free trial will be forfeited if you purchase a subscription \nFor more information, see our',
+                            '订阅将自动续订，除非在当前期限结束前24小时内取消订阅。您可以随时使用iTunes帐户设置取消。如果您购买了订阅，则免费试用中任何未使用的部分将被没收.\n有关更多信息，请参见',
                             textAlign: TextAlign.center,
                             style: TextStyle(
                                 fontSize: fit.t(9.0),
@@ -248,8 +227,15 @@ class _InAppWidgetState extends State<InAppWidget> {
                                 fontSize: fit.t(15.0)),
                             recognizer: TapGestureRecognizer()
                               ..onTap = () {
-                                _launchUrl(
-                                    'https://micahlancaster.com/terms-conditions/');
+                                Navigator.push(
+                                    context,
+                                    MaterialPageRoute(
+                                        builder: (context) =>
+                                            WebViewTermsPrivacy(
+                                                url: '$TERMS_OF_USE',
+                                                title: AppLocalizations.of(
+                                                    context)
+                                                    .translate('terms'))));
                               },
                             children: <TextSpan>[
                               TextSpan(
@@ -271,8 +257,16 @@ class _InAppWidgetState extends State<InAppWidget> {
                                     fontSize: fit.t(15.0)),
                                 recognizer: TapGestureRecognizer()
                                   ..onTap = () {
-                                    _launchUrl(
-                                        'https://micahlancaster.com/privacy/');
+                                    Navigator.push(
+                                        context,
+                                        MaterialPageRoute(
+                                            builder: (context) =>
+                                                WebViewTermsPrivacy(
+                                                    url: '$PRIVACY_USE',
+                                                    title:
+                                                    AppLocalizations.of(context)
+                                                        .translate(
+                                                        'privacy'))));
                                   },
                               )
                             ],
@@ -286,7 +280,7 @@ class _InAppWidgetState extends State<InAppWidget> {
             ),
             Positioned(
               right: 0,
-              top: fit.t(60.0),
+              top: fit.t(50.0),
               child: GestureDetector(
                 onTap: () => Navigator.of(context).pop(),
                 child: Container(
@@ -306,11 +300,4 @@ class _InAppWidgetState extends State<InAppWidget> {
         ));
   }
 
-  _launchUrl(String url) async {
-    if (await canLaunch(url)) {
-      await launch(url);
-    } else {
-      throw 'Could not launch $url';
-    }
-  }
 }

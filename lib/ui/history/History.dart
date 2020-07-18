@@ -46,7 +46,7 @@ class _HistoryState extends State<History> {
       HistoryItemModel modelCompleted = HistoryItemModel();
       modelCompleted.title =
           AppLocalizations.of(context).translate("completed_label");
-      modelCompleted.icon = null;
+      modelCompleted.icon = Icons.check_box;
       listOfItem.add(modelCompleted);
 
       listOfItem.add(HistoryItemModel());

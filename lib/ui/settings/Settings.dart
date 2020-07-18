@@ -134,7 +134,7 @@ class _SettingsViewState extends State<SettingsView> {
                         color: appColor,
                       ),
                       title: Padding(
-                        padding: EdgeInsets.only(left: fit.t(8.0)),
+                        padding: EdgeInsets.only(left: fit.t(2.0)),
                         child: Text(
                           AppLocalizations.of(context).translate("invite_user"),
                           style: TextStyle(
@@ -206,7 +206,7 @@ class _SettingsViewState extends State<SettingsView> {
                         ),
                       ),
                       title: Padding(
-                        padding: EdgeInsets.only(left: fit.t(0.0)),
+                        padding: EdgeInsets.only(left: fit.t(2.0)),
                         child: Text(
                           AppLocalizations.of(context).translate("contact_us"),
                           style: TextStyle(

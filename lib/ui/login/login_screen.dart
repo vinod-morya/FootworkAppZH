@@ -18,6 +18,7 @@ import 'package:footwork_chinese/model/errorResponse/customeError.dart';
 import 'package:footwork_chinese/model/errorResponse/error_reponse.dart';
 import 'package:footwork_chinese/model/loginResponse/LoginResponseModel.dart';
 import 'package:footwork_chinese/network/ApiConfiguration.dart';
+import 'package:footwork_chinese/ui/login/WebViewTermsPrivacy.dart';
 import 'package:footwork_chinese/ui/login/loginbloc/LoginValidationBloc.dart';
 import 'package:footwork_chinese/utils/Utility.dart';
 import 'package:footwork_chinese/utils/app_localizations.dart';
@@ -171,7 +172,13 @@ class _LoginScreenState extends State<LoginScreen> {
                     fontSize: fit.t(14.0)),
                 recognizer: TapGestureRecognizer()
                   ..onTap = () {
-                    _launchUrl('https://micahlancaster.com/terms-conditions/');
+                    Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                            builder: (context) => WebViewTermsPrivacy(
+                                url: '$TERMS_OF_USE',
+                                title: AppLocalizations.of(context)
+                                    .translate('terms'))));
                   },
                 children: <TextSpan>[
                   TextSpan(
@@ -192,30 +199,18 @@ class _LoginScreenState extends State<LoginScreen> {
                         fontSize: fit.t(14.0)),
                     recognizer: TapGestureRecognizer()
                       ..onTap = () {
-                        _launchUrl('https://micahlancaster.com/privacy/');
+                        Navigator.push(
+                            context,
+                            MaterialPageRoute(
+                                builder: (context) =>
+                                    WebViewTermsPrivacy(
+                                        url: '$PRIVACY_USE',
+                                        title:
+                                        AppLocalizations.of(context).translate(
+                                            'privacy')))
+                        );
                       },
                   ),
-                  TextSpan(
-                      text: '\n\n',
-                      style: TextStyle(
-                          fontFamily: robotoBoldFont,
-                          color: colorBlack,
-                          decoration: TextDecoration.none,
-                          fontSize: fit.t(14.0))),
-                  TextSpan(
-                    text:
-                        '${AppLocalizations.of(context).translate('contact_us')}',
-                    style: TextStyle(
-                        fontFamily: robotoBoldFont,
-                        color: appColor,
-                        fontWeight: FontWeight.w500,
-                        decoration: TextDecoration.underline,
-                        fontSize: fit.t(14.0)),
-                    recognizer: TapGestureRecognizer()
-                      ..onTap = () {
-                        _launchUrl('https://micahlancaster.com/contact-us/');
-                      },
-                  )
                 ],
               ),
             ),
@@ -454,20 +449,7 @@ class _LoginScreenState extends State<LoginScreen> {
                       ..onTap = () {
                         Navigator.pushNamed(context, "/registrationScreen");
                       },
-                  ),
-                  TextSpan(
-                    text:
-                        '\n\n${AppLocalizations.of(context).translate('contact_us')}!',
-                    style: TextStyle(
-                        fontFamily: robotoBoldFont,
-                        color: colorRed,
-                        decoration: TextDecoration.underline,
-                        fontSize: fit.t(14.0)),
-                    recognizer: TapGestureRecognizer()
-                      ..onTap = () {
-                        _launchUrl('$SIGN_UP_CONTACT');
-                      },
-                  ),
+                  )
                 ],
               ),
             ),

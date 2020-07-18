@@ -22,6 +22,7 @@ import 'package:footwork_chinese/style/theme.dart';
 import 'package:footwork_chinese/ui/favouriteVideos/FavouriteListBloc/FavouriteListBloc.dart';
 import 'package:footwork_chinese/ui/favouriteVideos/FavouriteListItem.dart';
 import 'package:footwork_chinese/ui/userVideoListing/VideoPlayWebview.dart';
+import 'package:footwork_chinese/ui/userVideoListing/WebViewPlayer.dart';
 import 'package:footwork_chinese/ui/userVideoListing/videoStatusBloc/VideoStatusBloc.dart';
 import 'package:footwork_chinese/utils/DialogUtils.dart';
 import 'package:footwork_chinese/utils/Utility.dart';
@@ -254,13 +255,22 @@ class _FavouriteVideosListState extends State<FavouriteVideosList> {
     var result = await Navigator.push(
       context,
       MaterialPageRoute(
-          builder: (context) => VideoPlayWebview(
-                video_url: videoListData[position].videoUrl,
-                id: videoListData[position].id,
-                month: videoListData[position].month,
-                video_play_status: videoStatus,
-                video_play_time: videPlayTime,
-              )),
+          builder: (context) => Platform.isIOS &&
+                  !videoListData[position].videoUrl.contains("wistia")
+              ? VideoPlayerApp(
+                  video_Url: videoListData[position].videoUrl,
+                )
+              : !videoListData[position].videoUrl.contains("wistia")
+                  ? VideoPlayerApp(
+                      video_Url: videoListData[position].videoUrl,
+                    )
+                  : VideoPlayWebview(
+                      video_url: videoListData[position].videoUrl,
+                      id: videoListData[position].id,
+                      month: videoListData[position].month,
+                      video_play_status: videoStatus,
+                      video_play_time: videPlayTime,
+                    )),
     );
 
     if (result != null) {
