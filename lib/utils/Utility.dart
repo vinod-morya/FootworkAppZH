@@ -213,7 +213,7 @@ Future<String> checkLanguage(context) async {
 //      return "fr";
 //    } else {
 //    }
-  return "zh";
+  return "en";
 //  } else {
 //    return lang;
 //  }

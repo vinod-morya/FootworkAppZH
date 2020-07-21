@@ -2,6 +2,7 @@ import 'dart:async';
 import 'dart:convert';
 
 import 'package:flutter/material.dart';
+
 import '../network/_HttpClient.dart';
 
 class ApiClient {
@@ -50,14 +51,14 @@ class _ServiceImpl implements ApiService {
       newUrl = url + "&app_type=1";
     }
     final response = await client.post("$newUrl", body: json.encode(data));
-//    print('POST : $url response -> ${response.body}');
+    print('POST : $url response -> ${response.body}');
     return response;
   }
 
   @override
   Future apiGetRequest(BuildContext context, String url) async {
     final response = await client.get(url + "&app_type=1");
-//    print('GET : $url response -> ${response.body}');
+    print('GET : $url response -> ${response.body}');
     return response;
   }
 
@@ -68,7 +69,7 @@ class _ServiceImpl implements ApiService {
   Future apiPutRequest(
       BuildContext context, String url, Map<String, dynamic> request) async {
     final response = await client.put("$url", body: json.encode(request));
-//    print('PUT : $url response -> ${response.body}');
+    print('PUT : $url response -> ${response.body}');
     return response;
   }
 
@@ -83,7 +84,7 @@ class _ServiceImpl implements ApiService {
       Map<String, dynamic> data, String apiType) async {
     data.putIfAbsent("app_type", () => "1");
     final response = await client.mutipartPost(url, data, apiType);
-//    print('MULTIPART : $url response -> ${response.body}');
+    print('MULTIPART : $url response -> ${response.body}');
     return response;
   }
 }

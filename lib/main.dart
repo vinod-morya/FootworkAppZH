@@ -25,8 +25,8 @@ class MyApp extends StatelessWidget {
       // List all the app's supported locales here
       supportedLocales: [
         // English
-//        const Locale('en'),
-        //Generic Chinese
+        // const Locale('en'),
+        // Generic Chinese
         const Locale('zh', 'CN'),
       ],
 
@@ -47,14 +47,6 @@ class MyApp extends StatelessWidget {
         if (locale == null) {
           return supportedLocales.first;
         }
-//        for (var supportedLocale in supportedLocales) {
-//          if (supportedLocale.languageCode == locale.languageCode) {
-//            return supportedLocale;
-//          }
-//        }
-
-        // If the locale of the device is not supported, use the first one
-        // from the list (English, in this case).
         return supportedLocales.first;
       },
 

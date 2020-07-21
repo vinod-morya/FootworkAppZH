@@ -407,7 +407,7 @@ class _UserDashBoardState extends State<UserDashBoard>
         Map<String, dynamic> data = Map();
         data.putIfAbsent('cookie', () => cookies);
         data.putIfAbsent('payment_type', () => typeName);
-        data.putIfAbsent('lang', () => 'zh');
+        data.putIfAbsent('lang', () => 'en');
         data.putIfAbsent('source', () => source);
         data.putIfAbsent('currency', () => 'cny');
         data.putIfAbsent('amount', () => amount);
@@ -416,8 +416,7 @@ class _UserDashBoardState extends State<UserDashBoard>
         data.putIfAbsent('deviceType', () => getDeviceType());
         data.putIfAbsent('insecure', () => 'cool');
 
-        ApiConfiguration
-            .getInstance()
+        ApiConfiguration.getInstance()
             .apiClient
             .liveService
             .apiMultipartRequest(
@@ -620,7 +619,8 @@ class _UserDashBoardState extends State<UserDashBoard>
         if (data.videoUrl != null) {
           videoUrl = data.videoUrl;
         } else {
-          videoUrl = "https://fast.wistia.net/embed/iframe/c568dpkzq7";
+          videoUrl =
+          "http://www.nbafootwork.cn/wp-content/uploads/footwork_videos/promo_360.mp4";
         }
         ispaymentCalled = false;
         writeStringDataLocally(key: videoURl, value: videoUrl);
@@ -628,7 +628,7 @@ class _UserDashBoardState extends State<UserDashBoard>
           thumbnail = data.thumbNail;
         } else {
           thumbnail =
-          "https://embed-ssl.wistia.com/deliveries/7b064f6bfc25e88da280b27ef3264918ad8e3391.jpg?image_crop_resized=768x432";
+          "http://www.nbafootwork.cn/wp-content/uploads/footwork_videos/thumb/promo.png";
         }
         writeStringDataLocally(key: videoThumbnail, value: thumbnail);
         setState(() {});
@@ -647,10 +647,20 @@ class _UserDashBoardState extends State<UserDashBoard>
       } else if (data is CountryListResponse) {
         writeStringDataLocally(key: countries, value: json.encode(data));
       } else if (data is ErrorResponse) {
+        if (data.videoUrl != null) {
+          videoUrl = data.videoUrl;
+        } else {
+          videoUrl =
+          "http://www.nbafootwork.cn/wp-content/uploads/footwork_videos/promo_360.mp4";
+        }
+        writeStringDataLocally(key: videoURl, value: videoUrl);
+        if (data.thumbNail != null) {
+          thumbnail = data.thumbNail;
+        } else {
+          thumbnail =
+          "http://www.nbafootwork.cn/wp-content/uploads/footwork_videos/thumb/promo.png";
+        }
         errorText = data.error;
-        videoUrl = "https://fast.wistia.net/embed/iframe/c568dpkzq7";
-        thumbnail =
-        "https://embed-ssl.wistia.com/deliveries/7b064f6bfc25e88da280b27ef3264918ad8e3391.jpg?image_crop_resized=768x432";
         writeStringDataLocally(key: videoThumbnail, value: thumbnail);
         writeStringDataLocally(key: videoURl, value: videoUrl);
         writeStringDataLocally(key: dashBoardData, value: '');
@@ -660,16 +670,18 @@ class _UserDashBoardState extends State<UserDashBoard>
         }
       } else if (data is CustomError) {
         TopAlert.showAlert(context, data.errorMessage, true);
-        videoUrl = "https://fast.wistia.net/embed/iframe/c568dpkzq7";
+        videoUrl =
+        "http://www.nbafootwork.cn/wp-content/uploads/footwork_videos/promo_360.mp4";
         thumbnail =
-        "https://embed-ssl.wistia.com/deliveries/7b064f6bfc25e88da280b27ef3264918ad8e3391.jpg?image_crop_resized=768x432";
+        "http://www.nbafootwork.cn/wp-content/uploads/footwork_videos/thumb/promo.png";
         writeStringDataLocally(key: videoThumbnail, value: thumbnail);
         writeStringDataLocally(key: videoURl, value: videoUrl);
         setState(() {});
       } else if (data is Exception) {
-        videoUrl = "https://fast.wistia.net/embed/iframe/c568dpkzq7";
+        videoUrl =
+        "http://www.nbafootwork.cn/wp-content/uploads/footwork_videos/promo_360.mp4";
         thumbnail =
-        "https://embed-ssl.wistia.com/deliveries/7b064f6bfc25e88da280b27ef3264918ad8e3391.jpg?image_crop_resized=768x432";
+        "http://www.nbafootwork.cn/wp-content/uploads/footwork_videos/thumb/promo.png";
         writeStringDataLocally(key: videoThumbnail, value: thumbnail);
         writeStringDataLocally(key: videoURl, value: videoUrl);
         TopAlert.showAlert(
@@ -1057,7 +1069,7 @@ class _UserDashBoardState extends State<UserDashBoard>
                       applicationUserName:
                       '${userDataModel.username}_${userDataModel.id
                           .toString()}',
-                      sandboxTesting: true);
+                      sandboxTesting: false);
                   _connection.buyNonConsumable(purchaseParam: purchaseParam);
                   bloc.showProgressLoader(false);
                   Navigator.of(context).pop();

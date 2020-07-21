@@ -44,7 +44,6 @@ class UserDashboardListItem extends StatefulWidget {
 class _UserDashboardListItemState extends State<UserDashboardListItem> {
   AnimationController progressController;
   Animation<double> animation;
-  WebViewController _controller;
 
   var data = Uri.dataFromString(
           '''<html><head><meta name="viewport" content="width=device,height=device, initial-scale=1"><style>
@@ -91,20 +90,7 @@ position: relative;
                 bottom: 15.0),
             height: fit.t(375.0),
             width: MediaQuery.of(context).size.width,
-            child: Platform.isIOS
-                ? WebView(
-                    javascriptMode: JavascriptMode.unrestricted,
-                    initialUrl: data,
-                    onPageFinished: (some) async {},
-                    initialMediaPlaybackPolicy:
-                        AutoMediaPlaybackPolicy.always_allow,
-                    onWebViewCreated: (WebViewController webViewController) {
-                      _controller = webViewController;
-                      _controller.loadUrl(
-                          '${widget.videoURl}?autoplay=0&muted=0&playerColor=D50A30');
-                    },
-                  )
-                : GestureDetector(
+            child:  GestureDetector(
                     onTap: () => onVideoTap('${widget.videoURl}'),
                     child: Container(
                       height: widget.fit.t(375.0),

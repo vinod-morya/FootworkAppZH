@@ -522,7 +522,7 @@ class _LoginScreenState extends State<LoginScreen> {
         }
       } else if (data is ErrorResponse) {
         if (Platform.isIOS) {
-          if (data.error.contains("Username does not exist.")) {
+          if (data.error.contains("用戶名不存在.")) {
             var isEmail = false;
             if (validateEmail(
                 _userNameController.text.toString().trim(), context) == null) {
