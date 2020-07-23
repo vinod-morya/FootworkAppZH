@@ -26,7 +26,7 @@ class _WebViewSupportState extends State<WebViewSupport> {
         [DeviceOrientation.portraitDown, DeviceOrientation.portraitUp]);
     super.initState();
   }
-
+  var url = '$CONTACT_US';
   @override
   void dispose() {
     super.dispose();
@@ -34,6 +34,7 @@ class _WebViewSupportState extends State<WebViewSupport> {
 
   @override
   Widget build(BuildContext context) {
+
     fit = FmFit(width: MediaQuery.of(context).size.width);
     if (MediaQuery.of(context).size.width > 600) {
       fit.scale = 1.0 + MediaQuery.of(context).size.aspectRatio;

@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:footwork_chinese/network/ApiUrls.dart';
 
 //Fonts
 const String robotoMediumFont = 'assets/fonts/roboto/Roboto-Medium.ttf';
@@ -6,9 +7,9 @@ const String regularFont = 'assets/fonts/roboto/Roboto-Regular.ttf';
 const String robotoBoldFont = 'assets/fonts/roboto/Roboto-Bold.ttf';
 const String robotoBoldCondenseFont =
     'assets/fonts/roboto/Roboto-BoldCondensed.ttf';
-const String CONTACT_US = "http://www.nbafootwork.cn/contact-us-app/";
-const String TERMS_OF_USE = "http://www.nbafootwork.cn/terms-conditions2/";
-const String PRIVACY_USE = "http://www.nbafootwork.cn/privacy-2/";
+const String CONTACT_US = "$baseOther/contact-us-app/";
+const String TERMS_OF_USE = "$baseOther/terms-conditions2/";
+const String PRIVACY_USE = "$baseOther/privacy-2/";
 const String returnUrl = "stripesdk://footwork.stripesdk.mlxt.us";
 const passwordLength = 25;
 const emailLength = 80;

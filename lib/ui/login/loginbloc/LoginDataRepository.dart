@@ -25,7 +25,7 @@ class LoginDataRepository {
   }
 
   void _onLogin(Map data, context) async {
-    var language = await checkLanguage(context);
+    var language =  checkLanguage();
     data.putIfAbsent('lang', () => language);
     var url = '$baseUrl$loginUrl';
     if (!baseUrl.contains('https://')) {
@@ -96,7 +96,7 @@ class LoginDataRepository {
   }
 
   void _onRegistration(Map data, context) async {
-    var language = await checkLanguage(context);
+    var language =  checkLanguage();
     if (!baseUrl.contains('https://')) {
       data.putIfAbsent("insecure", () => "cool");
     }

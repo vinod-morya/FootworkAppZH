@@ -32,11 +32,12 @@ import 'package:gradient_app_bar/gradient_app_bar.dart';
 class VideoListing extends StatefulWidget {
   final title;
   final month;
+  final cookie;
 
   @override
   _VideoListingState createState() => _VideoListingState();
 
-  VideoListing(this.title, this.month);
+  VideoListing(this.title, this.month, this.cookie);
 }
 
 class _VideoListingState extends State<VideoListing> {
@@ -47,7 +48,7 @@ class _VideoListingState extends State<VideoListing> {
   VideoListBloc bloc;
   StreamController apiResponseController;
   StreamController apiSuccessResponseController;
-  String errorMessage = null;
+  String errorMessage;
   VideoStatusBloc _bloc;
   StreamController _controller;
 
@@ -57,27 +58,24 @@ class _VideoListingState extends State<VideoListing> {
 
   @override
   void initState() {
+//    print('screenLoaded ${new DateTime.now()}');
     SystemChrome.setPreferredOrientations(
         [DeviceOrientation.portraitDown, DeviceOrientation.portraitUp]);
     _controller = StreamController();
     _bloc = VideoStatusBloc(this._controller);
-
     apiResponseController = StreamController<dynamic>.broadcast();
     apiSuccessResponseController =
         StreamController<List<VideoListBean>>.broadcast();
-    _subscribeToPlaystatusApi();
     _subscribeToApiResponse();
+    _subscribeToPlaystatusApi();
     bloc = VideoListBloc(apiResponseController, apiSuccessResponseController);
     Map<String, dynamic> map = Map();
-    getStringDataLocally(key: cookie).then((onCookieFetch) {
-      cookies = onCookieFetch;
-      map.putIfAbsent('cookie', () => onCookieFetch);
-      map.putIfAbsent('month', () => widget.month);
-      bloc.apiCall(map, context, true);
-    });
-    checkLanguage(context).then((onLang) {
-      lang = onLang;
-    });
+    cookies = widget.cookie;
+    map.putIfAbsent('cookie', () => cookies);
+    map.putIfAbsent('month', () => widget.month);
+    bloc.apiCall(map, context, true);
+//    print('apiInit ${new DateTime.now()}');
+    lang = checkLanguage();
     super.initState();
   }
 
@@ -228,9 +226,9 @@ class _VideoListingState extends State<VideoListing> {
           DialogUtils.showCustomDialog(context,
               fit: fit,
               title:
-                  AppLocalizations.of(context).translate("view_all_favourites"),
+              AppLocalizations.of(context).translate("view_all_favourites"),
               content:
-                  AppLocalizations.of(context).translate('save_favourites'),
+              AppLocalizations.of(context).translate('save_favourites'),
               icon: '$ic_star_empty',
               okBtnFunction: null);
         }
@@ -265,7 +263,7 @@ class _VideoListingState extends State<VideoListing> {
         Map<String, dynamic> mapName = Map();
         mapName.putIfAbsent('cookie', () => cookies);
         mapName.putIfAbsent('month', () => widget.month);
-        bloc.apiCall(mapName, context, false);
+        bloc.apiCall(mapName, context, true);
         from = 'mark_complete';
       } else if (data is ErrorResponse) {
         TopAlert.showAlert(_scaffoldKey.currentState.context, data.error, true);

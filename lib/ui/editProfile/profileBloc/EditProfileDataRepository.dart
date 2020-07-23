@@ -36,7 +36,7 @@ class EditProfileDataRepository {
   }
 
   void _onProfileSubmit(Map data, context) async {
-    var language = await checkLanguage(context);
+    var language =  checkLanguage();
     data.putIfAbsent('lang', () => language);
     data.putIfAbsent(
         'display_name', () => '${data['first_name']} ${data['last_name']}');
@@ -96,7 +96,7 @@ class EditProfileDataRepository {
   }
 
   _onStateApiCall(Map map, context) async {
-    var language = await checkLanguage(context);
+    var language =  checkLanguage();
     var url = '';
     if (!baseUrl.contains('https://')) {
       url =

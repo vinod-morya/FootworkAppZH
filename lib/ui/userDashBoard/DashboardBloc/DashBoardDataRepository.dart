@@ -15,6 +15,7 @@ class DashBoardDataRepository {
   DashBoardDataRepository(this.apiCallback);
 
   void onFetchData(Map data, context) {
+//    print('checkInternetinit ${new DateTime.now()}');
     checkInternetConnection().then((onValue) {
       !onValue
           ? apiCallback.onAPIError(
@@ -26,7 +27,8 @@ class DashBoardDataRepository {
   }
 
   void _onFetchData(Map data, context) async {
-    var language = await checkLanguage(context);
+//    print('checkinternetDone ${new DateTime.now()}');
+    var language = checkLanguage();
     var url = '';
     if (!baseUrl.contains('https://')) {
       url =
@@ -35,6 +37,7 @@ class DashBoardDataRepository {
       url = '$baseUrl$apiDashBoard?cookie=${data['cookie']}&lang=$language';
     }
     try {
+//      print('apiRequested ${new DateTime.now()}');
       ApiConfiguration.getInstance()
           .apiClient
           .liveService
@@ -43,8 +46,10 @@ class DashBoardDataRepository {
         try {
           Map map = jsonDecode(response.body);
           if (map['status'] == 200) {
+//            print('getResponse ${new DateTime.now()}');
             apiCallback.onAPISuccess(map, DASHBOARD_API_FLAG);
           } else {
+//            print('error ${new DateTime.now()}');
             apiCallback.onAPIError(map, DASHBOARD_API_FLAG);
           }
         } catch (error) {
@@ -60,24 +65,25 @@ class DashBoardDataRepository {
     checkInternetConnection().then((onValue) {
       !onValue
           ? apiCallback.onAPIError(
-              CustomError(
-                  AppLocalizations.of(context).translate('check_internet')),
-              NO_INTERNET_FLAG)
+          CustomError(
+              AppLocalizations.of(context).translate('check_internet')),
+          NO_INTERNET_FLAG)
           : _onGetCountry(map, context);
     });
   }
 
   _onGetCountry(Map map, context) async {
-    var language = await checkLanguage(context);
+    var language = checkLanguage();
     var url = '';
     if (!baseUrl.contains('https://')) {
       url =
-          '$baseUrl$getCountries?insecure=cool&cookie=${map['cookie']}&lang=$language';
+      '$baseUrl$getCountries?insecure=cool&cookie=${map['cookie']}&lang=$language';
     } else {
       url = '$baseUrl$getCountries?cookie=${map['cookie']}&lang=$language';
     }
     try {
-      ApiConfiguration.getInstance()
+      ApiConfiguration
+          .getInstance()
           .apiClient
           .liveService
           .apiGetRequest(context, '$url')
@@ -110,11 +116,12 @@ class DashBoardDataRepository {
   }
 
   _posUpdateMonth(Map<String, dynamic> request, BuildContext context) async {
-    var language = await checkLanguage(context);
+    var language = checkLanguage();
     var url = '$baseUrl$paymentUpdate';
     request.putIfAbsent('lang', () => language);
     try {
-      ApiConfiguration.getInstance()
+      ApiConfiguration
+          .getInstance()
           .apiClient
           .liveService
           .apiMultipartRequest(context, '$url', request, 'POST')

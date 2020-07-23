@@ -202,21 +202,8 @@ String getDeviceType() {
     return '3';
 }
 
-Future<String> checkLanguage(context) async {
-//  String lang = await getStringDataLocally(key: language);
-//  if (((lang == null || lang.isEmpty))) {
-//    if (AppLocalizations.of(context).locale.languageCode == 'zh') {
-//      return "zh";
-//    } else if (AppLocalizations.of(context).locale.languageCode == 'tr') {
-//      return "tr";
-//    } else if (AppLocalizations.of(context).locale.languageCode == 'fr') {
-//      return "fr";
-//    } else {
-//    }
+String checkLanguage() {
   return "en";
-//  } else {
-//    return lang;
-//  }
 }
 
 String convertMilliToDate(int date, String format) {

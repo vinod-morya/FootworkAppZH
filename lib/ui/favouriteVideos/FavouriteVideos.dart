@@ -33,8 +33,10 @@ class FavouriteVideosList extends StatefulWidget {
   final title;
   final noDataText;
   final videoType;
+  final cookie;
 
-  FavouriteVideosList({this.title, this.noDataText, this.videoType});
+  FavouriteVideosList(
+      {this.title, this.noDataText, this.videoType, this.cookie});
 
   @override
   _FavouriteVideosListState createState() => _FavouriteVideosListState();
@@ -57,7 +59,7 @@ class _FavouriteVideosListState extends State<FavouriteVideosList> {
         [DeviceOrientation.portraitDown, DeviceOrientation.portraitUp]);
     _controller = StreamController();
     _bloc = VideoStatusBloc(this._controller);
-
+    cookies = widget.cookie;
     apiResponseController = StreamController<dynamic>.broadcast();
     apiSuccessResponseController =
         StreamController<List<DataListBean>>.broadcast();
@@ -66,12 +68,9 @@ class _FavouriteVideosListState extends State<FavouriteVideosList> {
     bloc =
         FavouriteListBloc(apiResponseController, apiSuccessResponseController);
     Map<String, dynamic> map = Map();
-    getStringDataLocally(key: cookie).then((onCookieFetch) {
-      cookies = onCookieFetch;
-      map.putIfAbsent('cookie', () => onCookieFetch);
-      map.putIfAbsent('video_type', () => '${widget.videoType}');
-      bloc.apiCall(map, context, true);
-    });
+    map.putIfAbsent('cookie', () => cookies);
+    map.putIfAbsent('video_type', () => '${widget.videoType}');
+    bloc.apiCall(map, context, true);
     super.initState();
   }
 
@@ -303,40 +302,40 @@ class _FavouriteVideosListState extends State<FavouriteVideosList> {
             ? AppLocalizations.of(context).translate('mark_favourite')
             : AppLocalizations.of(context).translate('mark_un_favourite'),
         okBtnFunction: () {
-      var lang = '';
-      checkLanguage(context).then((onValue) {
-        lang = onValue;
-      });
-      Navigator.of(context).pop();
-      Map<String, dynamic> map = Map();
-      map.putIfAbsent('cookie', () => cookies);
-      map.putIfAbsent('lang', () => lang);
-      map.putIfAbsent('month', () => videoListData[position].month);
-      map.putIfAbsent('video_id',
-          () => videoListData[position].playStatus.videoId.toString());
-      map.putIfAbsent('is_favorite', () => isFavourite == "0" ? '1' : "0");
-      if (!baseUrl.contains('https://')) {
-        map.putIfAbsent("insecure", () => "cool");
-      }
-      try {
-        bloc.showProgressLoader(true);
-        ApiConfiguration.getInstance()
-            .apiClient
-            .liveService
-            .apiMultipartRequest(
-                context, '$baseUrl$apiSetFavourite', map, "POST")
-            .then((response) {
+          var lang = checkLanguage();
+          Navigator.of(context).pop();
+          Map<String, dynamic> map = Map();
+          map.putIfAbsent('cookie', () => cookies);
+          map.putIfAbsent('lang', () => lang);
+          map.putIfAbsent('month', () => videoListData[position].month);
+          map.putIfAbsent('video_id',
+                  () => videoListData[position].playStatus.videoId.toString());
+          map.putIfAbsent('is_favorite', () => isFavourite == "0" ? '1' : "0");
+          if (!baseUrl.contains('https://')) {
+            map.putIfAbsent("insecure", () => "cool");
+          }
           try {
-            Map map = jsonDecode(response.body);
-            if (map['status'] == 200) {
-              Map<String, dynamic> mapName = Map();
-              mapName.putIfAbsent('cookie', () => cookies);
-              mapName.putIfAbsent('month', () => videoListData[position].month);
-              mapName.putIfAbsent('video_type', () => '${widget.videoType}');
-              bloc.apiCall(mapName, context, true);
-            }
-          } catch (error) {
-            TopAlert.showAlert(context, error, true);
+            bloc.showProgressLoader(true);
+            ApiConfiguration
+                .getInstance()
+                .apiClient
+                .liveService
+                .apiMultipartRequest(
+                context, '$baseUrl$apiSetFavourite', map, "POST")
+                .then((response) {
+              try {
+                Map map = jsonDecode(response.body);
+                if (map['status'] == 200) {
+                  Map<String, dynamic> mapName = Map();
+                  mapName.putIfAbsent('cookie', () => cookies);
+                  mapName.putIfAbsent(
+                      'month', () => videoListData[position].month);
+                  mapName.putIfAbsent(
+                      'video_type', () => '${widget.videoType}');
+                  bloc.apiCall(mapName, context, true);
+                }
+              } catch (error) {
+                TopAlert.showAlert(context, error, true);
           }
         });
       } catch (error) {
@@ -389,10 +388,7 @@ class _FavouriteVideosListState extends State<FavouriteVideosList> {
         okBtnText: AppLocalizations.of(context).translate('save_comment'),
         okBtnFunction: (comment) {
       if (comment != null && comment.toString().trim().isNotEmpty) {
-        var lang = '';
-        checkLanguage(context).then((onValue) {
-          lang = onValue;
-        });
+        var lang = checkLanguage();
         Navigator.of(context).pop();
         Map<String, dynamic> map = Map();
         map.putIfAbsent('cookie', () => cookies);

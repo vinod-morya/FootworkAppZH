@@ -14,6 +14,7 @@ class VideoListDataRepository {
   VideoListDataRepository(this.apiCallback);
 
   void onFetchData(Map data, context) {
+//    print('checkInternetinit ${new DateTime.now()}');
     checkInternetConnection().then((onValue) {
       !onValue
           ? apiCallback.onAPIError(
@@ -25,17 +26,20 @@ class VideoListDataRepository {
   }
 
   void _onFetchData(Map data, context) async {
-    var language = await checkLanguage(context);
+//    print('checkinternetDone ${new DateTime.now()}');
+    var language = checkLanguage();
     var url = '';
     if (!baseUrl.contains('https://')) {
       url =
-          '$baseUrl$apiVideoListMonthWise?insecure=cool&cookie=${data['cookie']}&month=${data['month']}&lang=$language';
+      '$baseUrl$apiVideoListMonthWise?insecure=cool&cookie=${data['cookie']}&month=${data['month']}&lang=$language';
     } else {
       url =
-          '$baseUrl$apiVideoListMonthWise?cookie=${data['cookie']}&month=${data['month']}&lang=$language';
+      '$baseUrl$apiVideoListMonthWise?cookie=${data['cookie']}&month=${data['month']}&lang=$language';
     }
+//    print('apiRequested ${new DateTime.now()}');
     try {
-      ApiConfiguration.getInstance()
+      ApiConfiguration
+          .getInstance()
           .apiClient
           .liveService
           .apiGetRequest(context, '$url')
@@ -43,8 +47,10 @@ class VideoListDataRepository {
         try {
           Map map = jsonDecode(response.body);
           if (map['status'] == 200) {
+//            print('getResponse ${new DateTime.now()}');
             apiCallback.onAPISuccess(map, VIDEO_LIST_API_FLAG);
           } else {
+//            print('geterror ${new DateTime.now()}');
             apiCallback.onAPIError(map, VIDEO_LIST_API_FLAG);
           }
         } catch (error) {

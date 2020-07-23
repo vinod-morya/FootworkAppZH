@@ -25,7 +25,7 @@ class ForgetPassDataRepository {
   }
 
   void _onForgetPass(Map data, context) async {
-    var language = await checkLanguage(context);
+    var language =  checkLanguage();
     var url = '';
     if (!baseUrl.contains('https://')) {
       url =

@@ -102,9 +102,7 @@ class _SettingsViewState extends State<SettingsView> {
     } else {
       fit.scale = 1.0;
     }
-    checkLanguage(context).then((onValue) {
-      lang = onValue;
-    });
+    lang = checkLanguage();
     return Scaffold(
       appBar: _gradientAppBarWidget(),
       body: Container(
@@ -321,7 +319,7 @@ class _SettingsViewState extends State<SettingsView> {
         });
       }
       Navigator.of(context).pop();
-      var language = await checkLanguage(context);
+      var language = checkLanguage();
       getStringDataLocally(key: cookie).then((onCookie) {
         Map<String, dynamic> data = Map();
         data.putIfAbsent('cookie', () => onCookie);
@@ -392,7 +390,7 @@ class _SettingsViewState extends State<SettingsView> {
       });
     }
     Navigator.of(context).pop();
-    var language = await checkLanguage(context);
+    var language = checkLanguage();
     getStringDataLocally(key: cookie).then((onCookie) {
       Map<String, dynamic> data = Map();
       data.putIfAbsent('cookie', () => onCookie);
@@ -402,7 +400,8 @@ class _SettingsViewState extends State<SettingsView> {
         data.putIfAbsent('insecure', () => "cool");
       }
       try {
-        ApiConfiguration.getInstance()
+        ApiConfiguration
+            .getInstance()
             .apiClient
             .liveService
             .apiMultipartRequest(context, '$url', data, 'POST')
@@ -456,7 +455,7 @@ class _SettingsViewState extends State<SettingsView> {
         isShowProgress = true;
       });
     }
-    var language = await checkLanguage(context);
+    var language = checkLanguage();
     getStringDataLocally(key: cookie).then((onCookie) {
       Map<String, dynamic> data = Map();
       data.putIfAbsent('cookie', () => onCookie);

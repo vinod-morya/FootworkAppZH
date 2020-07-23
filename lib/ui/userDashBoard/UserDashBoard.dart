@@ -110,6 +110,7 @@ class _UserDashBoardState extends State<UserDashBoard>
   @override
   void initState() {
     initUniLinks();
+//    print('screenLoaded ${new DateTime.now()}');
     SystemChrome.setPreferredOrientations(
         [DeviceOrientation.portraitDown, DeviceOrientation.portraitUp]);
     getStringDataLocally(key: userData).then((onUserModel) {
@@ -128,15 +129,6 @@ class _UserDashBoardState extends State<UserDashBoard>
     getStringDataLocally(key: cookie).then((onCookie) {
       if (onCookie != null && onCookie.isNotEmpty) {
         this.cookies = onCookie;
-        if (Platform.isIOS) {
-          getStringDataLocally(key: inAppPurchaseData).then((value) {
-            if (value != null && value != '' && value.isNotEmpty) {
-              Map map = jsonDecode(value);
-              map['cookie'] = cookies;
-              bloc.purchasedMonthUpdate(context, map);
-            }
-          });
-        }
         checkInternetConnection().then((onValue) {
           !onValue
               ? TopAlert.showAlert(
@@ -144,6 +136,15 @@ class _UserDashBoardState extends State<UserDashBoard>
               AppLocalizations.of(context).translate("check_internet"),
               true)
               : getAuth(context, onCookie);
+          if (Platform.isIOS) {
+            getStringDataLocally(key: inAppPurchaseData).then((value) {
+              if (value != null && value != '' && value.isNotEmpty) {
+                Map map = jsonDecode(value);
+                map['cookie'] = cookies;
+                bloc.purchasedMonthUpdate(context, map);
+              }
+            });
+          }
         });
       } else {
         clearDataLocally();
@@ -541,6 +542,7 @@ class _UserDashBoardState extends State<UserDashBoard>
     Map<String, String> map = Map<String, String>();
     map.putIfAbsent("cookie", () => cookies);
     bloc.apiCall(map, context);
+//    print('apiCallAfterRefresh ${new DateTime.now()}');
     return null;
   }
 
@@ -552,6 +554,7 @@ class _UserDashBoardState extends State<UserDashBoard>
       } else {
         url = '$baseUrl$validateAuth?cookie=$onCookie';
       }
+      bloc.showProgressLoader(true);
       getStringDataLocally(key: dashBoardData).then((onFetchdashBoardData) {
         if (onFetchdashBoardData == null ||
             !(onFetchdashBoardData.length > 0) ||
@@ -559,9 +562,11 @@ class _UserDashBoardState extends State<UserDashBoard>
           Map<String, String> map = Map<String, String>();
           map.putIfAbsent("cookie", () => onCookie);
           bloc.apiCall(map, context);
+//          print('apiCallAfterAuth ${new DateTime.now()}');
           writeStringDataLocally(
               key: dashboardCall, value: (callSavedTime + 600000).toString());
         } else {
+          bloc.showProgressLoader(true);
           getStringDataLocally(key: videoURl).then((value) {
             videoUrl = value;
             getStringDataLocally(key: videoThumbnail).then((thumbUrl) {
@@ -610,6 +615,7 @@ class _UserDashBoardState extends State<UserDashBoard>
         if (data.data.length > 0) {
           errorText = null;
         }
+
         if (purchaseMonthList != null) {
           purchaseMonthList.clear();
         }
@@ -620,7 +626,7 @@ class _UserDashBoardState extends State<UserDashBoard>
           videoUrl = data.videoUrl;
         } else {
           videoUrl =
-          "http://www.nbafootwork.cn/wp-content/uploads/footwork_videos/promo_360.mp4";
+          "$baseOther/wp-content/uploads/footwork_videos/promo_360.mp4";
         }
         ispaymentCalled = false;
         writeStringDataLocally(key: videoURl, value: videoUrl);
@@ -628,10 +634,12 @@ class _UserDashBoardState extends State<UserDashBoard>
           thumbnail = data.thumbNail;
         } else {
           thumbnail =
-          "http://www.nbafootwork.cn/wp-content/uploads/footwork_videos/thumb/promo.png";
+          "$baseOther/wp-content/uploads/footwork_videos/thumb/promo.png";
         }
         writeStringDataLocally(key: videoThumbnail, value: thumbnail);
         setState(() {});
+//        print('getResponse in controller ${new DateTime.now()}');
+        bloc.showProgressLoader(false);
       } else if (data is CommonResponse) {
         errorText = null;
         callSavedTime = DateTime
@@ -651,14 +659,14 @@ class _UserDashBoardState extends State<UserDashBoard>
           videoUrl = data.videoUrl;
         } else {
           videoUrl =
-          "http://www.nbafootwork.cn/wp-content/uploads/footwork_videos/promo_360.mp4";
+          "$baseOther/wp-content/uploads/footwork_videos/promo_360.mp4";
         }
         writeStringDataLocally(key: videoURl, value: videoUrl);
         if (data.thumbNail != null) {
           thumbnail = data.thumbNail;
         } else {
           thumbnail =
-          "http://www.nbafootwork.cn/wp-content/uploads/footwork_videos/thumb/promo.png";
+          "$baseOther/wp-content/uploads/footwork_videos/thumb/promo.png";
         }
         errorText = data.error;
         writeStringDataLocally(key: videoThumbnail, value: thumbnail);
@@ -671,17 +679,17 @@ class _UserDashBoardState extends State<UserDashBoard>
       } else if (data is CustomError) {
         TopAlert.showAlert(context, data.errorMessage, true);
         videoUrl =
-        "http://www.nbafootwork.cn/wp-content/uploads/footwork_videos/promo_360.mp4";
+        "$baseOther/wp-content/uploads/footwork_videos/promo_360.mp4";
         thumbnail =
-        "http://www.nbafootwork.cn/wp-content/uploads/footwork_videos/thumb/promo.png";
+        "$baseOther/wp-content/uploads/footwork_videos/thumb/promo.png";
         writeStringDataLocally(key: videoThumbnail, value: thumbnail);
         writeStringDataLocally(key: videoURl, value: videoUrl);
         setState(() {});
       } else if (data is Exception) {
         videoUrl =
-        "http://www.nbafootwork.cn/wp-content/uploads/footwork_videos/promo_360.mp4";
+        "$baseOther/wp-content/uploads/footwork_videos/promo_360.mp4";
         thumbnail =
-        "http://www.nbafootwork.cn/wp-content/uploads/footwork_videos/thumb/promo.png";
+        "$baseOther/wp-content/uploads/footwork_videos/thumb/promo.png";
         writeStringDataLocally(key: videoThumbnail, value: thumbnail);
         writeStringDataLocally(key: videoURl, value: videoUrl);
         TopAlert.showAlert(
@@ -728,7 +736,7 @@ class _UserDashBoardState extends State<UserDashBoard>
     String userPassword = await getStringDataLocally(key: password);
     data.putIfAbsent('username', () => userDataModel.username);
     data.putIfAbsent('password', () => userPassword);
-    var language = await checkLanguage(context);
+    var language =  checkLanguage();
     data.putIfAbsent('lang', () => language);
     var url = '$baseUrl$loginUrl';
     if (!baseUrl.contains('https://')) {
@@ -1308,7 +1316,7 @@ class _UserDashBoardState extends State<UserDashBoard>
                       : '${monthListing[position].label}',
                   monthListing[position].lastActivity == null
                       ? '1'
-                      : monthListing[position].month)),
+                      : monthListing[position].month,cookies)),
     );
     if (result != null) {
       if (result) {

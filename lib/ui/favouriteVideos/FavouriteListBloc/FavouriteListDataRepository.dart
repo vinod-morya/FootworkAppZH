@@ -26,7 +26,7 @@ class FavouriteListDataRepository {
   }
 
   void _onFetchData(Map data, BuildContext context) async {
-    var language = await checkLanguage(context);
+    var language =  checkLanguage();
     data.putIfAbsent('lang', () => language);
     if (!baseUrl.contains('https://')) {
       data.putIfAbsent("insecure", () => "cool");

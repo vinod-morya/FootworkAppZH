@@ -1,10 +1,12 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:fm_fit/fm_fit.dart';
+import 'package:footwork_chinese/constants/app_constants.dart';
 import 'package:footwork_chinese/custom_widget/NoDataWidget.dart';
 import 'package:footwork_chinese/model/HistoryItemModel.dart';
 import 'package:footwork_chinese/ui/favouriteVideos/FavouriteVideos.dart';
 import 'package:footwork_chinese/ui/history/HistoryListItem.dart';
+import 'package:footwork_chinese/utils/Utility.dart';
 import 'package:footwork_chinese/utils/app_localizations.dart';
 
 class History extends StatefulWidget {
@@ -15,6 +17,8 @@ class History extends StatefulWidget {
 class _HistoryState extends State<History> {
   List<HistoryItemModel> listOfItem = List();
   FmFit fit = FmFit(width: 750);
+
+  String cookies;
 
   @override
   void initState() {
@@ -31,6 +35,9 @@ class _HistoryState extends State<History> {
     } else {
       fit.scale = 1.0;
     }
+    getStringDataLocally(key: cookie).then((onCookieFetch) {
+      cookies = onCookieFetch;
+    });
     if (listOfItem.length == 0) {
       HistoryItemModel modelFavourite = HistoryItemModel();
       modelFavourite.title =
@@ -86,7 +93,7 @@ class _HistoryState extends State<History> {
                 title:
                     AppLocalizations.of(context).translate('favourite_videos'),
                 noDataText:
-                    AppLocalizations.of(context).translate("no_favourites"))));
+                    AppLocalizations.of(context).translate("no_favourites"),cookie: cookies,)));
         break;
       case 1:
         Navigator.of(context).push(MaterialPageRoute(
@@ -94,7 +101,7 @@ class _HistoryState extends State<History> {
                 videoType: "2",
                 title: AppLocalizations.of(context).translate('need_work'),
                 noDataText:
-                    AppLocalizations.of(context).translate("no_videos"))));
+                    AppLocalizations.of(context).translate("no_videos"),cookie: cookies,)));
         break;
       case 2:
         Navigator.of(context).push(MaterialPageRoute(
@@ -103,7 +110,7 @@ class _HistoryState extends State<History> {
                 title:
                     AppLocalizations.of(context).translate('completed_label'),
                 noDataText:
-                    AppLocalizations.of(context).translate("no_videos"))));
+                    AppLocalizations.of(context).translate("no_videos"),cookie: cookies,)));
         break;
     }
   }

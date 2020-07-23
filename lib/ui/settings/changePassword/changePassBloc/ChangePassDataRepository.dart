@@ -14,7 +14,7 @@ class ChangePassDataRepository {
   ChangePassDataRepository(this.apiCallback);
 
   void _changePassword(Map data, context) async {
-    var language = await checkLanguage(context);
+    var language =  checkLanguage();
     data.putIfAbsent("lang", () => language);
     var url = '$baseUrl$changePassApiUrl';
     if (!baseUrl.contains('https://')) {

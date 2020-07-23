@@ -25,7 +25,7 @@ class RegistrationDataRepository {
   }
 
   void _onRegistration(Map data, context) async {
-    var language = await checkLanguage(context);
+    var language =  checkLanguage();
     if (!baseUrl.contains('https://')) {
       data.putIfAbsent("insecure", () => "cool");
     }

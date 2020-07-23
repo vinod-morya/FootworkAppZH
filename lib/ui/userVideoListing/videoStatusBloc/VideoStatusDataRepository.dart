@@ -26,14 +26,15 @@ class VideoStatusDataRepository {
   }
 
   void _onFetchData(Map data, BuildContext context, String from) async {
-    var language = await checkLanguage(context);
+    var language = checkLanguage();
     data.putIfAbsent('lang', () => language);
     if (!baseUrl.contains('https://')) {
       data.putIfAbsent('insecure', () => 'cool');
     }
     var url = "$baseUrl$setVideoStatus";
     try {
-      ApiConfiguration.getInstance()
+      ApiConfiguration
+          .getInstance()
           .apiClient
           .liveService
           .apiMultipartRequest(context, '$url', data, "POST")

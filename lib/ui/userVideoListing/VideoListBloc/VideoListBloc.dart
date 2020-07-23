@@ -43,6 +43,7 @@ class VideoListBloc with ApiCallback {
       if (registerResponse.status == 200) {
         if (!apiController.isClosed) {
           apiSuccessResponseController.add(registerResponse.data);
+//          print('responseParsed and loaded to stream ${new DateTime.now()}');
           apiController.add(registerResponse);
         }
       }

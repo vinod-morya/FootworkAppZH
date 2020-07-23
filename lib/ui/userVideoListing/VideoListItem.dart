@@ -33,6 +33,9 @@ class VideoListItem extends StatefulWidget {
 class _VideoListItemState extends State<VideoListItem> {
   @override
   Widget build(BuildContext context) {
+    if (widget.pos == 3) {
+//      print('responseloaded to screen ${new DateTime.now()}');
+    }
     return Container(
       padding: EdgeInsets.all(widget.fit.t(15.0)),
       color: colorWhite,
@@ -80,10 +83,10 @@ class _VideoListItemState extends State<VideoListItem> {
                               child: Image.asset(
                                 widget.data.playStatus.length > 0
                                     ? widget.data.playStatus[0]
-                                                .videoPlayStatus ==
-                                            "0"
-                                        ? '$ic_check_grey'
-                                        : '$ic_check_blue'
+                                    .videoPlayStatus ==
+                                    "0"
+                                    ? '$ic_check_grey'
+                                    : '$ic_check_blue'
                                     : '$ic_check_grey',
                                 height: widget.fit.t(35.0),
                                 width: widget.fit.t(35.0),
@@ -95,28 +98,28 @@ class _VideoListItemState extends State<VideoListItem> {
                             Text(
                               widget.data.playStatus.length > 0
                                   ? widget.data.playStatus[0].videoPlayStatus ==
-                                          "0"
-                                      ? '${AppLocalizations.of(context).translate("mark_complete_label")}'
-                                      : widget.data.playStatus[0]
-                                                  .videoPlayStatus ==
-                                              "2"
-                                          ? '${AppLocalizations.of(context).translate("need_more_work")}'
-                                          : '${AppLocalizations.of(context).translate("completed")}!'
+                                  "0"
+                                  ? '${AppLocalizations.of(context).translate("mark_complete_label")}'
+                                  : widget.data.playStatus[0]
+                                  .videoPlayStatus ==
+                                  "2"
+                                  ? '${AppLocalizations.of(context).translate("need_more_work")}'
+                                  : '${AppLocalizations.of(context).translate("completed")}!'
                                   : '${AppLocalizations.of(context).translate("mark_complete_label")}',
                               style: TextStyle(
                                   color: widget.data.playStatus.length > 0
                                       ? widget.data.playStatus[0]
-                                                  .videoPlayStatus ==
-                                              "0"
-                                          ? Color(0xFF96989d)
-                                          : appColor
+                                      .videoPlayStatus ==
+                                      "0"
+                                      ? Color(0xFF96989d)
+                                      : appColor
                                       : Color(0xFF96989d),
                                   fontWeight: widget.data.playStatus.length > 0
                                       ? widget.data.playStatus[0]
-                                                  .videoPlayStatus ==
-                                              "0"
-                                          ? FontWeight.bold
-                                          : FontWeight.w500
+                                      .videoPlayStatus ==
+                                      "0"
+                                      ? FontWeight.bold
+                                      : FontWeight.w500
                                       : FontWeight.bold,
                                   fontFamily: robotoMediumFont,
                                   fontSize: widget.fit.t(10.0)),
@@ -142,7 +145,7 @@ class _VideoListItemState extends State<VideoListItem> {
                                     right: widget.fit.t(5.0),
                                     top: widget.fit.t(2.0)),
                                 margin:
-                                    EdgeInsets.only(left: widget.fit.t(14.0)),
+                                EdgeInsets.only(left: widget.fit.t(14.0)),
                                 child: Image.asset(
                                   '$ic_chat_blue',
                                   color: appColor,
@@ -157,13 +160,13 @@ class _VideoListItemState extends State<VideoListItem> {
                                 padding: EdgeInsets.only(
                                     left: 0.0, right: widget.fit.t(5.0)),
                                 margin:
-                                    EdgeInsets.only(left: widget.fit.t(5.0)),
+                                EdgeInsets.only(left: widget.fit.t(5.0)),
                                 child: Image.asset(
                                   widget.data.playStatus.length > 0
                                       ? widget.data.playStatus[0].isFavorite ==
-                                              "1"
-                                          ? '$ic_star_fill'
-                                          : '$ic_star_empty'
+                                      "1"
+                                      ? '$ic_star_fill'
+                                      : '$ic_star_empty'
                                       : '$ic_star_empty',
                                   height: widget.fit.t(20.0),
                                   width: widget.fit.t(20.0),
@@ -196,13 +199,13 @@ class _VideoListItemState extends State<VideoListItem> {
                                   imageUrl: '${widget.data.videoThumb}',
                                   imageBuilder: (context, imageProvider) =>
                                       Container(
-                                    decoration: BoxDecoration(
-                                      image: DecorationImage(
-                                        image: imageProvider,
-                                        fit: BoxFit.cover,
+                                        decoration: BoxDecoration(
+                                          image: DecorationImage(
+                                            image: imageProvider,
+                                            fit: BoxFit.cover,
+                                          ),
+                                        ),
                                       ),
-                                    ),
-                                  ),
                                   errorWidget: (context, url, error) =>
                                       Icon(Icons.error),
                                 ),

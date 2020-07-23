@@ -380,7 +380,7 @@ class ChangePasswordState extends State<ChangePassword> {
     data.putIfAbsent('username', () => userDataModel.username);
     data.putIfAbsent('password', () => userPassword);
     var url = '$baseUrl$loginUrl';
-    var language = await checkLanguage(context);
+    var language =  checkLanguage();
     data.putIfAbsent('lang', () => language);
     if (!baseUrl.contains('https://')) {
       data.putIfAbsent('insecure', () => "cool");

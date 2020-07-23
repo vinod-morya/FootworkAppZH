@@ -1,4 +1,6 @@
-const String baseUrl = 'http://www.nbafootwork.cn/api/';
+const String baseUrl = 'http://122.114.31.155/api/';
+const String baseOther = 'http://122.114.31.155';
+//const String baseUrl = 'http://www.nbafootwork.cn/api/';
 // ****************** login Api **************** //
 //const String loginUrl = 'user/generate_auth_cookie';
 const String loginUrl = 'user/generate_auth_cookie';
