@@ -505,8 +505,8 @@ class _UserDashBoardState extends State<UserDashBoard>
     Map<String, dynamic> data = Map();
     data.putIfAbsent('cookie', () => cookies);
     data.putIfAbsent('payment_type', () => 'wechat');
-    data.putIfAbsent('currency', () => 'cny');
-    data.putIfAbsent('amount', () => '200');
+    data.putIfAbsent('currency', () => 'usd');
+    data.putIfAbsent('amount', () => amount);
     data.putIfAbsent('return_url', () => returnUrl);
     data.putIfAbsent('email', () => userDataModel.email);
     data.putIfAbsent('insecure', () => 'cool');

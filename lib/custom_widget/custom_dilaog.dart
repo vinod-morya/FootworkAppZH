@@ -89,16 +89,17 @@ showDialogInApp(BuildContext context,
       @required Function yearlyBtnFunction,
       @required Function restoreBtnFunction}) {
   showDialog(
-      context: context,
-      barrierDismissible: false,
-      child: Center(
-        child: MyDialog(
-          elevation: 0.0,
-          backgroundColor: Colors.black54,
-          child: InAppWidget(body,title, yearlyTxt, yearlyBtnFunction,
-               restoreBtnFunction),
-        ),
-      ));
+    context: context,
+    barrierDismissible: false,
+    child: Center(
+      child: MyDialog(
+        elevation: 0.0,
+        backgroundColor: Colors.black54,
+        child: InAppWidget(
+            body, title, yearlyTxt, yearlyBtnFunction, restoreBtnFunction),
+      ),
+    ),
+  );
 }
 
 showDialogPurchase(BuildContext context,
@@ -106,13 +107,14 @@ showDialogPurchase(BuildContext context,
     String body,
     @required Function aliPayBtnFunction}) {
   showDialog(
-      context: context,
-      barrierDismissible: false,
-      child: Center(
-        child: MyDialog(
-          elevation: 0.0,
-          backgroundColor: Colors.black54,
-          child: PurchaseWidget(body, title, aliPayBtnFunction),
-        ),
-      ));
+    context: context,
+    barrierDismissible: false,
+    child: Center(
+      child: MyDialog(
+        elevation: 0.0,
+        backgroundColor: Colors.black54,
+        child: PurchaseWidget(body, title, aliPayBtnFunction),
+      ),
+    ),
+  );
 }
