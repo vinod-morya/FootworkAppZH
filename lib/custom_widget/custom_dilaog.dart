@@ -105,7 +105,8 @@ showDialogInApp(BuildContext context,
 showDialogPurchase(BuildContext context,
     {String title,
     String body,
-    @required Function aliPayBtnFunction}) {
+    @required Function aliPayBtnFunction,
+    @required Function weChatPayBtnFunction}) {
   showDialog(
     context: context,
     barrierDismissible: false,
@@ -113,7 +114,8 @@ showDialogPurchase(BuildContext context,
       child: MyDialog(
         elevation: 0.0,
         backgroundColor: Colors.black54,
-        child: PurchaseWidget(body, title, aliPayBtnFunction),
+        child: PurchaseWidget(
+            body, title, aliPayBtnFunction, weChatPayBtnFunction),
       ),
     ),
   );

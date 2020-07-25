@@ -8,8 +8,10 @@ class PurchaseWidget extends StatefulWidget {
   final title;
   final body;
   final aliPayBtnFunction;
+  final weChatPayBtnFunction;
 
-  PurchaseWidget(this.body, this.title, this.aliPayBtnFunction);
+  PurchaseWidget(
+      this.body, this.title, this.aliPayBtnFunction, this.weChatPayBtnFunction);
 
   @override
   _PurchaseWidgetState createState() => _PurchaseWidgetState();
@@ -144,6 +146,34 @@ class _PurchaseWidgetState extends State<PurchaseWidget> {
                                   top: fit.t(4.0), bottom: fit.t(4.0)),
                               child: Text(
                                 '继续支付宝',
+                                style: TextStyle(
+                                    fontSize: fit.t(24.0),
+                                    fontFamily: robotoBoldFont,
+                                    color: Colors.white,
+                                    fontWeight: FontWeight.w600),
+                              ),
+                            ),
+                          ),
+                        ),
+                      ),
+                      GestureDetector(
+                        onTap: () => widget.weChatPayBtnFunction(),
+                        child: Container(
+                          margin: EdgeInsets.only(
+                              left: fit.t(24.0),
+                              right: fit.t(24.0),
+                              bottom: fit.t(10.0),
+                              top: fit.t(8.0)),
+                          decoration: BoxDecoration(
+                              borderRadius: BorderRadius.circular(fit.t(24.0)),
+                              color: appColor),
+                          height: fit.t(35.0),
+                          child: Center(
+                            child: Container(
+                              padding: EdgeInsets.only(
+                                  top: fit.t(4.0), bottom: fit.t(4.0)),
+                              child: Text(
+                                '继续微信付款',
                                 style: TextStyle(
                                     fontSize: fit.t(24.0),
                                     fontFamily: robotoBoldFont,

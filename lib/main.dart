@@ -1,5 +1,8 @@
+import 'dart:io';
+
 import 'package:flutter/material.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
+import 'package:fluwx/fluwx.dart';
 import 'package:footwork_chinese/ui/dashboard/MasterDashBoard.dart';
 import 'package:footwork_chinese/ui/forgetPass/ForgotPassword.dart';
 import 'package:footwork_chinese/ui/login/login_screen.dart';
@@ -16,7 +19,27 @@ Future<void> main() async {
   return runApp(new MyApp());
 }
 
-class MyApp extends StatelessWidget {
+class MyApp extends StatefulWidget {
+  @override
+  _MyAppState createState() => _MyAppState();
+}
+
+class _MyAppState extends State<MyApp> {
+  @override
+  void initState() {
+    super.initState();
+    if (Platform.isAndroid) {
+      _initFluwx();
+    }
+  }
+
+  _initFluwx() async {
+    await registerWxApi(
+        appId: "wxeefdef93f443e517", doOnAndroid: true, doOnIOS: false);
+    var result = await isWeChatInstalled;
+    print("is installed $result");
+  }
+
   @override
   Widget build(BuildContext context) {
     return MaterialApp(

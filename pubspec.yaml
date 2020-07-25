@@ -49,6 +49,7 @@ dependencies:
   in_app_purchase: ^0.3.4+1
   chewie: ^0.9.10
   video_player: ^0.10.11+2
+  fluwx: ^2.2.0
 
 dev_dependencies:
   flutter_test:

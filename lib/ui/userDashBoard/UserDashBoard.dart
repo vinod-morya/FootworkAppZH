@@ -1,10 +1,12 @@
 import 'dart:async';
 import 'dart:convert';
 import 'dart:io';
+import 'dart:io' as H;
 
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:fluwx/fluwx.dart' as fluwx;
 import 'package:fm_fit/fm_fit.dart';
 import 'package:footwork_chinese/constants/app_colors.dart';
 import 'package:footwork_chinese/constants/app_constants.dart';
@@ -44,6 +46,7 @@ class UserDashBoard extends StatefulWidget {
 
 class _UserDashBoardState extends State<UserDashBoard>
     with TickerProviderStateMixin {
+  String _weChatResult = "无";
   final InAppPurchaseConnection _connection =
       Platform.isIOS ? InAppPurchaseConnection.instance : null;
   StreamSubscription<List<PurchaseDetails>> _subscription;
@@ -110,7 +113,6 @@ class _UserDashBoardState extends State<UserDashBoard>
   @override
   void initState() {
     initUniLinks();
-//    print('screenLoaded ${new DateTime.now()}');
     SystemChrome.setPreferredOrientations(
         [DeviceOrientation.portraitDown, DeviceOrientation.portraitUp]);
     getStringDataLocally(key: userData).then((onUserModel) {
@@ -171,6 +173,16 @@ class _UserDashBoardState extends State<UserDashBoard>
         print(error);
       });
     }
+    if (Platform.isAndroid)
+      if (memberInfo == null || memberInfo?.planId == null) {
+        fluwx.weChatResponseEventHandler.listen((res) {
+          if (res is fluwx.WeChatPaymentResponse) {
+            setState(() {
+              _weChatResult = "pay :${res.isSuccessful}";
+            });
+          }
+        });
+      }
     super.initState();
   }
 
@@ -321,10 +333,10 @@ class _UserDashBoardState extends State<UserDashBoard>
             yearlyTxt: "\¥298/年",
             title: "篮球脚步训练",
             body:
-                "${AppLocalizations.of(context).translate("yearly_subscription")}",
+            "${AppLocalizations.of(context).translate("yearly_subscription")}",
             yearlyBtnFunction: _yearlySubscriptionClick,
             restoreBtnFunction:
-                Platform.isAndroid ? null : _restorePurchaseClick);
+            Platform.isAndroid ? null : _restorePurchaseClick);
       }
     }
   }
@@ -353,6 +365,7 @@ class _UserDashBoardState extends State<UserDashBoard>
       title: '篮球脚步训练',
       body: '继续购买$price\n请选择付款方式',
       aliPayBtnFunction: aliPayCall,
+      weChatPayBtnFunction: weChatCall,
     );
   }
 
@@ -501,35 +514,56 @@ class _UserDashBoardState extends State<UserDashBoard>
     Navigator.of(context).pop();
   }
 
-  void weChatCall() {
-    Map<String, dynamic> data = Map();
-    data.putIfAbsent('cookie', () => cookies);
-    data.putIfAbsent('payment_type', () => 'wechat');
-    data.putIfAbsent('currency', () => 'usd');
-    data.putIfAbsent('amount', () => amount);
-    data.putIfAbsent('return_url', () => returnUrl);
-    data.putIfAbsent('email', () => userDataModel.email);
-    data.putIfAbsent('insecure', () => 'cool');
-
-    ApiConfiguration
-        .getInstance()
-        .apiClient
-        .liveService
-        .apiMultipartRequest(
-        context, '$baseUrl$createStripeSource', data, 'POST')
-        .then((response) {
-      try {
-        Map map = jsonDecode(response.body);
-        if (map['status'] == 200) {
-          source = map['data']['id'];
-          var launch = map['data']['redirect']['url'];
-          _launchUrl(launch);
-          Navigator.of(context).pop();
-        }
-      } catch (error) {
-        print(error);
-      }
+  void weChatCall() async {
+    var h = H.HttpClient();
+    h.badCertificateCallback = (cert, String host, int port) {
+      return true;
+    };
+    var request = await h.getUrl(Uri.parse(weChatUrl));
+    var response = await request.close();
+    var data = await Utf8Decoder().bind(response).join();
+    Map<String, dynamic> result = json.decode(data);
+    fluwx.payWithWeChat(
+      appId: result['appid'].toString(),
+      partnerId: result['partnerid'].toString(),
+      prepayId: result['prepayid'].toString(),
+      packageValue: result['package'].toString(),
+      nonceStr: result['noncestr'].toString(),
+      timeStamp: result['timestamp'],
+      sign: result['sign'].toString(),
+      signType: 'MD5'
+    ).then((data) {
+//      a9a0d571d97e11c7093c774403194203
+      print("---》$data");
     });
+//    Map<String, dynamic> data = Map();
+//    data.putIfAbsent('cookie', () => cookies);
+//    data.putIfAbsent('payment_type', () => 'wechat');
+//    data.putIfAbsent('currency', () => 'cny');
+//    data.putIfAbsent('amount', () => amount);
+//    data.putIfAbsent('return_url', () => returnUrl);
+//    data.putIfAbsent('email', () => userDataModel.email);
+//    data.putIfAbsent('insecure', () => 'cool');
+//
+//    ApiConfiguration
+//        .getInstance()
+//        .apiClient
+//        .liveService
+//        .apiMultipartRequest(
+//        context, '$baseUrl$createStripeSource', data, 'POST')
+//        .then((response) {
+//      try {
+//        Map map = jsonDecode(response.body);
+//        if (map['status'] == 200) {
+//          source = map['data']['id'];
+//          var launch = map['data']['redirect']['url'];
+//          _launchUrl(launch);
+//        }
+//      } catch (error) {
+//        print(error);
+//      }
+//    });
+    Navigator.of(context).pop();
   }
 
   void setError(dynamic error) {
@@ -1442,4 +1476,5 @@ class _UserDashBoardState extends State<UserDashBoard>
           AppLocalizations.of(context).translate("purchase_message"), true);
     }
   }
+
 }

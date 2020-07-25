@@ -1,5 +1,6 @@
 const String baseUrl = 'http://122.114.31.155/api/';
 const String baseOther = 'http://122.114.31.155';
+String weChatUrl = "https://wxpay.wxutil.com/pub_v2/app/app_pay.php";
 //const String baseUrl = 'http://www.nbafootwork.cn/api/';
 // ****************** login Api **************** //
 //const String loginUrl = 'user/generate_auth_cookie';

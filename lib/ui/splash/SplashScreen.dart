@@ -42,8 +42,14 @@ class _SplashScreenState extends State<SplashScreen>
 
   @override
   Widget build(BuildContext context) {
+    fit = FmFit(width: MediaQuery.of(context).size.width);
+    if (MediaQuery.of(context).size.width > 600) {
+      fit.scale = 1.0 + MediaQuery.of(context).size.aspectRatio;
+    } else {
+      fit.scale = 1.0;
+    }
     return Scaffold(
-      backgroundColor: Colors.transparent,
+      backgroundColor: colorWhite,
       body: Stack(
         children: <Widget>[
           ProgressLoader(
