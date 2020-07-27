@@ -17,3 +17,7 @@ int getDateTimeStamp(String date, String format) {
 String getLocalDateTime() {
   return '${DateFormat("yyyy-MM-dd hh:mm:ss").format(DateTime.now().toLocal())}';
 }
+
+String getLocalDateTime24() {
+  return '${DateFormat("yyyy-MM-dd HH:mm:ss").format(DateTime.now().toLocal())}';
+}

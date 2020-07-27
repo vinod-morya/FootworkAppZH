@@ -50,6 +50,7 @@ dependencies:
   chewie: ^0.9.10
   video_player: ^0.10.11+2
   fluwx: ^2.2.0
+  alipay_me: ^1.0.0
 
 dev_dependencies:
   flutter_test:

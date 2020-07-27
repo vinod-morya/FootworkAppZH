@@ -3,6 +3,7 @@ import 'dart:convert';
 import 'dart:io';
 import 'dart:io' as H;
 
+import 'package:alipay_me/alipay_me.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
@@ -47,6 +48,9 @@ class UserDashBoard extends StatefulWidget {
 class _UserDashBoardState extends State<UserDashBoard>
     with TickerProviderStateMixin {
   String _weChatResult = "无";
+  String msg = "";
+  bool _isSandbox = false;
+  String version;
   final InAppPurchaseConnection _connection =
       Platform.isIOS ? InAppPurchaseConnection.instance : null;
   StreamSubscription<List<PurchaseDetails>> _subscription;
@@ -75,6 +79,33 @@ class _UserDashBoardState extends State<UserDashBoard>
   String videoUrl;
   var amount = '';
   var type = '';
+
+  final String RSAPrivate = '''MIIEvAIBADANBgkqhkiG9w0BAQEFAASCBKYwggSiAgEAAoIBAQC4N0nCIsCSrCJc
+8br5b8KUuGZCqIm09VDp3P0VodsZKq0FFzGn0nYlOtxOrVkBG+OveW3qmGF9JBOE
+14EMACoVPz5ZMwoYVtpKrdO5M68hNnKZ8BPiM7AkanKgff/qMGu9Trkvmp/QVX9g
+qv9eQGPxypFkjuNpgoLGihZ9KT/jJfjCVKykih2UtJkJk8KmQCp0cVzXEpNoQYzQ
+us2QE5kEw/d3KroafMAubNY4aF7HdRSlwwSeBuytbxd4r24CuP8CfFuUByediKv7
+fA7BHr+UUMoEVjnNuN6/w+on4lRwvh1K/1V40OmTCCP/2is+Q3GEmLAZ4JRXGCyv
+V48QtbdjAgMBAAECggEAArfWH8YxfziI/UQX1Sxf+5/I6nzgI0pnWjwHg/UybWmi
+yetwsSA63AvFSmfmY0zNDD7Hb2m2LomEvDYN0maCOHQJcHl/UaKeb/GmqRnpIJ1U
+DY9sS68ljzP+4v1Y9FSokk+CDgDDEOjiC0QapoJetyedA5XUJy9kzJcnA8vDBI/5
+dVFhNRB4f9Un4iEPQ75nEUheXdgkVRqU9EtsFgDwIIwbDTnDLE9KxDN35Ha8yJuw
+syK3WEuLEpIVgFWNKwJ8lHv2SuN3RzZ62zp7rVoDK9QI43jnybJtSfw5jg1B/382
+t6ojz3kpCauLvJJbci/bSQANXoH+iw6qI+Isg1tU0QKBgQDf5oULWcJsMsMAS4xz
+dGSoSvgcWmwoREFv/L3PIlhKynre5kgaQfknhovk1s8B9SuEq1P14xGHX0mfO3EP
+Q+Ui/RPdYruokIpS0HsBHtda4PIc/TcShY+tUMEYZinaEpbLFLgmCcg08SzH3QuC
+3lPbrcy6Ue1oAj+Ll5Nc2HRFewKBgQDSoEnMl1/EXQFKkdUrgeVaiO2QYYMpa8RE
+TnYkcBuijNJV5aZsd8Mc5LS1ChHAiRg9bTghQkS4Ize3qk0P+F3lS2t20cn/AOE1
+gXumsfsCyljtOXnjnVlg+iBTq0SCo7kiU7OZ9crjAYly30ZQVpcJ1NqwAdS3CiK0
+Aj1XJHENOQKBgBel92NthZV7/xCm6hy/rGoCERadjlLqcqbrYPjhvcWYgUXNuMvd
+L/22vkvbTF3+kSwgFGwiIZXUwKfq1VQxbaA2bsSxSvTQ32tDzdoeccyNecUKEakJ
+JlW988cp8z2vPPISLCkIW3cMChjKBg86gEzxnHAJezPDGQcbaVsjGZTFAoGAHrOw
+rjrugcAQ3R7O1O21UfIdtusP5GzKCi7pt7wDuzkNu+mizbLTZRXNZYpXNhqFxwZx
+pR90xuaTS5lubEKG5VKOEp7X8+zb5yG9tXnCHhECz2mOY+hey+0J40hWzzgwV1me
+F3Ylodtqfq0fIbzNfWhijD9oE1pN3rFo4Zf1RrkCgYBMNJTdGpGw3kWi/q6RVkhn
+oE8WLqsUew5qrd0Et9bEJKUwPtH8GjaGjHcp/h8mKRGZUeVwLIgRcKIiKedEM7gD
+VC4Mevv6Q5yijmeDPR5gyBiCzuENsDICrD45/K1YWU2JaRy39sU3gaWu6Ku8itfl
+JZKGuvGs7J4HZmkiGztDYg==''';
 
   MembershipsInfoBean memberInfo;
   String source;
@@ -175,6 +206,11 @@ class _UserDashBoardState extends State<UserDashBoard>
     }
     if (Platform.isAndroid)
       if (memberInfo == null || memberInfo?.planId == null) {
+        AlipayMe.getVersion().then((v) {
+          setState(() {
+            version = v;
+          });
+        });
         fluwx.weChatResponseEventHandler.listen((res) {
           if (res is fluwx.WeChatPaymentResponse) {
             setState(() {
@@ -465,53 +501,91 @@ class _UserDashBoardState extends State<UserDashBoard>
   }
 
   void aliPayCall() {
-    checkInternetConnection().then((onValue) {
-      if (onValue) {
-        bloc.showProgressLoader(true);
-        Map<String, dynamic> data = Map();
-        data.putIfAbsent('cookie', () => cookies);
-        data.putIfAbsent('payment_type', () => 'alipay');
-        data.putIfAbsent('currency', () => 'cny');
-        data.putIfAbsent('amount', () => amount);
-        data.putIfAbsent('return_url', () => returnUrl);
-        data.putIfAbsent('email', () => userDataModel.email);
-        data.putIfAbsent('insecure', () => 'cool');
-
-        ApiConfiguration
-            .getInstance()
-            .apiClient
-            .liveService
-            .apiMultipartRequest(
-            context, '$baseUrl$createStripeSource', data, 'POST')
-            .then((response) {
-          try {
-            Map map = jsonDecode(response.body);
-            bloc.showProgressLoader(false);
-            if (map['status'] == 200) {
-              source = map['data']['id'];
-              var launch = map['data']['redirect']['url'];
-              _launchUrl(launch);
-            } else if (map['status'] == 209) {
-              source = map['data']['source'];
-              var launch = map['data']['url'];
-              _launchUrl(launch);
-            } else {
-              if (map['status'] == 210) {
-                setError(map['msg']);
-              }
-            }
-          } catch (error) {
-            setError(error);
-            bloc.showProgressLoader(false);
-          }
-        });
-      } else {
-        TopAlert.showAlert(
-            context, AppLocalizations.of(context).translate('check_internet'),
-            true);
-      }
-    });
+//    checkInternetConnection().then((onValue) {
+//      if (onValue) {
+//        bloc.showProgressLoader(true);
+//        Map<String, dynamic> data = Map();
+//        data.putIfAbsent('cookie', () => cookies);
+//        data.putIfAbsent('payment_type', () => 'alipay');
+//        data.putIfAbsent('currency', () => 'cny');
+//        data.putIfAbsent('amount', () => amount);
+//        data.putIfAbsent('return_url', () => returnUrl);
+//        data.putIfAbsent('email', () => userDataModel.email);
+//        data.putIfAbsent('insecure', () => 'cool');
+//
+//        ApiConfiguration
+//            .getInstance()
+//            .apiClient
+//            .liveService
+//            .apiMultipartRequest(
+//            context, '$baseUrl$createStripeSource', data, 'POST')
+//            .then((response) {
+//          try {
+//            Map map = jsonDecode(response.body);
+//            bloc.showProgressLoader(false);
+//            if (map['status'] == 200) {
+//              source = map['data']['id'];
+//              var launch = map['data']['redirect']['url'];
+//              _launchUrl(launch);
+//            } else if (map['status'] == 209) {
+//              source = map['data']['source'];
+//              var launch = map['data']['url'];
+//              _launchUrl(launch);
+//            } else {
+//              if (map['status'] == 210) {
+//                setError(map['msg']);
+//              }
+//            }
+//          } catch (error) {
+//            setError(error);
+//            bloc.showProgressLoader(false);
+//          }
+//        });
+//      } else {
+//        TopAlert.showAlert(
+//            context, AppLocalizations.of(context).translate('check_internet'),
+//            true);
+//      }
+//    });
+    doOauth(context);
     Navigator.of(context).pop();
+  }
+
+  doOauth(BuildContext context) async {
+    await initAlipay();
+    String date = getLocalDateTime24();
+    String payInfo = "app_id=${encodeData(
+        "2021001167695975")}&biz_content={\"timeout_express\":\"${encodeData(
+        "30m")}\",\"product_code\":\"${encodeData(
+        "QUICK_MSECURITY_PAY")}\",\"total_amount\":\"${encodeData(
+        amount)}\",\"subject\":\"${encodeData(
+        "1")}\",\"body\":\"${encodeData(
+        "我是测试数据")}\",\"out_trade_no\":\"${encodeData(
+        "IQJZSRC1YMQB5HU")}\"}&charset=utf-8&format=json&method=alipay.trade.app.pay&sign_type=RSA2&timestamp=${encodeData(
+        date)}&version=1.0&notify_url=${encodeData(
+        "http://www.nbafootwork.cn/api/user/stripe_redirect/?insecure=cool")}&sign=${encodeData(
+        "MIGfMA0GCSqGSIb3DQEBAQUAA4GNADCBiQKBgQCuFK0VnoW3Y0FakQP9S9/U44oamEuy2Ae1LpAMF4ATWq0Ta4RSL/R6q15gRqae0U6NQYDnslSkpP+rXKZjzkZuHGYmf3s8hAyAq8byoIg1C0DQf8E8vtetW6dnxEQbJsvT0Omm3CGPl2FNaLaFKjqGwnslyM0s4QL2VkVkPE3PsQIDAQAB")}";
+
+    AlipayMe.pay(payInfo,
+      urlScheme: "https://openapi.alipay.com/gateway.do",
+      isSandbox: _isSandbox,
+    ).then((value) {
+      setState(() {
+        msg = "$value";
+      });
+    });
+  }
+
+  initAlipay() async {
+    final String tid = "tid_${DateTime
+        .now()
+        .millisecondsSinceEpoch}";
+    await AlipayMe.init(
+        appId: "2021001167695975",
+        pid: "2088831627357903",
+        rsa2Private: RSAPrivate,
+        targetId: tid
+    );
   }
 
   void weChatCall() async {

@@ -165,6 +165,14 @@ Future<String> getDeviceDetails() async {
   return identifier;
 }
 
+String encodeData(String value) {
+  try {
+    return Uri.encodeQueryComponent(value);
+  } catch (e) {
+    return value;
+  }
+}
+
 List<TextInputFormatter> nameformatter() {
   List<TextInputFormatter> list = [];
   int nameLength = 50;
