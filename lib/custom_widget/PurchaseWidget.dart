@@ -156,18 +156,20 @@ class _PurchaseWidgetState extends State<PurchaseWidget> {
                           ),
                         ),
                       ),
-                      GestureDetector(
-                        onTap: () => widget.weChatPayBtnFunction(),
-                        child: Container(
-                          margin: EdgeInsets.only(
-                              left: fit.t(24.0),
-                              right: fit.t(24.0),
-                              bottom: fit.t(10.0),
-                              top: fit.t(8.0)),
-                          decoration: BoxDecoration(
-                              borderRadius: BorderRadius.circular(fit.t(24.0)),
-                              color: appColor),
-                          height: fit.t(35.0),
+                      widget.weChatPayBtnFunction != null
+                          ? GestureDetector(
+                              onTap: () => widget.weChatPayBtnFunction(),
+                              child: Container(
+                                margin: EdgeInsets.only(
+                                    left: fit.t(24.0),
+                                    right: fit.t(24.0),
+                                    bottom: fit.t(10.0),
+                                    top: fit.t(8.0)),
+                                decoration: BoxDecoration(
+                                    borderRadius:
+                                        BorderRadius.circular(fit.t(24.0)),
+                                    color: appColor),
+                                height: fit.t(35.0),
                           child: Center(
                             child: Container(
                               padding: EdgeInsets.only(
@@ -183,7 +185,7 @@ class _PurchaseWidgetState extends State<PurchaseWidget> {
                             ),
                           ),
                         ),
-                      ),
+                      ) : Container(),
                     ],
                   ),
                 ),

@@ -206,18 +206,18 @@ JZKGuvGs7J4HZmkiGztDYg==''';
     }
     if (Platform.isAndroid)
       if (memberInfo == null || memberInfo?.planId == null) {
-        AlipayMe.getVersion().then((v) {
-          setState(() {
-            version = v;
-          });
-        });
-        fluwx.weChatResponseEventHandler.listen((res) {
-          if (res is fluwx.WeChatPaymentResponse) {
-            setState(() {
-              _weChatResult = "pay :${res.isSuccessful}";
-            });
-          }
-        });
+//        AlipayMe.getVersion().then((v) {
+//          setState(() {
+//            version = v;
+//          });
+//        });
+//        fluwx.weChatResponseEventHandler.listen((res) {
+//          if (res is fluwx.WeChatPaymentResponse) {
+//            setState(() {
+//              _weChatResult = "pay :${res.isSuccessful}";
+//            });
+//          }
+//        });
       }
     super.initState();
   }
@@ -401,7 +401,8 @@ JZKGuvGs7J4HZmkiGztDYg==''';
       title: '篮球脚步训练',
       body: '继续购买$price\n请选择付款方式',
       aliPayBtnFunction: aliPayCall,
-      weChatPayBtnFunction: weChatCall,
+//      weChatPayBtnFunction: weChatCall,
+      weChatPayBtnFunction: null,
     );
   }
 
@@ -501,53 +502,51 @@ JZKGuvGs7J4HZmkiGztDYg==''';
   }
 
   void aliPayCall() {
-//    checkInternetConnection().then((onValue) {
-//      if (onValue) {
-//        bloc.showProgressLoader(true);
-//        Map<String, dynamic> data = Map();
-//        data.putIfAbsent('cookie', () => cookies);
-//        data.putIfAbsent('payment_type', () => 'alipay');
-//        data.putIfAbsent('currency', () => 'cny');
-//        data.putIfAbsent('amount', () => amount);
-//        data.putIfAbsent('return_url', () => returnUrl);
-//        data.putIfAbsent('email', () => userDataModel.email);
-//        data.putIfAbsent('insecure', () => 'cool');
-//
-//        ApiConfiguration
-//            .getInstance()
-//            .apiClient
-//            .liveService
-//            .apiMultipartRequest(
-//            context, '$baseUrl$createStripeSource', data, 'POST')
-//            .then((response) {
-//          try {
-//            Map map = jsonDecode(response.body);
-//            bloc.showProgressLoader(false);
-//            if (map['status'] == 200) {
-//              source = map['data']['id'];
-//              var launch = map['data']['redirect']['url'];
-//              _launchUrl(launch);
-//            } else if (map['status'] == 209) {
-//              source = map['data']['source'];
-//              var launch = map['data']['url'];
-//              _launchUrl(launch);
-//            } else {
-//              if (map['status'] == 210) {
-//                setError(map['msg']);
-//              }
-//            }
-//          } catch (error) {
-//            setError(error);
-//            bloc.showProgressLoader(false);
-//          }
-//        });
-//      } else {
-//        TopAlert.showAlert(
-//            context, AppLocalizations.of(context).translate('check_internet'),
-//            true);
-//      }
-//    });
-    doOauth(context);
+    checkInternetConnection().then((onValue) {
+      if (onValue) {
+        bloc.showProgressLoader(true);
+        Map<String, dynamic> data = Map();
+        data.putIfAbsent('cookie', () => cookies);
+        data.putIfAbsent('payment_type', () => 'alipay');
+        data.putIfAbsent('currency', () => 'cny');
+        data.putIfAbsent('amount', () => amount);
+        data.putIfAbsent('return_url', () => returnUrl);
+        data.putIfAbsent('email', () => userDataModel.email);
+        data.putIfAbsent('insecure', () => 'cool');
+
+        ApiConfiguration.getInstance()
+            .apiClient
+            .liveService
+            .apiMultipartRequest(
+                context, '$baseUrl$createStripeSource', data, 'POST')
+            .then((response) {
+          try {
+            Map map = jsonDecode(response.body);
+            bloc.showProgressLoader(false);
+            if (map['status'] == 200) {
+              source = map['data']['id'];
+              var launch = map['data']['redirect']['url'];
+              _launchUrl(launch);
+            } else if (map['status'] == 209) {
+              source = map['data']['source'];
+              var launch = map['data']['url'];
+              _launchUrl(launch);
+            } else {
+              if (map['status'] == 210) {
+                setError(map['msg']);
+              }
+            }
+          } catch (error) {
+            setError(error);
+            bloc.showProgressLoader(false);
+          }
+        });
+      } else {
+        TopAlert.showAlert(context,
+            AppLocalizations.of(context).translate('check_internet'), true);
+      }
+    });
+//    doOauth(context);
     Navigator.of(context).pop();
   }
 
